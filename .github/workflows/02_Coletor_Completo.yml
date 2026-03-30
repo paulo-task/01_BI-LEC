@@ -1,4 +1,4 @@
-name: 📊 Coletor Completo (Agendado)
+name: 📊 02 Coletor Completo (Agendado)
 
 on:
   schedule:
