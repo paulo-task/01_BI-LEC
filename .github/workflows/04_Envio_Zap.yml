@@ -21,9 +21,6 @@ jobs:
       SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
       SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
 
-    defaults:
-      run:
-        working-directory: ./01_LEC
 
     steps:
       - name: 📥 1. Sincronizar Repositório
