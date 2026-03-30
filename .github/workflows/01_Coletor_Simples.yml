@@ -18,9 +18,6 @@ jobs:
       SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
       SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
 
-    defaults:
-      run:
-        working-directory: ./01_LEC
 
     steps:
       - name: 📥 1. Sincronizar Repositório
@@ -33,7 +30,8 @@ jobs:
 
       - name: 📦 3. Instalar Bibliotecas Necessárias
         run: |
-          pip install playwright requests python-dotenv
+          pip install 
+          playwright requests python-dotenv
           playwright install chromium --with-deps
 
       - name: 🚀 4. Executar PDL Analitico
