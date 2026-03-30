@@ -30,8 +30,7 @@ jobs:
 
       - name: 📦 3. Instalar Bibliotecas Necessárias
         run: |
-          pip install 
-          playwright requests python-dotenv
+          pip install playwright requests python-dotenv
           playwright install chromium --with-deps
 
       - name: 🚀 4. Executar PDL Analitico
