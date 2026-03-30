@@ -53,7 +53,7 @@ jobs:
 
       - name: 🤖 10. Rodar Coletor e Upload SharePoint
         # Mantive seus argumentos originais
-        run: python3 00_Coletor.py "Leitura" "Visitadas" "Produtividade"
+        run: python3 00a_Coletor.py "Leitura" "Visitadas" "Produtividade"
 
       - name: 📸 11. Salvar Screenshots em caso de erro
         if: failure()

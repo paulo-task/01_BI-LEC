@@ -65,7 +65,7 @@ jobs:
         run: sleep 480
 
       - name: 🤖 10. Rodar Coletor Final (Sem Argumentos)
-        run: python3 00_Coletor.py
+        run: python3 00a_Coletor.py
 
       - name: 📸 11. Coletar Evidências de Erro
         if: failure()
