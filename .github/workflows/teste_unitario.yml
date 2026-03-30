@@ -12,9 +12,7 @@ jobs:
     env:
       CPFL_USER: ${{ secrets.CPFL_USER }}
       CPFL_PASS: ${{ secrets.CPFL_PASS }}
-    defaults:
-      run:
-        working-directory: ./01_LEC
+    
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
