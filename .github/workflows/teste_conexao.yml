@@ -1,0 +1,34 @@
+name: 🛠️ Teste de Conexao Graph API
+
+on:
+  workflow_dispatch: # Permite que você aperte o botão "Run Workflow" manualmente
+
+jobs:
+  validar_acesso:
+    runs-on: ubuntu-latest
+    
+    # Define que os comandos devem rodar dentro da sua pasta de scripts
+    defaults:
+      run:
+        working-directory: ./01_LEC
+
+    steps:
+      - name: 1. Baixar Codigo do GitHub
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 3. Instalar Biblioteca Requests
+        run: pip install requests
+
+      - name: 4. Executar Script de Teste
+        # Aqui ele vai procurar o debug_sharepoint.py dentro de 01_LEC
+        run: python3 -u debug_sharepoint.py
+        env:
+          SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+          SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
+          SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
+          SP_SITE_URL: ${{ secrets.SP_SITE_URL }}

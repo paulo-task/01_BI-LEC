@@ -1,0 +1,67 @@
+name: 🕒 Coletor Simples (Agendado)
+
+on:
+  schedule:
+    # Horários Brasília (Convertido para UTC): 11:45, 12:45, 14:45, 16:45, 17:45, 18:45, 19:45, 20:45
+    - cron: '45 11,12,14,16,17,18,19,20 * * 1-5'
+  workflow_dispatch: 
+
+jobs:
+  executar_rotina:
+    runs-on: ubuntu-latest
+    
+    env:
+      CPFL_USER: ${{ secrets.CPFL_USER }}
+      CPFL_PASS: ${{ secrets.CPFL_PASS }}
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
+      SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
+      SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
+
+    defaults:
+      run:
+        working-directory: ./01_LEC
+
+    steps:
+      - name: 📥 1. Sincronizar Repositório
+        uses: actions/checkout@v4
+
+      - name: 🐍 2. Preparar Ambiente Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 📦 3. Instalar Bibliotecas Necessárias
+        run: |
+          pip install playwright requests python-dotenv
+          playwright install chromium --with-deps
+
+      - name: 🚀 4. Executar PDL Analitico
+        run: python3 02_PDL_Analitico.py
+
+      - name: ⏳ 5. Aguardar Processamento Portal (180s)
+        run: sleep 180
+
+      - name: 🚀 6. Executar Nao Visitadas
+        run: python3 04_Nao_Visitadas.py
+
+      - name: ⏳ 7. Aguardar Processamento Portal (180s)
+        run: sleep 180
+
+      - name: 🚀 8. Executar ELF Hora
+        run: python3 01_ELF_Hora.py
+
+      - name: ⏳ 9. Aguardar Finalização ELF (300s)
+        run: sleep 300
+
+      - name: 🤖 10. Rodar Coletor e Upload SharePoint
+        # Mantive seus argumentos originais
+        run: python3 00_Coletor.py "Leitura" "Visitadas" "Produtividade"
+
+      - name: 📸 11. Salvar Screenshots em caso de erro
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-erro
+          path: ./01_LEC/*.png
+          retention-days: 1

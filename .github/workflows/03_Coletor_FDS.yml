@@ -1,0 +1,45 @@
+name: 🏖️ Coletor FDS (Sábado)
+
+on:
+  schedule:
+    # Horários Brasília: 09:50, 10:50, 11:50, 12:50, 13:50, 14:50, 15:50, 16:50, 17:50
+    # Convertido para UTC (+3h): 12:50 às 20:50
+    # O '6' no final significa SÁBADO
+    - cron: '50 12,13,14,15,16,17,18,19,20 * * 6'
+  workflow_dispatch:
+
+jobs:
+  executar_fds:
+    runs-on: ubuntu-latest
+    
+    # --- CONFIGURAÇÃO GLOBAL ---
+    env:
+      CPFL_USER: ${{ secrets.CPFL_USER }}
+      CPFL_PASS: ${{ secrets.CPFL_PASS }}
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
+      SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
+      SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
+
+    defaults:
+      run:
+        working-directory: ./01_LEC
+
+    steps:
+      - name: 📥 1. Sincronizar Repositório
+        uses: actions/checkout@v4
+
+      - name: 🐍 2. Preparar Ambiente Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 📦 3. Instalar Bibliotecas
+        run: |
+          pip install playwright requests
+          playwright install chromium --with-deps
+
+      - name: 🚀 4. Executar Script de FDS e Coletor
+        # Aqui você coloca o nome do seu script que roda aos sábados
+        # Se for o mesmo 00_Coletor.py, mantenha assim:
+        run: python3 00_Coletor.py

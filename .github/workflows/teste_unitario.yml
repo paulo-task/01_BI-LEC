@@ -1,0 +1,36 @@
+name: 🧪 Teste Individual de Script
+on:
+  workflow_dispatch:
+    inputs:
+      script_name:
+        description: 'Nome do arquivo .py para testar (ex: 02_PDL_Analitico.py)'
+        required: true
+        default: '01_ELF_Hora.py'
+jobs:
+  teste:
+    runs-on: ubuntu-latest
+    env:
+      CPFL_USER: ${{ secrets.CPFL_USER }}
+      CPFL_PASS: ${{ secrets.CPFL_PASS }}
+    defaults:
+      run:
+        working-directory: ./01_LEC
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Instalar tudo
+        run: |
+          pip install playwright requests python-dotenv
+          playwright install chromium --with-deps
+          sudo apt-get install -y libatk1.0-dev libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2t64 libpango-1.0-0 libcairo2
+      - name: Rodar Script Escolhido
+        run: python3 ${{ github.event.inputs.script_name }}
+      - name: Upload Prints (Sempre)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-teste
+          path: ./01_LEC/*.png
+          retention-days: 1

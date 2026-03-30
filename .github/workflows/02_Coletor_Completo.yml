@@ -1,0 +1,76 @@
+name: 📊 Coletor Completo (Agendado)
+
+on:
+  schedule:
+    # Horários Brasília (UTC +3h): 13:45 e 21:45
+    - cron: '45 13,21 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  executar_completo:
+    runs-on: ubuntu-latest
+    
+    env:
+      CPFL_USER: ${{ secrets.CPFL_USER }}
+      CPFL_PASS: ${{ secrets.CPFL_PASS }}
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
+      SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
+      SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
+
+    defaults:
+      run:
+        working-directory: ./01_LEC
+
+    steps:
+      - name: 📥 1. Sincronizar Repositório
+        uses: actions/checkout@v4
+
+      - name: 🐍 2. Preparar Ambiente Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 📦 3. Instalar Bibliotecas
+        run: |
+          pip install playwright requests python-dotenv
+          playwright install chromium --with-deps
+
+      - name: 🚀 4. [PASSO 1] Disparando Bloco 02 e 04 (Paralelo)
+        run: |
+          python3 02_PDL_Analitico.py &
+          python3 04_Nao_Visitadas.py &
+          wait
+
+      - name: ⏳ 5. Aguardar Estabilidade (90s)
+        run: sleep 90
+
+      - name: 🚀 6. [PASSO 2] Disparando Bloco 05, 06 e 07 (Paralelo)
+        run: |
+          python3 05_Nao_Visitadas_Historico.py &
+          python3 06_Impedimentos.py &
+          python3 07_Entregas.py &
+          wait
+
+      - name: ⏳ 7. Aguardar Estabilidade (300s)
+        run: sleep 300
+
+      - name: 🚀 8. [PASSO 3] Disparando Bloco 01 e 03 (Paralelo)
+        run: |
+          python3 01_ELF_Hora.py &
+          python3 03_Nao_Lib_Fatura.py &
+          wait
+
+      - name: ⏳ 9. Aguardar Processamento Final (480s)
+        run: sleep 480
+
+      - name: 🤖 10. Rodar Coletor Final (Sem Argumentos)
+        run: python3 00_Coletor.py
+
+      - name: 📸 11. Coletar Evidências de Erro
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-erro-completo
+          path: ./01_LEC/*.png
+          retention-days: 1
