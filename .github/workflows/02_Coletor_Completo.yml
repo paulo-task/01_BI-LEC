@@ -2,7 +2,7 @@ name: 📊 02 Coletor Completo (Agendado)
 
 on:
   schedule:
-    # Horários Brasília (UTC +3h): 13:45 e 21:45
+    # Horários Brasília (UTC +3h): 10:45 e 18:45
     - cron: '45 13,21 * * 1-5'
   workflow_dispatch:
 
