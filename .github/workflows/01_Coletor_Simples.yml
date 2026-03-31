@@ -2,8 +2,8 @@ name: 🕒 01 Coletor Simples (Agendado)
 
 on:
   schedule:
-    # Horários Brasília (Convertido para UTC): 8:45, 9:45, 11:45, 13:45, 14:45, 15:45, 16:45, 17:45
-    - cron: '45 11,12,14,16,17,18,19,20 * * 1-5'
+    # AGORA VOCÊ PODE COLOCAR DIRETO EM HORÁRIO DE BRASÍLIA!
+    - cron: '45 8,9,11,13,14,15,16,17 * * 1-5'
   workflow_dispatch: 
 
 jobs:
@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
+      TZ: America/Sao_Paulo
       CPFL_USER: ${{ secrets.CPFL_USER }}
       CPFL_PASS: ${{ secrets.CPFL_PASS }}
       SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
@@ -18,44 +19,49 @@ jobs:
       SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
       SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
 
-
     steps:
       - name: 📥 1. Sincronizar Repositório
         uses: actions/checkout@v4
 
-      - name: 🐍 2. Preparar Ambiente Python
+      - name: 🕐 2. Configurar Timezone e Validar Horário
+        run: |
+          # Define timezone para todo o sistema
+          sudo timedatectl set-timezone America/Sao_Paulo
+          echo "Horário atual (Brasília): $(date)"
+          echo "Esperado: Execução nos horários 08:45, 09:45, 11:45, 13:45, 14:45, 15:45, 16:45, 17:45"
+
+      - name: 🐍 3. Preparar Ambiente Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: 📦 3. Instalar Bibliotecas Necessárias
+      - name: 📦 4. Instalar Bibliotecas Necessárias
         run: |
           pip install playwright requests python-dotenv
           playwright install chromium --with-deps
 
-      - name: 🚀 4. Executar PDL Analitico
+      - name: 🚀 5. Executar PDL Analitico
         run: python3 02_PDL_Analitico.py
 
-      - name: ⏳ 5. Aguardar Processamento Portal (180s)
+      - name: ⏳ 6. Aguardar Processamento Portal (180s)
         run: sleep 180
 
-      - name: 🚀 6. Executar Nao Visitadas
+      - name: 🚀 7. Executar Nao Visitadas
         run: python3 04_Nao_Visitadas.py
 
-      - name: ⏳ 7. Aguardar Processamento Portal (180s)
+      - name: ⏳ 8. Aguardar Processamento Portal (180s)
         run: sleep 180
 
-      - name: 🚀 8. Executar ELF Hora
+      - name: 🚀 9. Executar ELF Hora
         run: python3 01_ELF_Hora.py
 
-      - name: ⏳ 9. Aguardar Finalização ELF (300s)
+      - name: ⏳ 10. Aguardar Finalização ELF (300s)
         run: sleep 300
 
-      - name: 🤖 10. Rodar Coletor e Upload SharePoint
-        # Mantive seus argumentos originais
+      - name: 🤖 11. Rodar Coletor e Upload SharePoint
         run: python3 00a_Coletor.py "Leitura" "Visitadas" "Produtividade"
 
-      - name: 📸 11. Salvar Screenshots em caso de erro
+      - name: 📸 12. Salvar Screenshots em caso de erro
         if: failure()
         uses: actions/upload-artifact@v4
         with:
