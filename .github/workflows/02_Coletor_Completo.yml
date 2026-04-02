@@ -5,7 +5,7 @@ on:
     # Horários em UTC (convertidos de Brasília)
     # 10:45 BRT = 13:45 UTC
     # 18:45 BRT = 21:45 UTC
-    - cron: '45 13,21 * * 1-5'
+    - cron: '40 13,21 * * 1-5'
   workflow_dispatch:
 
 jobs:

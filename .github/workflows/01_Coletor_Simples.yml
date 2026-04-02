@@ -3,15 +3,15 @@ name: 🕒 01 Coletor Simples (Agendado)
 on:
   schedule:
     # Horários em UTC (convertidos de Brasília)
-    # 08:45 BRT = 11:45 UTC
-    # 09:45 BRT = 12:45 UTC
-    # 11:45 BRT = 14:45 UTC
-    # 13:45 BRT = 16:45 UTC
-    # 14:45 BRT = 17:45 UTC
-    # 15:45 BRT = 18:45 UTC
-    # 16:45 BRT = 19:45 UTC
-    # 17:45 BRT = 20:45 UTC
-    - cron: '45 11,12,14,16,17,18,19,20 * * 1-5'
+    # 08:40 BRT = 11:40 UTC
+    # 09:40 BRT = 12:40 UTC
+    # 11:40 BRT = 14:40 UTC
+    # 13:40 BRT = 16:40 UTC
+    # 14:40 BRT = 17:40 UTC
+    # 15:40 BRT = 18:40 UTC
+    # 16:40 BRT = 19:40 UTC
+    # 17:40 BRT = 20:40 UTC
+    - cron: '40 11,12,14,16,17,18,19,20 * * 1-5'
   workflow_dispatch: 
 
 jobs:
