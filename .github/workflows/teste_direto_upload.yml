@@ -1,0 +1,195 @@
+name: 🧪 TESTE DIRETO - Baixar e Enviar para SharePoint
+
+on:
+  workflow_dispatch:
+
+jobs:
+  teste_direto:
+    runs-on: ubuntu-latest
+    
+    env:
+      CPFL_USER: ${{ secrets.CPFL_USER }}
+      CPFL_PASS: ${{ secrets.CPFL_PASS }}
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
+      SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
+      PYTHONUNBUFFERED: 1
+
+    steps:
+      - name: 📥 Sincronizar Repositório
+        uses: actions/checkout@v4
+
+      - name: 🐍 Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 📦 Instalar Bibliotecas
+        run: |
+          pip install playwright requests python-dotenv
+          playwright install chromium --with-deps
+
+      - name: 🧪 TESTE SIMPLES - Baixar 1 relatório e enviar
+        run: |
+          python3 << 'EOF'
+          import os
+          import time
+          import re
+          from datetime import datetime
+          from playwright.sync_api import sync_playwright
+          import requests
+          from urllib.parse import urlparse
+
+          print("=" * 60)
+          print("TESTE SIMPLES - BAIXAR RELATÓRIO E ENVIAR PARA SHAREPOINT")
+          print("=" * 60)
+
+          # Credenciais
+          usuario = os.getenv("CPFL_USER")
+          senha = os.getenv("CPFL_PASS")
+          
+          # Credenciais SharePoint
+          SP_CLIENT_ID = os.getenv("SP_CLIENT_ID")
+          SP_CLIENT_SECRET = os.getenv("SP_CLIENT_SECRET")
+          SP_TENANT_ID = os.getenv("SP_TENANT_ID")
+          SITE_URL = "https://engelmigproject.sharepoint.com/sites/LEC_ENGELMIG"
+
+          print(f"\n1. Iniciando navegador...")
+          
+          with sync_playwright() as p:
+              browser = p.chromium.launch(headless=True, args=['--no-sandbox'])
+              page = browser.new_page()
+              page.set_default_timeout(60000)
+              
+              # Login
+              print("2. Fazendo login no portal...")
+              page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login")
+              page.wait_for_load_state("networkidle")
+              
+              page.get_by_role("textbox", name="Usuário").fill(usuario)
+              page.get_by_role("textbox", name="Senha").fill(senha)
+              page.get_by_role("button", name="Login").click()
+              page.wait_for_load_state("networkidle")
+              print("   ✅ Login OK")
+              
+              # Navegar para Relatórios Background
+              print("3. Navegando para Relatórios Background...")
+              page.get_by_text("Relatórios Background").click()
+              page.wait_for_load_state("networkidle")
+              time.sleep(5)
+              
+              # Aguardar tabela
+              print("4. Aguardando tabela...")
+              page.wait_for_selector("tbody tr", timeout=60000)
+              time.sleep(5)
+              
+              # Procurar relatório "Efetividade de Leitura Faturamento"
+              print("5. Procurando relatório 'Efetividade de Leitura Faturamento'...")
+              linhas = page.locator("tbody tr").all()
+              relatorio_encontrado = None
+              
+              for linha in linhas:
+                  texto = linha.inner_text()
+                  if "Efetividade de Leitura Faturamento" in texto and "Concluído" in texto:
+                      relatorio_encontrado = linha
+                      print(f"   ✅ Relatório encontrado!")
+                      print(f"   Texto: {texto[:200]}")
+                      break
+              
+              if not relatorio_encontrado:
+                  print("   ❌ Relatório não encontrado!")
+                  browser.close()
+                  exit(1)
+              
+              # Baixar o relatório
+              print("6. Baixando relatório...")
+              with page.expect_download() as download_info:
+                  relatorio_encontrado.locator("button, a, img").first.click()
+              
+              download = download_info.value
+              caminho_zip = f"teste_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip"
+              download.save_as(caminho_zip)
+              print(f"   ✅ Download concluído: {caminho_zip}")
+              
+              browser.close()
+          
+          # --- ENVIAR PARA SHAREPOINT ---
+          print("\n7. Enviando para SharePoint...")
+          
+          # Ler o arquivo baixado
+          with open(caminho_zip, 'rb') as f:
+              conteudo = f.read()
+          
+          # Obter token
+          url_token = f'https://login.microsoftonline.com/{SP_TENANT_ID}/oauth2/v2.0/token'
+          data = {
+              'grant_type': 'client_credentials',
+              'client_id': SP_CLIENT_ID,
+              'client_secret': SP_CLIENT_SECRET,
+              'scope': 'https://graph.microsoft.com/.default'
+          }
+          r = requests.post(url_token, data=data)
+          
+          if r.status_code != 200:
+              print(f"   ❌ Erro token: {r.status_code}")
+              print(f"   {r.text}")
+              exit(1)
+          
+          token = r.json()['access_token']
+          print("   ✅ Token obtido")
+          
+          # Obter Site ID
+          parsed = urlparse(SITE_URL)
+          host = parsed.netloc
+          site_path = parsed.path.strip("/")
+          url_site = f"https://graph.microsoft.com/v1.0/sites/{host}:/{site_path}"
+          headers = {"Authorization": f"Bearer {token}"}
+          r = requests.get(url_site, headers=headers)
+          
+          if r.status_code != 200:
+              print(f"   ❌ Erro Site ID: {r.status_code}")
+              exit(1)
+          
+          site_id = r.json()["id"]
+          print(f"   ✅ Site ID obtido")
+          
+          # Obter Drive Workspace
+          url_drives = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives"
+          r = requests.get(url_drives, headers={"Authorization": f"Bearer {token}"})
+          
+          drive_id = None
+          for drive in r.json().get('value', []):
+              if drive.get('name') == 'Workspace':
+                  drive_id = drive.get('id')
+                  break
+          
+          if not drive_id:
+              print("   ❌ Biblioteca Workspace não encontrada!")
+              exit(1)
+          
+          print(f"   ✅ Drive Workspace encontrado")
+          
+          # Upload
+          nome_final = f"teste_direto_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip"
+          pasta_destino = "BI_LEC/01_ELF_Diario"
+          url_upload = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/root:/{pasta_destino}/{nome_final}:/content"
+          
+          r = requests.put(url_upload, headers={"Authorization": f"Bearer {token}", "Content-Type": "application/octet-stream"}, data=conteudo)
+          
+          if r.status_code in [200, 201]:
+              print(f"   ✅ Upload realizado com sucesso!")
+              print(f"   📁 Pasta: {pasta_destino}")
+              print(f"   📄 Arquivo: {nome_final}")
+              print(f"   🔗 URL: {r.json().get('webUrl')}")
+          else:
+              print(f"   ❌ Erro upload: {r.status_code}")
+              print(f"   {r.text}")
+              exit(1)
+          
+          # Limpeza
+          os.remove(caminho_zip)
+          print("\n" + "=" * 60)
+          print("✅ TESTE CONCLUÍDO COM SUCESSO!")
+          print("=" * 60)
+          
+          EOF
