@@ -113,7 +113,11 @@ else:
 def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
     """Envia arquivo diretamente para o SharePoint (apenas no GitHub)"""
     if not is_github_actions():
+        print("📁 Modo local: não enviando para SharePoint")
         return True
+    
+    print(f"🔐 Iniciando upload para SharePoint: {nome_arquivo}")
+    print(f"📁 Pasta SharePoint: {pasta_sharepoint}")
     
     try:
         import requests
@@ -124,9 +128,21 @@ def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
         SP_TENANT_ID = os.getenv("SP_TENANT_ID")
         SITE_URL = "https://engelmigproject.sharepoint.com/sites/LEC_ENGELMIG"
         
-        print(f"📤 Enviando para SharePoint: {nome_arquivo}")
+        # Verifica se as credenciais existem
+        if not SP_CLIENT_ID:
+            print("❌ SP_CLIENT_ID não encontrado nas variáveis de ambiente!")
+            return False
+        if not SP_CLIENT_SECRET:
+            print("❌ SP_CLIENT_SECRET não encontrado!")
+            return False
+        if not SP_TENANT_ID:
+            print("❌ SP_TENANT_ID não encontrado!")
+            return False
+            
+        print(f"✅ Credenciais encontradas: CLIENT_ID={SP_CLIENT_ID[:10]}...")
         
         # 1. Obter token
+        print("📡 Obtendo token de acesso...")
         url_token = f'https://login.microsoftonline.com/{SP_TENANT_ID}/oauth2/v2.0/token'
         data = {
             'grant_type': 'client_credentials',
@@ -135,35 +151,57 @@ def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
             'scope': 'https://graph.microsoft.com/.default'
         }
         r = requests.post(url_token, data=data)
-        r.raise_for_status()
+        
+        if r.status_code != 200:
+            print(f"❌ Erro ao obter token: {r.status_code}")
+            print(f"Resposta: {r.text[:200]}")
+            return False
+            
         token = r.json()['access_token']
+        print("✅ Token obtido com sucesso")
         
         # 2. Obter Site ID
+        print("📍 Obtendo Site ID...")
         parsed = urlparse(SITE_URL)
         host = parsed.netloc
         site_path = parsed.path.strip("/")
         url_site = f"https://graph.microsoft.com/v1.0/sites/{host}:/{site_path}"
         headers = {"Authorization": f"Bearer {token}"}
         r = requests.get(url_site, headers=headers)
-        r.raise_for_status()
+        
+        if r.status_code != 200:
+            print(f"❌ Erro ao obter Site ID: {r.status_code}")
+            print(f"Resposta: {r.text[:200]}")
+            return False
+            
         site_id = r.json()["id"]
+        print(f"✅ Site ID: {site_id[:50]}...")
         
         # 3. Obter Drive ID da biblioteca Workspace
+        print("🔍 Buscando biblioteca Workspace...")
         url_drives = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives"
         r = requests.get(url_drives, headers={"Authorization": f"Bearer {token}"})
-        r.raise_for_status()
         
+        if r.status_code != 200:
+            print(f"❌ Erro ao listar drives: {r.status_code}")
+            return False
+            
         drive_id = None
-        for drive in r.json().get('value', []):
+        drives = r.json().get('value', [])
+        print(f"📁 Bibliotecas encontradas: {len(drives)}")
+        for drive in drives:
+            print(f"   - {drive.get('name')}")
             if drive.get('name') == 'Workspace':
                 drive_id = drive.get('id')
+                print(f"✅ Biblioteca Workspace encontrada! ID: {drive_id[:30]}...")
                 break
         
         if not drive_id:
-            print("⚠️ Biblioteca Workspace não encontrada")
+            print("❌ Biblioteca 'Workspace' não encontrada!")
             return False
         
         # 4. Upload do arquivo
+        print(f"📤 Enviando arquivo: {pasta_sharepoint}/{nome_arquivo}")
         url_upload = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/root:/{pasta_sharepoint}/{nome_arquivo}:/content"
         headers_upload = {
             "Authorization": f"Bearer {token}",
@@ -172,14 +210,19 @@ def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
         r = requests.put(url_upload, headers=headers_upload, data=conteudo_bytes)
         
         if r.status_code in [200, 201]:
-            print(f"✅ Enviado para SharePoint: {nome_arquivo}")
+            print(f"✅ Upload realizado com sucesso: {nome_arquivo}")
+            web_url = r.json().get('webUrl')
+            print(f"🔗 URL: {web_url}")
             return True
         else:
-            print(f"⚠️ Erro upload: {r.status_code}")
+            print(f"❌ Erro no upload: Status {r.status_code}")
+            print(f"Resposta: {r.text[:200]}")
             return False
             
     except Exception as e:
-        print(f"⚠️ Erro no upload SharePoint: {e}")
+        print(f"❌ Exceção no upload SharePoint: {e}")
+        import traceback
+        traceback.print_exc()
         return False
 
 def tratar_arquivo(caminho_zip, pasta_destino, nome_base, regra, pasta_sharepoint):
@@ -211,9 +254,15 @@ def tratar_arquivo(caminho_zip, pasta_destino, nome_base, regra, pasta_sharepoin
 
             if is_github_actions():
                 # No GitHub: envia para o SharePoint
-                upload_to_sharepoint(conteudo, nome_final, pasta_sharepoint)
+                print(f"📤 [GITHUB] Enviando para SharePoint: {nome_final} -> {pasta_sharepoint}")
+                sucesso = upload_to_sharepoint(conteudo, nome_final, pasta_sharepoint)
+                if sucesso:
+                    print(f"✅ Upload concluído: {nome_final}")
+                else:
+                    print(f"❌ Falha no upload: {nome_final}")
             else:
                 # No Windows: salva na pasta local
+                print(f"💾 [LOCAL] Salvando em: {pasta_destino}")
                 os.makedirs(pasta_destino, exist_ok=True)
                 
                 # Remove versão anterior se existir (para ELF)
@@ -258,18 +307,17 @@ def run(playwright: Playwright, busca=None) -> None:
         headless=USE_HEADLESS,
         args=launch_args,
         no_viewport=True,
-        slow_mo=1000,  # Mais lento para garantir
+        slow_mo=1000,
     )
     page = context.pages[0]
 
-    # Timeout global: 10 minutos (600.000ms) para garantir
+    # Timeout global: 10 minutos (600.000ms)
     page.set_default_timeout(600000)
 
     try:
         print("🌐 Acessando Portal CPFL...")
         page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login", timeout=60000)
 
-        # Aguarda a página carregar
         page.wait_for_load_state("networkidle", timeout=30000)
 
         # Login
@@ -284,19 +332,18 @@ def run(playwright: Playwright, busca=None) -> None:
         page.get_by_text("Relatórios Background").click()
         page.wait_for_load_state("networkidle", timeout=30000)
 
-        # Espera a tabela carregar com timeout maior
+        # Espera a tabela carregar
         print("⏳ Aguardando tabela carregar...")
         page.wait_for_selector("tbody tr", state="visible", timeout=300000)
         print("✅ Tabela carregada!")
         
-        # Aguarda renderização completa (aumentado para 30 segundos)
+        # Aguarda renderização completa
         print("Aguardando 30s para renderização total da tabela...")
         time.sleep(30)
 
         linhas = page.locator("tbody tr").all()
         print(f"📋 Encontradas {len(linhas)} linhas na tabela")
         
-        # Debug: mostra o conteúdo da primeira linha
         if len(linhas) > 0:
             print(f"📝 Exemplo da primeira linha: {linhas[0].inner_text()[:200]}")
 
