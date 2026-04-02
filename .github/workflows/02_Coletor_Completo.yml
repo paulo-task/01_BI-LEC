@@ -2,7 +2,9 @@ name: 📊 02 Coletor Completo (Agendado)
 
 on:
   schedule:
-    # Horários Brasília (UTC +3h): 10:45 e 18:45
+    # Horários em UTC (convertidos de Brasília)
+    # 10:45 BRT = 13:45 UTC
+    # 18:45 BRT = 21:45 UTC
     - cron: '45 13,21 * * 1-5'
   workflow_dispatch:
 
@@ -11,16 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     
     env:
+      TZ: America/Sao_Paulo
       CPFL_USER: ${{ secrets.CPFL_USER }}
       CPFL_PASS: ${{ secrets.CPFL_PASS }}
       SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
       SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
       SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
-      SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
-
-    defaults:
-      run:
-        working-directory: ./01_LEC
+      PYTHONUNBUFFERED: 1
 
     steps:
       - name: 📥 1. Sincronizar Repositório
@@ -33,6 +32,7 @@ jobs:
 
       - name: 📦 3. Instalar Bibliotecas
         run: |
+          pip install --upgrade pip
           pip install playwright requests python-dotenv
           playwright install chromium --with-deps
 
@@ -65,12 +65,4 @@ jobs:
         run: sleep 480
 
       - name: 🤖 10. Rodar Coletor Final (Sem Argumentos)
-        run: python3 00a_Coletor.py
-
-      - name: 📸 11. Coletar Evidências de Erro
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: logs-erro-completo
-          path: ./01_LEC/*.png
-          retention-days: 1
+        run: python3 -u 00a_Coletor.py
