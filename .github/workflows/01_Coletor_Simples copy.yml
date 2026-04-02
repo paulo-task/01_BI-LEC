@@ -1,4 +1,4 @@
-name: 🕒 01 Coletor Simples (Agendado)
+name: 🕒 01 Coletor Simples backup (Agendado)
 
 on:
   schedule:
