@@ -1,34 +1,48 @@
-name: 🛠️ Teste de Conexao Graph API
+name: Teste SharePoint Simples
 
 on:
-  workflow_dispatch: # Permite que você aperte o botão "Run Workflow" manualmente
+  workflow_dispatch:
 
 jobs:
-  validar_acesso:
+  teste:
     runs-on: ubuntu-latest
     
-    # Define que os comandos devem rodar dentro da sua pasta de scripts
-    defaults:
-      run:
-        working-directory: ./01_LEC
+    env:
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
+      SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
 
     steps:
-      - name: 1. Baixar Codigo do GitHub
-        uses: actions/checkout@v4
+      - name: Instalar biblioteca
+        run: |
+          pip install office365-rest-python-client
 
-      - name: 2. Configurar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+      - name: Testar conexão
+        run: |
+          python3 << 'EOF'
+          import os
+          from office365.sharepoint.client_context import ClientContext
+          from office365.runtime.auth.client_credential import ClientCredential
 
-      - name: 3. Instalar Biblioteca Requests
-        run: pip install requests
+          print("1. Lendo credenciais...")
+          client_id = os.getenv("SP_CLIENT_ID")
+          client_secret = os.getenv("SP_CLIENT_SECRET")
+          site_url = os.getenv("SP_SITE_URL")
 
-      - name: 4. Executar Script de Teste
-        # Aqui ele vai procurar o debug_sharepoint.py dentro de 01_LEC
-        run: python3 -u debug_sharepoint.py
-        env:
-          SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
-          SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
-          SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
-          SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
+          print(f"Client ID: {client_id[:10] if client_id else 'NAO ENCONTRADO'}")
+          print(f"Site URL: {site_url}")
+
+          if not client_id or not client_secret or not site_url:
+              print("ERRO: Credenciais faltando")
+              exit(1)
+
+          print("2. Conectando...")
+          ctx = ClientContext(site_url).with_credentials(ClientCredential(client_id, client_secret))
+
+          print("3. Testando acesso...")
+          web = ctx.web
+          ctx.load(web)
+          ctx.execute_query()
+
+          print(f"4. SUCESSO! Conectado ao site: {web.title}")
+          EOF
