@@ -16,46 +16,40 @@ jobs:
       SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
       SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
       SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
-      SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
       PYTHONUNBUFFERED: 1
 
     steps:
       - name: 📥 1. Sincronizar Repositório
         uses: actions/checkout@v4
 
-      - name: 🕐 2. Configurar Timezone
-        run: |
-          sudo timedatectl set-timezone America/Sao_Paulo
-          echo "Horário atual (Brasília): $(date)"
-
-      - name: 🐍 3. Preparar Ambiente Python
+      - name: 🐍 2. Preparar Ambiente Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: 📦 4. Instalar Bibliotecas
+      - name: 📦 3. Instalar Bibliotecas
         run: |
           pip install --upgrade pip
-          pip install playwright requests python-dotenv office365-rest-python-client
+          pip install playwright requests python-dotenv
           playwright install chromium --with-deps
 
-      - name: 🚀 5. Executar PDL Analitico
+      - name: 🚀 4. Executar PDL Analitico
         run: python3 02_PDL_Analitico.py
 
-      - name: ⏳ 6. Aguardar (180s)
+      - name: ⏳ 5. Aguardar (180s)
         run: sleep 180
 
-      - name: 🚀 7. Executar Nao Visitadas
+      - name: 🚀 6. Executar Nao Visitadas
         run: python3 04_Nao_Visitadas.py
 
-      - name: ⏳ 8. Aguardar (180s)
+      - name: ⏳ 7. Aguardar (180s)
         run: sleep 180
 
-      - name: 🚀 9. Executar ELF Hora
+      - name: 🚀 8. Executar ELF Hora
         run: python3 01_ELF_Hora.py
 
-      - name: ⏳ 10. Aguardar (300s)
+      - name: ⏳ 9. Aguardar (300s)
         run: sleep 300
 
-      - name: 🤖 11. Coletar e Enviar para SharePoint
+      - name: 🤖 10. Coletar e Enviar para SharePoint
         run: python3 -u 00a_Coletor.py "Leitura" "Visitadas" "Produtividade"

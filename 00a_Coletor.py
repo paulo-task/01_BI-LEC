@@ -4,14 +4,16 @@ import re
 import sys
 import zipfile
 import platform
-import io
 from datetime import datetime
 from playwright.sync_api import Playwright, sync_playwright
 from dotenv import load_dotenv
 
 # Carrega as variáveis do arquivo .pass
-if os.path.exists(".pass"):
+try:
     load_dotenv(dotenv_path=".pass")
+    print("✅ Arquivo .pass carregado")
+except:
+    print("ℹ️ Arquivo .pass não encontrado, usando variáveis de ambiente")
 
 # Recupera os dados centralizados
 usuario = os.getenv("CPFL_USER")
@@ -22,14 +24,14 @@ def is_github_actions():
     return os.getenv("GITHUB_ACTIONS") == "true"
 
 # Define se deve usar modo headless
-USE_HEADLESS = is_github_actions() or platform.system() != "Windows"
+if is_github_actions():
+    USE_HEADLESS = True
+    print("🏗️ Modo headless: GitHub Actions")
+else:
+    USE_HEADLESS = False
+    print("🪟 Modo visível: Windows Local")
 
-# Configuração do SharePoint (apenas para GitHub)
-SP_CLIENT_ID = os.getenv("SP_CLIENT_ID")
-SP_CLIENT_SECRET = os.getenv("SP_CLIENT_SECRET")
-SP_SITE_URL = os.getenv("SP_SITE_URL")
-
-# --- MAPEAMENTO DOS CAMINHOS ---
+# Configuração dos caminhos conforme o ambiente
 if is_github_actions():
     # No GitHub: pastas temporárias (só para processamento)
     BASE_DIR = os.getcwd()
@@ -38,37 +40,37 @@ if is_github_actions():
             os.path.join(BASE_DIR, "01_ELF_Diario"),
             "EFL",
             "data_dia_unico",
-            "01_ELF_Diario"  # nome da pasta no SharePoint
+            "BI_LEC/01_ELF_Diario"
         ],
         "Produtividade Diária Leiturista - Analítico": [
             os.path.join(BASE_DIR, "02_PDL_Analitico"),
             "Produtividade Diária Leiturista - Analítico",
             "data_dia",
-            "02_PDL_Analitico"
+            "BI_LEC/02_PDL_Analitico"
         ],
         "Inst. Não Liberadas Faturamento": [
             os.path.join(BASE_DIR, "03_N_Lib_Fat_Diario"),
             "Inst. Não Liberadas Faturamento",
             "substituir_puro",
-            "03_N_Lib_Fat_Diario"
+            "BI_LEC/03_N_Lib_Fat_Diario"
         ],
         "Lista Impedimentos Aplicados": [
             os.path.join(BASE_DIR, "06_Impedimentos"),
             "Lista Impedimentos Aplicados",
             "data_mes",
-            "06_Impedimentos"
+            "BI_LEC/06_Impedimentos"
         ],
         "Relatório de Efetividade de Entrega de Contas (Prev X Entr)": [
             os.path.join(BASE_DIR, "07_Entregas"),
             "Relatório de Efetividade de Entrega de Contas (Prev X Entr)",
             "data_mes",
-            "07_Entregas"
+            "BI_LEC/07_Entregas"
         ],
     }
     PASTA_04 = os.path.join(BASE_DIR, "04_N_Visitado_Diario")
     PASTA_05 = os.path.join(BASE_DIR, "05_N_Visitado_Historico")
-    PASTA_04_SP = "04_N_Visitado_Diario"
-    PASTA_05_SP = "05_N_Visitado_Historico"
+    PASTA_04_SP = "BI_LEC/04_N_Visitado_Diario"
+    PASTA_05_SP = "BI_LEC/05_N_Visitado_Historico"
 else:
     # No Windows: caminhos originais do seu PC
     MAPEAMENTO = {
@@ -76,37 +78,37 @@ else:
             r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\01_ELF_Diario",
             "EFL",
             "data_dia_unico",
-            "01_ELF_Diario"
+            "BI_LEC/01_ELF_Diario"
         ],
         "Produtividade Diária Leiturista - Analítico": [
             r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\02_PDL_Analitico",
             "Produtividade Diária Leiturista - Analítico",
             "data_dia",
-            "02_PDL_Analitico"
+            "BI_LEC/02_PDL_Analitico"
         ],
         "Inst. Não Liberadas Faturamento": [
             r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\03_N_Lib_Fat_Diario",
             "Inst. Não Liberadas Faturamento",
             "substituir_puro",
-            "03_N_Lib_Fat_Diario"
+            "BI_LEC/03_N_Lib_Fat_Diario"
         ],
         "Lista Impedimentos Aplicados": [
             r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\06_Impedimentos",
             "Lista Impedimentos Aplicados",
             "data_mes",
-            "06_Impedimentos"
+            "BI_LEC/06_Impedimentos"
         ],
         "Relatório de Efetividade de Entrega de Contas (Prev X Entr)": [
             r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\07_Entregas",
             "Relatório de Efetividade de Entrega de Contas (Prev X Entr)",
             "data_mes",
-            "07_Entregas"
+            "BI_LEC/07_Entregas"
         ],
     }
     PASTA_04 = r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\04_N_Visitado_Diario"
     PASTA_05 = r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\05_N_Visitado_Historico"
-    PASTA_04_SP = "04_N_Visitado_Diario"
-    PASTA_05_SP = "05_N_Visitado_Historico"
+    PASTA_04_SP = "BI_LEC/04_N_Visitado_Diario"
+    PASTA_05_SP = "BI_LEC/05_N_Visitado_Historico"
 
 def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
     """Envia arquivo diretamente para o SharePoint (apenas no GitHub)"""
@@ -114,30 +116,70 @@ def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
         return True
     
     try:
-        from office365.sharepoint.client_context import ClientContext
-        from office365.runtime.auth.client_credential import ClientCredential
+        import requests
+        from urllib.parse import urlparse
         
-        print(f"📤 Enviando para SharePoint: {nome_arquivo} -> {pasta_sharepoint}")
+        SP_CLIENT_ID = os.getenv("SP_CLIENT_ID")
+        SP_CLIENT_SECRET = os.getenv("SP_CLIENT_SECRET")
+        SP_TENANT_ID = os.getenv("SP_TENANT_ID")
+        SITE_URL = "https://engelmigproject.sharepoint.com/sites/LEC_ENGELMIG"
         
-        credentials = ClientCredential(SP_CLIENT_ID, SP_CLIENT_SECRET)
-        ctx = ClientContext(SP_SITE_URL).with_credentials(credentials)
+        print(f"📤 Enviando para SharePoint: {nome_arquivo}")
         
-        caminho_sharepoint = f"Documentos Compartilhados/BI_LEC/{pasta_sharepoint}"
+        # 1. Obter token
+        url_token = f'https://login.microsoftonline.com/{SP_TENANT_ID}/oauth2/v2.0/token'
+        data = {
+            'grant_type': 'client_credentials',
+            'client_id': SP_CLIENT_ID,
+            'client_secret': SP_CLIENT_SECRET,
+            'scope': 'https://graph.microsoft.com/.default'
+        }
+        r = requests.post(url_token, data=data)
+        r.raise_for_status()
+        token = r.json()['access_token']
         
-        # Garante que a pasta existe
-        folder = ctx.web.get_folder_by_server_relative_url(caminho_sharepoint)
-        ctx.load(folder)
-        ctx.execute_query()
+        # 2. Obter Site ID
+        parsed = urlparse(SITE_URL)
+        host = parsed.netloc
+        site_path = parsed.path.strip("/")
+        url_site = f"https://graph.microsoft.com/v1.0/sites/{host}:/{site_path}"
+        headers = {"Authorization": f"Bearer {token}"}
+        r = requests.get(url_site, headers=headers)
+        r.raise_for_status()
+        site_id = r.json()["id"]
         
-        # Upload do arquivo
-        arquivo_stream = io.BytesIO(conteudo_bytes)
-        target_file = folder.upload_file(nome_arquivo, arquivo_stream.read())
-        ctx.execute_query()
+        # 3. Obter Drive ID da biblioteca Workspace
+        url_drives = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives"
+        r = requests.get(url_drives, headers={"Authorization": f"Bearer {token}"})
+        r.raise_for_status()
         
-        print(f"✅ Upload concluído: {nome_arquivo}")
-        return True
+        drive_id = None
+        for drive in r.json().get('value', []):
+            if drive.get('name') == 'Workspace':
+                drive_id = drive.get('id')
+                break
+        
+        if not drive_id:
+            print("⚠️ Biblioteca Workspace não encontrada")
+            return False
+        
+        # 4. Upload do arquivo
+        url_upload = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/root:/{pasta_sharepoint}/{nome_arquivo}:/content"
+        headers_upload = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/octet-stream"
+        }
+        r = requests.put(url_upload, headers=headers_upload, data=conteudo_bytes)
+        
+        if r.status_code in [200, 201]:
+            print(f"✅ Enviado para SharePoint: {nome_arquivo}")
+            return True
+        else:
+            print(f"⚠️ Erro upload: {r.status_code}")
+            return False
+            
     except Exception as e:
-        print(f"❌ Erro no upload para SharePoint: {e}")
+        print(f"⚠️ Erro no upload SharePoint: {e}")
         return False
 
 def tratar_arquivo(caminho_zip, pasta_destino, nome_base, regra, pasta_sharepoint):
@@ -174,7 +216,7 @@ def tratar_arquivo(caminho_zip, pasta_destino, nome_base, regra, pasta_sharepoin
                 # No Windows: salva na pasta local
                 os.makedirs(pasta_destino, exist_ok=True)
                 
-                # Remove versão anterior se existir
+                # Remove versão anterior se existir (para ELF)
                 if regra == "data_dia_unico":
                     for f in os.listdir(pasta_destino):
                         if f.startswith(prefixo_dia) and f.endswith(ext):
@@ -205,38 +247,58 @@ def run(playwright: Playwright, busca=None) -> None:
     print(f"📁 Diretório do usuário: {user_dir}")
     print(f"🏗️ Ambiente: {'GitHub Actions' if is_github_actions() else 'Windows Local'}")
 
-    # Argumentos para Linux
+    # Argumentos para Linux (GitHub)
     launch_args = ['--no-sandbox', '--disable-setuid-sandbox']
     if is_github_actions():
         launch_args.append('--disable-dev-shm-usage')
 
+    # Inicia o navegador
     context = playwright.chromium.launch_persistent_context(
         user_dir,
         headless=USE_HEADLESS,
         args=launch_args,
         no_viewport=True,
-        slow_mo=500,
+        slow_mo=1000,  # Mais lento para garantir
     )
     page = context.pages[0]
-    page.set_default_timeout(300000)
+
+    # Timeout global: 10 minutos (600.000ms) para garantir
+    page.set_default_timeout(600000)
 
     try:
         print("🌐 Acessando Portal CPFL...")
-        page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login")
+        page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login", timeout=60000)
 
-        if page.get_by_role("textbox", name="Usuário").is_visible(timeout=15000):
+        # Aguarda a página carregar
+        page.wait_for_load_state("networkidle", timeout=30000)
+
+        # Login
+        if page.get_by_role("textbox", name="Usuário").is_visible(timeout=30000):
             page.get_by_role("textbox", name="Usuário").fill(usuario)
             page.get_by_role("textbox", name="Senha").fill(senha)
             page.get_by_role("button", name="Login").click()
+            print("✅ Login realizado")
+            page.wait_for_load_state("networkidle", timeout=30000)
 
         print("📊 Navegando para Relatórios Background...")
         page.get_by_text("Relatórios Background").click()
-        page.wait_for_selector("tbody tr", state="visible", timeout=180000)
-        print("Aguardando renderização da tabela...")
-        time.sleep(5)
+        page.wait_for_load_state("networkidle", timeout=30000)
+
+        # Espera a tabela carregar com timeout maior
+        print("⏳ Aguardando tabela carregar...")
+        page.wait_for_selector("tbody tr", state="visible", timeout=300000)
+        print("✅ Tabela carregada!")
+        
+        # Aguarda renderização completa (aumentado para 30 segundos)
+        print("Aguardando 30s para renderização total da tabela...")
+        time.sleep(30)
 
         linhas = page.locator("tbody tr").all()
-        print(f"📋 Encontradas {len(linhas)} linhas")
+        print(f"📋 Encontradas {len(linhas)} linhas na tabela")
+        
+        # Debug: mostra o conteúdo da primeira linha
+        if len(linhas) > 0:
+            print(f"📝 Exemplo da primeira linha: {linhas[0].inner_text()[:200]}")
 
         # --- RELATÓRIOS GERAIS ---
         for nome_rel, conf in MAPEAMENTO.items():
@@ -257,17 +319,19 @@ def run(playwright: Playwright, busca=None) -> None:
                             linha_alvo = linha
 
             if linha_alvo:
-                print(f"📥 Baixando: {nome_rel}")
+                print(f"📥 Baixando mais recente: {nome_rel} (Data: {maior_dt})")
                 os.makedirs(conf[0], exist_ok=True)
-                with page.expect_download(timeout=300000) as dw_info:
+                with page.expect_download(timeout=600000) as dw_info:
                     linha_alvo.locator("button, a, img").filter(
                         has_not_text=re.compile(r"Excluir|Remover", re.I)
                     ).first.click()
                 tmp_path = os.path.join(conf[0], f"temp_{conf[1][:5]}.zip")
                 dw_info.value.save_as(tmp_path)
                 tratar_arquivo(tmp_path, conf[0], conf[1], conf[2], conf[3])
+            else:
+                print(f"⚠️ Nenhum relatório 'Concluído' encontrado para: {nome_rel}")
 
-        # --- NÃO VISITADAS ---
+        # --- NÃO VISITADAS (04 e 05) ---
         if not busca or any("visitada" in b.lower() for b in busca):
             cand_04 = []
             cand_05 = []
@@ -283,41 +347,51 @@ def run(playwright: Playwright, busca=None) -> None:
                         else:
                             cand_05.append({"dt": dt_inclusao, "linha": linha})
 
+            # Download Diário 04
             if cand_04:
                 cand_04.sort(key=lambda x: x["dt"], reverse=True)
                 alvo = cand_04[0]
                 print(f"📥 Baixando Diário (04): {alvo['dt']}")
                 os.makedirs(PASTA_04, exist_ok=True)
-                with page.expect_download(timeout=300000) as dw:
+                with page.expect_download(timeout=600000) as dw:
                     alvo["linha"].locator("button, a, img").filter(
                         has_not_text=re.compile(r"Excluir", re.I)
                     ).first.click()
                 path_zip = os.path.join(PASTA_04, "temp_04.zip")
                 dw.value.save_as(path_zip)
                 tratar_arquivo(path_zip, PASTA_04, "Instalações Não Visitadas", "data_dia", PASTA_04_SP)
+            else:
+                print("⚠️ Nenhum relatório 'Instalações Não Visitadas' (Diário) encontrado")
 
+            # Download Histórico 05
             if cand_05:
                 cand_05.sort(key=lambda x: x["dt"], reverse=True)
                 alvo = cand_05[0]
                 print(f"📥 Baixando Histórico (05): {alvo['dt']}")
                 os.makedirs(PASTA_05, exist_ok=True)
-                with page.expect_download(timeout=300000) as dw:
+                with page.expect_download(timeout=600000) as dw:
                     alvo["linha"].locator("button, a, img").filter(
                         has_not_text=re.compile(r"Excluir", re.I)
                     ).first.click()
                 path_zip = os.path.join(PASTA_05, "temp_05.zip")
                 dw.value.save_as(path_zip)
                 tratar_arquivo(path_zip, PASTA_05, "Instalações Não Visitadas", "data_dia", PASTA_05_SP)
+            else:
+                print("⚠️ Nenhum relatório 'Instalações Não Visitadas' (Histórico) encontrado")
 
         print("✅ Coletor finalizado com sucesso!")
 
     except Exception as e:
         print(f"❌ Erro Crítico: {e}")
+        import traceback
+        traceback.print_exc()
+        
         try:
-            page.screenshot(path="erro_coletor.png")
-            print("📸 Screenshot salvo")
+            screenshot_path = f"erro_coletor_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+            page.screenshot(path=screenshot_path, full_page=True)
+            print(f"📸 Screenshot salvo: {screenshot_path}")
         except:
-            pass
+            print("⚠️ Não foi possível salvar screenshot")
         raise
     finally:
         time.sleep(5)
@@ -326,5 +400,6 @@ def run(playwright: Playwright, busca=None) -> None:
 if __name__ == "__main__":
     args = sys.argv[1:] if len(sys.argv) > 1 else None
     print(f"🚀 Iniciando Coletor - Args: {args}")
+    print(f"⏰ Horário de início: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     with sync_playwright() as playwright:
         run(playwright, args)
