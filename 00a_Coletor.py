@@ -1,8 +1,8 @@
 import os
 import time
-import io
 import re
 import sys
+import io
 import zipfile
 import platform
 from datetime import datetime
@@ -173,8 +173,6 @@ def run(playwright: Playwright, busca=None) -> None:
         print(f"📋 {len(linhas)} linhas encontradas")
         
         # Baixar e enviar cada relatório
-        import io
-        
         for nome_rel, conf in MAPEAMENTO.items():
             if busca and not any(b.lower() in nome_rel.lower() for b in busca):
                 continue
@@ -200,7 +198,16 @@ def run(playwright: Playwright, busca=None) -> None:
                     linha_alvo.locator("button, a, img").first.click()
                 
                 download = download_info.value
-                conteudo_zip = download.read()
+                # Salva temporariamente
+                temp_path = f"temp_{datetime.now().strftime('%Y%m%d%H%M%S')}.zip"
+                download.save_as(temp_path)
+                
+                # Lê o arquivo salvo
+                with open(temp_path, 'rb') as f:
+                    conteudo_zip = f.read()
+                
+                # Remove o arquivo temporário
+                os.remove(temp_path)
                 
                 print(f"   📤 Enviando para SharePoint...")
                 processar_zip(conteudo_zip, conf["nome_base"], conf["regra"], conf["pasta_sp"])
