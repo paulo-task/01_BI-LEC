@@ -1,4 +1,4 @@
-name: 🕒 Coletor SharePoint
+name: 🕒 01 Coletor Simples (Agendado)
 
 on:
   schedule:
@@ -6,10 +6,11 @@ on:
   workflow_dispatch: 
 
 jobs:
-  executar:
+  executar_rotina:
     runs-on: ubuntu-latest
     
     env:
+      TZ: America/Sao_Paulo
       CPFL_USER: ${{ secrets.CPFL_USER }}
       CPFL_PASS: ${{ secrets.CPFL_PASS }}
       SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
@@ -18,17 +19,37 @@ jobs:
       PYTHONUNBUFFERED: 1
 
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Python
+      - name: 📥 1. Sincronizar Repositório
+        uses: actions/checkout@v4
+
+      - name: 🐍 2. Preparar Ambiente Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      
-      - name: Instalar
+
+      - name: 📦 3. Instalar Bibliotecas
         run: |
+          pip install --upgrade pip
           pip install playwright requests python-dotenv
           playwright install chromium --with-deps
-      
-      - name: Executar Coletor
+
+      - name: 🚀 4. Executar PDL Analitico
+        run: python3 02_PDL_Analitico.py
+
+      - name: ⏳ 5. Aguardar (180s)
+        run: sleep 180
+
+      - name: 🚀 6. Executar Nao Visitadas
+        run: python3 04_Nao_Visitadas.py
+
+      - name: ⏳ 7. Aguardar (180s)
+        run: sleep 180
+
+      - name: 🚀 8. Executar ELF Hora
+        run: python3 01_ELF_Hora.py
+
+      - name: ⏳ 9. Aguardar (300s)
+        run: sleep 300
+
+      - name: 🤖 10. Coletar e Enviar para SharePoint
         run: python3 -u 00a_Coletor.py "Leitura" "Visitadas" "Produtividade"

@@ -1,0 +1,34 @@
+name: 🕒 Coletor SharePoint
+
+on:
+  schedule:
+    - cron: '45 11,12,14,16,17,18,19,20 * * 1-5'
+  workflow_dispatch: 
+
+jobs:
+  executar:
+    runs-on: ubuntu-latest
+    
+    env:
+      CPFL_USER: ${{ secrets.CPFL_USER }}
+      CPFL_PASS: ${{ secrets.CPFL_PASS }}
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
+      SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
+      PYTHONUNBUFFERED: 1
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      
+      - name: Instalar
+        run: |
+          pip install playwright requests python-dotenv
+          playwright install chromium --with-deps
+      
+      - name: Executar Coletor
+        run: python3 -u 00a_Coletor.py "Leitura" "Visitadas" "Produtividade"
