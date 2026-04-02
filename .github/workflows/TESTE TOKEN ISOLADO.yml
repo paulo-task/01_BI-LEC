@@ -1,0 +1,90 @@
+name: 🔑 TESTE TOKEN ISOLADO
+
+on:
+  workflow_dispatch:
+
+jobs:
+  teste_token:
+    runs-on: ubuntu-latest
+    
+    env:
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
+      SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
+
+    steps:
+      - name: Testar Token
+        run: |
+          pip install requests
+          python3 << 'EOF'
+          import os
+          import requests
+
+          print("=" * 60)
+          print("TESTE DE TOKEN - VALIDAÇÃO DAS CREDENCIAIS")
+          print("=" * 60)
+
+          # Pega as credenciais
+          client_id = os.getenv("SP_CLIENT_ID")
+          client_secret = os.getenv("SP_CLIENT_SECRET")
+          tenant_id = os.getenv("SP_TENANT_ID")
+
+          print("\n1. VALORES BRUTOS:")
+          print(f"   CLIENT_ID: '{client_id}'")
+          print(f"   TENANT_ID: '{tenant_id}'")
+          print(f"   CLIENT_SECRET: {'OK' if client_secret else 'VAZIO'}")
+
+          # Limpa espaços e quebras de linha
+          if client_id:
+              client_id = client_id.strip()
+          if tenant_id:
+              tenant_id = tenant_id.strip()
+          if client_secret:
+              client_secret = client_secret.strip()
+
+          print("\n2. VALORES LIMPOS:")
+          print(f"   CLIENT_ID: '{client_id}'")
+          print(f"   TENANT_ID: '{tenant_id}'")
+
+          if not client_id or not tenant_id or not client_secret:
+              print("\n❌ ALGUM VALOR ESTÁ VAZIO!")
+              exit(1)
+
+          # Testa URL do token
+          url = f"https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token"
+          print(f"\n3. URL GERADA: {url}")
+
+          data = {
+              'grant_type': 'client_credentials',
+              'client_id': client_id,
+              'client_secret': client_secret,
+              'scope': 'https://graph.microsoft.com/.default'
+          }
+
+          print("\n4. ENVIANDO REQUISIÇÃO...")
+          try:
+              r = requests.post(url, data=data)
+              print(f"   Status: {r.status_code}")
+              
+              if r.status_code == 200:
+                  print("   ✅ TOKEN OBTIDO COM SUCESSO!")
+                  token = r.json().get('access_token')
+                  print(f"   Token: {token[:50]}...")
+              else:
+                  print(f"   ❌ ERRO: {r.status_code}")
+                  print(f"   Resposta: {r.text[:500]}")
+                  
+                  # Tenta sugerir correção
+                  if "invalid_request" in r.text:
+                      print("\n   💡 SUGESTÃO: O TENANT_ID pode estar incorreto")
+                      print("   Verifique se o valor é um GUID (ex: 12345678-1234-1234-1234-123456789012)")
+                  exit(1)
+                  
+          except Exception as e:
+              print(f"   ❌ EXCEÇÃO: {e}")
+              exit(1)
+
+          print("\n" + "=" * 60)
+          print("✅ TESTE CONCLUÍDO!")
+          print("=" * 60)
+          EOF
