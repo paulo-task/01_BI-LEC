@@ -1,4 +1,4 @@
-name: Teste SharePoint Simples
+name: 😉 Teste Graph API - SharePoint
 
 on:
   workflow_dispatch:
@@ -10,39 +10,80 @@ jobs:
     env:
       SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
       SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
-      SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
+      SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
 
     steps:
-      - name: Instalar biblioteca
+      - name: Testar upload com Graph API
         run: |
-          pip install office365-rest-python-client
-
-      - name: Testar conexão
-        run: |
+          pip install requests
+          
           python3 << 'EOF'
           import os
-          from office365.sharepoint.client_context import ClientContext
-          from office365.runtime.auth.client_credential import ClientCredential
+          import requests
+          from urllib.parse import urlparse
 
-          print("1. Lendo credenciais...")
-          client_id = os.getenv("SP_CLIENT_ID")
-          client_secret = os.getenv("SP_CLIENT_SECRET")
-          site_url = os.getenv("SP_SITE_URL")
+          print("=== TESTE GRAPH API SHAREPOINT ===\n")
 
-          print(f"Client ID: {client_id[:10] if client_id else 'NAO ENCONTRADO'}")
-          print(f"Site URL: {site_url}")
+          # Configurações
+          CLIENT_ID = os.environ.get("SP_CLIENT_ID")
+          CLIENT_SECRET = os.environ.get("SP_CLIENT_SECRET")
+          TENANT_ID = os.environ.get("SP_TENANT_ID")
+          
+          # URL do seu site SharePoint
+          SITE_URL = "https://engelmigproject.sharepoint.com/sites/LEC_ENGELMIG"
+          PASTA_TESTE = "Workspace/BI_LEC/01_ELF_Diario"
+          NOME_ARQUIVO = "teste_graph_api.txt"
+          CONTEUDO = f"Teste de conexão via Graph API - {__import__('datetime').datetime.now()}"
 
-          if not client_id or not client_secret or not site_url:
-              print("ERRO: Credenciais faltando")
-              exit(1)
+          print(f"1. Site: {SITE_URL}")
+          print(f"2. Pasta: {PASTA_TESTE}")
+          print(f"3. Arquivo: {NOME_ARQUIVO}\n")
 
-          print("2. Conectando...")
-          ctx = ClientContext(site_url).with_credentials(ClientCredential(client_id, client_secret))
+          # Obter token
+          print("4. Obtendo token de acesso...")
+          url_token = f"https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token"
+          data_token = {
+              "grant_type": "client_credentials",
+              "client_id": CLIENT_ID,
+              "client_secret": CLIENT_SECRET,
+              "scope": "https://graph.microsoft.com/.default",
+          }
+          
+          r = requests.post(url_token, data=data_token)
+          r.raise_for_status()
+          token = r.json().get("access_token")
+          print("   ✅ Token obtido com sucesso!\n")
 
-          print("3. Testando acesso...")
-          web = ctx.web
-          ctx.load(web)
-          ctx.execute_query()
+          # Obter Site ID
+          print("5. Obtendo Site ID...")
+          parsed = urlparse(SITE_URL)
+          host = parsed.netloc
+          site_path = parsed.path.strip("/")
+          
+          url_site = f"https://graph.microsoft.com/v1.0/sites/{host}:/{site_path}"
+          headers = {"Authorization": f"Bearer {token}"}
+          
+          r = requests.get(url_site, headers=headers)
+          r.raise_for_status()
+          site_id = r.json()["id"]
+          print(f"   ✅ Site ID: {site_id}\n")
 
-          print(f"4. SUCESSO! Conectado ao site: {web.title}")
+          # Upload do arquivo
+          print("6. Fazendo upload do arquivo...")
+          url_upload = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drive/root:/{PASTA_TESTE}/{NOME_ARQUIVO}:/content"
+          headers_upload = {
+              "Authorization": f"Bearer {token}",
+              "Content-Type": "text/plain",
+          }
+          
+          r = requests.put(url_upload, headers=headers_upload, data=CONTEUDO.encode('utf-8'))
+          r.raise_for_status()
+          
+          web_url = r.json().get("webUrl")
+          print(f"   ✅ SUCESSO! Arquivo enviado!")
+          print(f"   📁 URL: {web_url}\n")
+
+          print("=== TESTE CONCLUÍDO COM SUCESSO! ===")
+          print("👉 Verifique no SharePoint se o arquivo 'teste_graph_api.txt' apareceu.")
+          
           EOF
