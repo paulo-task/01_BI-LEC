@@ -59,9 +59,9 @@ def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
         import requests
         from urllib.parse import urlparse
         
-        SP_CLIENT_ID = os.getenv("SP_CLIENT_ID")
-        SP_CLIENT_SECRET = os.getenv("SP_CLIENT_SECRET")
-        SP_TENANT_ID = os.getenv("SP_TENANT_ID")
+        SP_CLIENT_ID = os.getenv("SP_CLIENT_ID").strip()
+        SP_CLIENT_SECRET = os.getenv("SP_CLIENT_SECRET").strip()
+        SP_TENANT_ID = os.getenv("SP_TENANT_ID").strip()
         SITE_URL = "https://engelmigproject.sharepoint.com/sites/LEC_ENGELMIG"
         
         # Obter token
