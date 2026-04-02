@@ -2,15 +2,6 @@ name: 🕒 01 Coletor Simples (Agendado)
 
 on:
   schedule:
-    # HORÁRIO DE BRASÍLIA (convertido para UTC)
-    # 08:45 BRT = 11:45 UTC
-    # 09:45 BRT = 12:45 UTC
-    # 11:45 BRT = 14:45 UTC
-    # 13:45 BRT = 16:45 UTC
-    # 14:45 BRT = 17:45 UTC
-    # 15:45 BRT = 18:45 UTC
-    # 16:45 BRT = 19:45 UTC
-    # 17:45 BRT = 20:45 UTC
     - cron: '45 11,12,14,16,17,18,19,20 * * 1-5'
   workflow_dispatch: 
 
@@ -26,7 +17,7 @@ jobs:
       SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
       SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
       SP_SITE_URL: ${{ secrets.SP_SITE_URL }}
-      PYTHONUNBUFFERED: 1  # Força output imediato
+      PYTHONUNBUFFERED: 1
 
     steps:
       - name: 📥 1. Sincronizar Repositório
@@ -45,59 +36,26 @@ jobs:
       - name: 📦 4. Instalar Bibliotecas
         run: |
           pip install --upgrade pip
-          pip install playwright requests python-dotenv
+          pip install playwright requests python-dotenv office365-rest-python-client
           playwright install chromium --with-deps
-          playwright --version
 
-      - name: 🔍 5. Verificar Credenciais
-        run: |
-          echo "Verificando Secrets:"
-          if [ -n "$CPFL_USER" ]; then echo "✅ CPFL_USER configurado"; else echo "❌ CPFL_USER NÃO configurado"; fi
-          if [ -n "$CPFL_PASS" ]; then echo "✅ CPFL_PASS configurado"; else echo "❌ CPFL_PASS NÃO configurado"; fi
-
-      - name: 🚀 6. Executar PDL Analitico
+      - name: 🚀 5. Executar PDL Analitico
         run: python3 02_PDL_Analitico.py
 
-      - name: ⏳ 7. Aguardar (180s)
+      - name: ⏳ 6. Aguardar (180s)
         run: sleep 180
 
-      - name: 🚀 8. Executar Nao Visitadas
+      - name: 🚀 7. Executar Nao Visitadas
         run: python3 04_Nao_Visitadas.py
 
-      - name: ⏳ 9. Aguardar (180s)
+      - name: ⏳ 8. Aguardar (180s)
         run: sleep 180
 
-      - name: 🚀 10. Executar ELF Hora
+      - name: 🚀 9. Executar ELF Hora
         run: python3 01_ELF_Hora.py
 
-      - name: ⏳ 11. Aguardar (300s)
+      - name: ⏳ 10. Aguardar (300s)
         run: sleep 300
 
-      - name: 🤖 12. Rodar Coletor
-        run: |
-          echo "=== INICIANDO COLETOR ==="
-          python3 -u 00a_Coletor.py "Leitura" "Visitadas" "Produtividade"
-          echo "=== COLETOR FINALIZADO ==="
-
-      - name: 📁 13. Verificar Downloads
-        run: |
-          echo "=== ARQUIVOS BAIXADOS ==="
-          for pasta in 01_ELF_Diario 02_PDL_Analitico 03_N_Lib_Fat_Diario 04_N_Visitado_Diario 05_N_Visitado_Historico; do
-            if [ -d "$pasta" ]; then
-              count=$(find "$pasta" -type f | wc -l)
-              echo "📁 $pasta: $count arquivos"
-              find "$pasta" -type f -name "*.xlsx" -o -name "*.csv" -o -name "*.zip" | head -5
-            fi
-          done
-
-      - name: 📸 14. Salvar Artefatos
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: logs-e-arquivos
-          path: |
-            *.png
-            */**/*.xlsx
-            */**/*.csv
-            */**/*.zip
-          retention-days: 7
+      - name: 🤖 11. Coletar e Enviar para SharePoint
+        run: python3 -u 00a_Coletor.py "Leitura" "Visitadas" "Produtividade"
