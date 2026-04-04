@@ -1,7 +1,7 @@
 name: 📊 02 Coletor Completo (Agendado)
 
 on:
- workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   executar_completo:
@@ -31,33 +31,35 @@ jobs:
           pip install playwright requests python-dotenv
           playwright install chromium --with-deps
 
-      - name: 🚀 4. [PASSO 1] Disparando Bloco 02 e 04 (Paralelo)
-        run: |
-          python3 02_PDL_Analitico.py &
-          python3 04_Nao_Visitadas.py &
-          wait
+      - name: 🚀 4. [PASSO 1] Executar 02_PDL_Analitico
+        run: python3 02_PDL_Analitico.py
 
-      - name: ⏳ 5. Aguardar Estabilidade (90s)
+      - name: 🚀 5. [PASSO 2] Executar 04_Nao_Visitadas
+        run: python3 04_Nao_Visitadas.py
+
+      - name: ⏳ 6. Aguardar (90s)
         run: sleep 90
 
-      - name: 🚀 6. [PASSO 2] Disparando Bloco 05, 06 e 07 (Paralelo)
-        run: |
-          python3 05_Nao_Visitadas_Historico.py &
-          python3 06_Impedimentos.py &
-          python3 07_Entregas.py &
-          wait
+      - name: 🚀 7. [PASSO 3] Executar 05_Nao_Visitadas_Historico
+        run: python3 05_Nao_Visitadas_Historico.py
 
-      - name: ⏳ 7. Aguardar Estabilidade (300s)
+      - name: 🚀 8. [PASSO 4] Executar 06_Impedimentos
+        run: python3 06_Impedimentos.py
+
+      - name: 🚀 9. [PASSO 5] Executar 07_Entregas
+        run: python3 07_Entregas.py
+
+      - name: ⏳ 10. Aguardar (300s)
         run: sleep 300
 
-      - name: 🚀 8. [PASSO 3] Disparando Bloco 01 e 03 (Paralelo)
-        run: |
-          python3 01_ELF_Hora.py &
-          python3 03_Nao_Lib_Fatura.py &
-          wait
+      - name: 🚀 11. [PASSO 6] Executar 01_ELF_Hora
+        run: python3 01_ELF_Hora.py
 
-      - name: ⏳ 9. Aguardar Processamento Final (480s)
+      - name: 🚀 12. [PASSO 7] Executar 03_Nao_Lib_Fatura
+        run: python3 03_Nao_Lib_Fatura.py
+
+      - name: ⏳ 13. Aguardar (480s)
         run: sleep 480
 
-      - name: 🤖 10. Rodar Coletor Final (Sem Argumentos)
+      - name: 🤖 14. Rodar Coletor Final
         run: python3 -u 00a_Coletor.py
