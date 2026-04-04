@@ -1,10 +1,6 @@
 name: 💬 04 Envio WhatsApp (Agendado)
 
 on:
-  #schedule:
-    # Brasília: 08:45 às 18:45 (de hora em hora, exceto 12:45)
-    # Convertido para UTC (+3h): 11:45 às 21:45 (exceto 15:45)
-  #  - cron: '45 11,12,14,15,16,17,18,19,20,21 * * 1-5'
   workflow_dispatch:
 
 jobs:
