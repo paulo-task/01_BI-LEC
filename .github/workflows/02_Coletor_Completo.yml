@@ -1,12 +1,12 @@
 name: 📊 02 Coletor Completo (Agendado)
 
 on:
-  schedule:
+ # schedule:
     # Horários em UTC (convertidos de Brasília)
     # 10:40 BRT = 13:40 UTC
     # 18:40 BRT = 21:40 UTC
-    - cron: '40 13,21 * * 1-5'
-  workflow_dispatch:
+  #  - cron: '40 13,21 * * 1-5'
+ workflow_dispatch:
 
 jobs:
   executar_completo:

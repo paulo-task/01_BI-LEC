@@ -1,11 +1,11 @@
 name: 🏖️ 03 Coletor FDS (Sábado)
 
 on:
-  schedule:
+  #schedule:
     # Horários Brasília: 09:50, 10:50, 11:50, 12:50, 13:50, 14:50, 15:50, 16:50, 17:50
     # Convertido para UTC (+3h): 12:50 às 20:50
     # O '6' no final significa SÁBADO
-    - cron: '50 12,13,14,15,16,17,18,19,20 * * 6'
+   # - cron: '50 12,13,14,15,16,17,18,19,20 * * 6'
   workflow_dispatch:
 
 jobs:
