@@ -17,33 +17,23 @@ except ImportError:
 usuario = os.getenv("CPFL_USER")
 senha = os.getenv("CPFL_PASS")
 
-def is_github_actions():
-    """Detecta se está rodando no GitHub Actions"""
-    return os.getenv("GITHUB_ACTIONS") == "true"
-
-def get_headless():
-    """Retorna True para headless no GitHub, False para Windows local"""
-    if is_github_actions():
-        return True
-    return platform.system() != "Windows"
 
 def run(playwright: Playwright) -> None:
-    headless_mode = get_headless()
-    ambiente = "GitHub Actions" if is_github_actions() else "Windows Local"
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Ambiente: {ambiente} | Modo headless: {headless_mode}")
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Iniciando Instalações Não Visitadas - Histórico...")
+    is_headless = platform.system() != "Windows"
+    print(
+        f"[{datetime.now().strftime('%H:%M:%S')}] Iniciando Instalações Não Visitadas - Histórico..."
+    )
 
     if not usuario or not senha:
         print("❌ ERRO: Usuário ou Senha não encontrados nas variáveis de ambiente!")
         return
 
-    browser = playwright.chromium.launch(headless=headless_mode, slow_mo=500)
+    browser = playwright.chromium.launch(headless=is_headless, slow_mo=500)
     context = browser.new_context()
     page = context.new_page()
 
     try:
         # 1. ACESSO E LOGIN
-        print("🌐 Fazendo login...")
         page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login")
         page.get_by_role("textbox", name="Usuário").fill(usuario)
         page.get_by_role("textbox", name="Senha").fill(senha)
@@ -51,32 +41,28 @@ def run(playwright: Playwright) -> None:
         page.wait_for_load_state("networkidle")
 
         # 2. NAVEGAÇÃO
-        print("📊 Navegando para Instalações Não Visitadas...")
         page.get_by_text("Relatórios").nth(1).wait_for(state="visible", timeout=60000)
         page.get_by_text("Relatórios").nth(1).click()
         page.get_by_role("link", name="LEC", exact=True).click()
         page.get_by_text("Instalações Não Visitadas").click()
 
         # 3. FILTROS (EMPRESA -> REGIONAL -> CIDADE)
-        print("🏢 Preenchendo Filtros de Localidade...")
+        print("Preenchendo Filtros de Localidade...")
         page.locator(".selectize-input").first.click()
 
         # Empresas
-        print("   Selecionando Empresas...")
         for emp in ["PAULISTA", "PIRATININGA"]:
             page.keyboard.type(emp)
             page.get_by_text(emp, exact=True).first.click()
         page.keyboard.press("Tab")
 
         # Regionais
-        print("   Selecionando Regionais...")
         for reg in ["PAULISTA-NOROESTE", "PIRATININGA-OESTE"]:
             page.keyboard.type(reg)
             page.get_by_text(reg, exact=True).first.click()
         page.keyboard.press("Tab")
 
         # Cidades
-        print("   Selecionando Cidades...")
         cidades = [
             "BAURU",
             "BOTUCATU",
@@ -99,17 +85,9 @@ def run(playwright: Playwright) -> None:
                 page.keyboard.press("Enter")
         page.keyboard.press("Tab")
 
-        # 4. GRUPO SERVIÇO (NOVO CAMPO)
-        print("⚙️ Selecionando Grupo Serviço: BT-Baixa Tensão...")
-        # Aguarda o campo ficar visível
-        page.wait_for_selector("#rel-parametro-27", timeout=10000)
-        # Seleciona a opção "BT"
-        page.select_option("#rel-parametro-27", value="BT")
-        print("   ✅ Grupo Serviço selecionado: BT-Baixa Tensão")
-
-        # 5. DATAS (Data Atual em ambos os campos)
+        # 4. DATAS (Data Atual em ambos os campos)
         data_atual = datetime.now().strftime("%d/%m/%Y")
-        print(f"📅 Preenchendo Datas com o dia de hoje: {data_atual}")
+        print(f"Preenchendo Datas com o dia de hoje: {data_atual}")
 
         page.locator('input[name="j_idt93:8:j_idt99"]').click()
         page.keyboard.type(data_atual)
@@ -117,11 +95,13 @@ def run(playwright: Playwright) -> None:
         page.keyboard.type(data_atual)
         page.keyboard.press("Tab")
 
-        # 6. GERAR RELATÓRIO
-        print("🚀 Clicando em Gerar Background...")
+        # 5. GERAR RELATÓRIO
+        print("Clicando em Gerar Background...")
         page.get_by_role("button", name="Gerar Background").click()
         page.wait_for_timeout(3000)
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] ✅ Sucesso! O relatório está sendo gerado.")
+        print(
+            f"[{datetime.now().strftime('%H:%M:%S')}] Sucesso! O relatório está sendo gerado."
+        )
 
     except Exception as e:
         print(f"❌ Erro durante a execução: {e}")
@@ -133,7 +113,5 @@ def run(playwright: Playwright) -> None:
 
 
 if __name__ == "__main__":
-    print(f"⏰ Início: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     with sync_playwright() as playwright:
         run(playwright)
-    print(f"🏁 Fim: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
