@@ -11,6 +11,16 @@ load_dotenv(dotenv_path=".pass")
 usuario = os.getenv("CPFL_USER")
 senha = os.getenv("CPFL_PASS")
 
+def is_github_actions():
+    """Detecta se está rodando no GitHub Actions"""
+    return os.getenv("GITHUB_ACTIONS") == "true"
+
+def get_headless():
+    """Retorna True para headless no GitHub, False para Windows local"""
+    if is_github_actions():
+        return True  # GitHub Actions: sem interface gráfica
+    return False  # Windows: mostra janela
+
 def get_primeiro_dia_util():
     # Pega o dia 1 do mês atual
     data = datetime.now().replace(day=1)
@@ -22,12 +32,18 @@ def get_primeiro_dia_util():
     return data.strftime("%d/%m/%Y")
 
 def run(playwright: Playwright) -> None:
+    # Detecta ambiente e configura headless automaticamente
+    headless_mode = get_headless()
+    ambiente = "GitHub Actions" if is_github_actions() else "Windows Local"
+    print(f"🏗️ Ambiente: {ambiente} | Modo headless: {headless_mode}")
+    
     # slow_mo garante que o site acompanhe a digitação e cliques
-    browser = playwright.chromium.launch(headless=False, slow_mo=600)
+    browser = playwright.chromium.launch(headless=headless_mode, slow_mo=600)
     context = browser.new_context()
     page = context.new_page()
     
     # 1. ACESSO E LOGIN
+    print("🌐 Fazendo login...")
     page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login")
     page.get_by_role("textbox", name="Usuário").fill(usuario)
     page.get_by_role("textbox", name="Senha").fill(senha)
@@ -36,6 +52,7 @@ def run(playwright: Playwright) -> None:
     page.wait_for_load_state("networkidle")
 
     # 2. NAVEGAÇÃO
+    print("📊 Navegando para Relatório de Efetividade...")
     page.get_by_text("Relatórios").nth(1).click()
     page.get_by_role("link", name="LEC", exact=True).click()
     page.get_by_text("Relatório de Efetividade de").click()
@@ -44,7 +61,7 @@ def run(playwright: Playwright) -> None:
     data_inicio = get_primeiro_dia_util()
     data_fim = datetime.now().strftime("%d/%m/%Y")
     
-    print(f"Relatório de Efetividade: {data_inicio} até {data_fim}")
+    print(f"📅 Relatório de Efetividade: {data_inicio} até {data_fim}")
 
     # Preenche Data Início (j_idt93:0)
     page.locator("input[name=\"j_idt93:0:j_idt99\"]").click()
@@ -59,18 +76,21 @@ def run(playwright: Playwright) -> None:
     # Usando clique no texto exato para garantir a seleção correta
     
     # Empresas
+    print("🏢 Selecionando Empresas...")
     for emp in ["PAULISTA", "PIRATININGA"]:
         page.keyboard.type(emp)
         page.get_by_text(emp, exact=True).first.click()
     page.keyboard.press("Tab")
     
     # Regionais (Unidade de Negócio)
+    print("📍 Selecionando Regionais...")
     for reg in ["PAULISTA-NOROESTE", "PIRATININGA-OESTE"]:
         page.keyboard.type(reg)
         page.get_by_text(reg, exact=True).first.click()
     page.keyboard.press("Tab")
 
     # Cidades
+    print("🏙️ Selecionando Cidades...")
     cidades = [
         "BAURU", "BOTUCATU", "JAU", "MARILIA", "INDAIATUBA", 
         "JUNDIAI [B]", "ITU", "MAIRINQUE", "SOROCABA [B]",
@@ -88,12 +108,17 @@ def run(playwright: Playwright) -> None:
     page.keyboard.press("Tab")
 
     # 5. FINALIZAÇÃO
-    print("Gerando Background...")
+    print("🚀 Gerando Background...")
     page.get_by_role("button", name="Gerar Background").click()
 
+    print("✅ Relatório solicitado com sucesso!")
     page.wait_for_timeout(3000)
     context.close()
     browser.close()
 
-with sync_playwright() as playwright:
-    run(playwright)
+# Ponto de entrada
+if __name__ == "__main__":
+    print(f"⏰ Início: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    with sync_playwright() as playwright:
+        run(playwright)
+    print(f"🏁 Fim: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

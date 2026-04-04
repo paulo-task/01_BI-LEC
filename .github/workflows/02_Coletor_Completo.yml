@@ -37,8 +37,8 @@ jobs:
       - name: 🚀 5. [PASSO 2] Executar 04_Nao_Visitadas
         run: python3 04_Nao_Visitadas.py
 
-      - name: ⏳ 6. Aguardar (90s)
-        run: sleep 90
+      - name: ⏳ 6. Aguardar (60s)
+        run: sleep 60
 
       - name: 🚀 7. [PASSO 3] Executar 05_Nao_Visitadas_Historico
         run: python3 05_Nao_Visitadas_Historico.py
@@ -49,8 +49,8 @@ jobs:
       - name: 🚀 9. [PASSO 5] Executar 07_Entregas
         run: python3 07_Entregas.py
 
-      - name: ⏳ 10. Aguardar (300s)
-        run: sleep 300
+      - name: ⏳ 10. Aguardar (240s)
+        run: sleep 240
 
       - name: 🚀 11. [PASSO 6] Executar 01_ELF_Hora
         run: python3 01_ELF_Hora.py
