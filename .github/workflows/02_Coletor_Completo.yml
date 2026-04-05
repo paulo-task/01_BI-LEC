@@ -61,5 +61,5 @@ jobs:
       - name: ⏳ 13. Aguardar (480s)
         run: sleep 480
 
-      - name: 🤖 14. Rodar Coletor Final
-        run: python3 -u 00a_Coletor.py
+      - name: 🤖 14. Rodar Coletor Final - MODO COMPLETO
+        run: python3 -u 00a_Coletor.py completo
