@@ -44,8 +44,32 @@ else:
     print("🖥️ Ambiente: Local (modo visível)")
 
 # =================================================================
-# 3. DEFINIÇÃO DOS RELATÓRIOS (COM FILTROS CORRETOS)
+# 3. DEFINIÇÃO DOS RELATÓRIOS COM REGRAS DE NOMENCLATURA
 # =================================================================
+
+# Regras de nomenclatura personalizadas
+def get_nome_arquivo(conf, ext):
+    """Gera o nome do arquivo conforme as regras específicas"""
+    agora = datetime.now()
+    ano_mes = agora.strftime('%Y_%m')
+    ano_mes_dia = agora.strftime('%Y_%m_%d')
+    
+    # Regras específicas por tipo de relatório
+    if conf.get("regra_nome") == "ano_mes":
+        # Ex: Nome_2026_04.csv
+        return f"{conf['nome_base']}_{ano_mes}{ext}"
+    
+    elif conf.get("regra_nome") == "sem_data":
+        # Ex: Nome.csv (sobrescreve)
+        return f"{conf['nome_base']}{ext}"
+    
+    elif conf.get("regra_nome") == "data_dia_unico":
+        # Ex: Nome - 2026_04_04.csv
+        return f"{conf['nome_base']} - {ano_mes_dia}{ext}"
+    
+    else:  # padrão data_dia
+        # Ex: Nome_2026_04_04.csv
+        return f"{conf['nome_base']}_{ano_mes_dia}{ext}"
 
 # Modo SIMPLES (3 relatórios)
 RELATORIOS_SIMPLES = {
@@ -53,22 +77,22 @@ RELATORIOS_SIMPLES = {
         "pasta_sp": "BI_LEC/01_ELF_Diario",
         "pasta_local": "01_ELF_Diario",
         "nome_base": "EFL",
-        "regra": "data_dia_unico",
+        "regra_nome": "data_dia_unico",
         "filtro_grupo_servico": None
     },
     "Produtividade Diária Leiturista - Analítico": {
         "pasta_sp": "BI_LEC/02_PDL_Analitico",
         "pasta_local": "02_PDL_Analitico",
         "nome_base": "Produtividade Diária Leiturista - Analítico",
-        "regra": "data_dia",
+        "regra_nome": "data_dia",
         "filtro_grupo_servico": None
     },
     "Instalações Não Visitadas": {
         "pasta_sp": "BI_LEC/04_N_Visitado_Diario",
         "pasta_local": "04_N_Visitado_Diario",
         "nome_base": "Instalações Não Visitadas",
-        "regra": "data_dia",
-        "filtro_grupo_servico": "vazio"  # <-- IMPORTANTE: NÃO pode ter GrupoServico=BT
+        "regra_nome": "data_dia",
+        "filtro_grupo_servico": "vazio"
     }
 }
 
@@ -78,52 +102,57 @@ RELATORIOS_COMPLETOS = {
         "pasta_sp": "BI_LEC/01_ELF_Diario",
         "pasta_local": "01_ELF_Diario",
         "nome_base": "EFL",
-        "regra": "data_dia_unico",
-        "filtro_grupo_servico": None
+        "regra_nome": "data_dia_unico",
+        "filtro_grupo_servico": None,
+        "nome_exibicao": "Efetividade de Leitura Faturamento"
     },
     "Produtividade Diária Leiturista - Analítico": {
         "pasta_sp": "BI_LEC/02_PDL_Analitico",
         "pasta_local": "02_PDL_Analitico",
         "nome_base": "Produtividade Diária Leiturista - Analítico",
-        "regra": "data_dia",
-        "filtro_grupo_servico": None
+        "regra_nome": "data_dia",
+        "filtro_grupo_servico": None,
+        "nome_exibicao": "Produtividade Diária Leiturista - Analítico"
     },
     "Instalações Não Visitadas (Diário)": {
         "pasta_sp": "BI_LEC/04_N_Visitado_Diario",
         "pasta_local": "04_N_Visitado_Diario",
         "nome_base": "Instalações Não Visitadas",
-        "regra": "data_dia",
-        "filtro_grupo_servico": "vazio",  # SEM GrupoServico=BT
+        "regra_nome": "data_dia",
+        "filtro_grupo_servico": "vazio",
         "nome_exibicao": "Instalações Não Visitadas"
     },
     "Instalações Não Visitadas (Histórico)": {
         "pasta_sp": "BI_LEC/05_Nao_Visitadas_Historico",
         "pasta_local": "05_N_Visitado_Historico",
         "nome_base": "Instalações Não Visitadas",
-        "regra": "data_dia",
-        "filtro_grupo_servico": "BT",  # COM GrupoServico=BT
+        "regra_nome": "data_dia",
+        "filtro_grupo_servico": "BT",
         "nome_exibicao": "Instalações Não Visitadas"
     },
     "Lista Impedimentos Aplicados": {
         "pasta_sp": "BI_LEC/06_Impedimentos",
         "pasta_local": "06_Impedimentos",
         "nome_base": "Lista Impedimentos Aplicados",
-        "regra": "data_dia",
-        "filtro_grupo_servico": None
+        "regra_nome": "ano_mes",  # <-- Nome_2026_04.csv
+        "filtro_grupo_servico": None,
+        "nome_exibicao": "Lista Impedimentos Aplicados"
     },
     "Inst. Não Liberadas Faturamento": {
         "pasta_sp": "BI_LEC/03_N_Lib_Fat_Diario",
         "pasta_local": "03_N_Lib_Fat_Diario",
         "nome_base": "Inst. Não Liberadas Faturamento",
-        "regra": "data_dia",
-        "filtro_grupo_servico": None
+        "regra_nome": "sem_data",  # <-- Nome.csv (sobrescreve)
+        "filtro_grupo_servico": None,
+        "nome_exibicao": "Inst. Não Liberadas Faturamento"
     },
     "Relatório de Efetividade de Entrega de Contas (Prev X Entr)": {
         "pasta_sp": "BI_LEC/07_Entregas",
         "pasta_local": "07_Entregas",
-        "nome_base": "Efetividade de Entrega de Contas",
-        "regra": "data_dia",
-        "filtro_grupo_servico": None
+        "nome_base": "Relatório de Efetividade de Entrega de Contas (Prev X Entr)",
+        "regra_nome": "ano_mes",  # <-- Nome_2026_04.csv
+        "filtro_grupo_servico": None,
+        "nome_exibicao": "Relatório de Efetividade de Entrega de Contas (Prev X Entr)"
     }
 }
 
@@ -229,20 +258,15 @@ def salvar_localmente(conteudo_bytes, nome_arquivo, pasta_destino):
 # =================================================================
 # 6. PROCESSAR ZIP
 # =================================================================
-def processar_zip(conteudo_zip, nome_base, regra, destino_pasta):
-    """Processa o ZIP e salva/envia"""
+def processar_zip(conteudo_zip, conf, destino_pasta):
+    """Processa o ZIP e salva/envia usando as regras de nomenclatura"""
     try:
         with zipfile.ZipFile(io.BytesIO(conteudo_zip)) as z:
             arquivo_interno = z.namelist()[0]
             ext = os.path.splitext(arquivo_interno)[1]
-            agora = datetime.now()
             
-            if regra == "data_dia_unico":
-                nome_final = f"{nome_base} - {agora.strftime('%Y_%m_%d')}{ext}"
-            elif regra == "data_dia":
-                nome_final = f"{nome_base}_{agora.strftime('%Y_%m_%d')}{ext}"
-            else:
-                nome_final = f"{nome_base}{ext}"
+            # Gera o nome do arquivo conforme as regras específicas
+            nome_final = get_nome_arquivo(conf, ext)
             
             with z.open(arquivo_interno) as f:
                 conteudo = f.read()
@@ -257,7 +281,7 @@ def processar_zip(conteudo_zip, nome_base, regra, destino_pasta):
         return False
 
 # =================================================================
-# 7. FUNÇÃO PARA ENCONTRAR LINHA DO RELATÓRIO (CORRIGIDA)
+# 7. FUNÇÃO PARA ENCONTRAR LINHA DO RELATÓRIO
 # =================================================================
 def encontrar_linha_relatorio(linhas, nome_relatorio, filtro_grupo_servico=None):
     """
@@ -283,22 +307,17 @@ def encontrar_linha_relatorio(linhas, nome_relatorio, filtro_grupo_servico=None)
         if "Concluído" not in texto:
             continue
         
-        # =========================================================
-        # FILTRO POR GRUPO SERVICO
-        # =========================================================
+        # Filtro por GrupoServico
         if filtro_grupo_servico == "vazio":
-            # DIÁRIO: NÃO pode ter "&GrupoServico=BT"
             if "&GrupoServico=BT" in texto:
-                print(f"   ⏭️ Ignorando (tem GrupoServico=BT): {texto[:80]}...")
+                print(f"   ⏭️ Ignorando (tem GrupoServico=BT)")
                 continue
-                
         elif filtro_grupo_servico == "BT":
-            # HISTÓRICO: DEVE ter "&GrupoServico=BT"
             if "&GrupoServico=BT" not in texto:
-                print(f"   ⏭️ Ignorando (não tem GrupoServico=BT): {texto[:80]}...")
+                print(f"   ⏭️ Ignorando (não tem GrupoServico=BT)")
                 continue
         
-        # Extrai data de inclusão
+        # Extrai data
         m = re.search(r"(\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2})", texto)
         if m:
             dt = datetime.strptime(m.group(1), "%d/%m/%Y %H:%M:%S")
@@ -414,8 +433,6 @@ def run(playwright: Playwright, modo="simples") -> None:
             
             if linha_alvo:
                 print(f"   ✅ Encontrado (Data: {data_alvo})")
-                if info:
-                    print(f"   📝 Parâmetros: {info[:150]}...")
                 
                 # Faz o download
                 conteudo_zip = baixar_relatorio(page, linha_alvo, nome_busca)
@@ -427,13 +444,8 @@ def run(playwright: Playwright, modo="simples") -> None:
                     else:
                         destino = PASTAS_LOCAIS[conf["pasta_local"]]
                     
-                    # Processa o arquivo
-                    sucesso = processar_zip(
-                        conteudo_zip, 
-                        conf["nome_base"], 
-                        conf["regra"], 
-                        destino
-                    )
+                    # Processa o arquivo com as regras de nomenclatura
+                    sucesso = processar_zip(conteudo_zip, conf, destino)
                     
                     if sucesso:
                         relatorios_baixados += 1

@@ -4,7 +4,6 @@ import re
 import sys
 import io
 import zipfile
-import platform
 from datetime import datetime
 from playwright.sync_api import Playwright, sync_playwright
 from dotenv import load_dotenv
@@ -12,7 +11,6 @@ from dotenv import load_dotenv
 # =================================================================
 # 1. CARREGAR CREDENCIAIS
 # =================================================================
-# Força a busca do arquivo .pass na mesma pasta deste script
 diretorio_script = os.path.dirname(os.path.abspath(__file__))
 caminho_pass = os.path.join(diretorio_script, ".pass")
 
@@ -26,13 +24,11 @@ else:
 usuario = os.getenv("CPFL_USER", "")
 senha = os.getenv("CPFL_PASS", "")
 
-# Validação das credenciais
 if not usuario or not senha:
     print("❌ ERRO: Credenciais CPFL não encontradas!")
-    print("   Verifique o arquivo .pass ou as variáveis de ambiente")
     sys.exit(1)
 
-print(f"✅ Credenciais CPFL carregadas: Usuário={usuario[:5]}...")
+print(f"✅ Credenciais CPFL carregadas")
 
 # =================================================================
 # 2. DETECTAR AMBIENTE
@@ -45,38 +41,108 @@ if is_github_actions():
     print("🏗️ Ambiente: GitHub Actions (modo headless)")
 else:
     USE_HEADLESS = False
-    print("🖥️ Ambiente: Windows Local (modo visível)")
+    print("🖥️ Ambiente: Local (modo visível)")
 
 # =================================================================
-# 3. MAPEAMENTO DOS RELATÓRIOS
+# 3. DEFINIÇÃO DOS RELATÓRIOS (COM FILTROS CORRETOS)
 # =================================================================
-# Para SharePoint (GitHub)
-MAPEAMENTO_SP = {
+
+# Modo SIMPLES (3 relatórios)
+RELATORIOS_SIMPLES = {
     "Efetividade de Leitura Faturamento": {
         "pasta_sp": "BI_LEC/01_ELF_Diario",
+        "pasta_local": "01_ELF_Diario",
         "nome_base": "EFL",
-        "regra": "data_dia_unico"
+        "regra": "data_dia_unico",
+        "filtro_grupo_servico": None
     },
     "Produtividade Diária Leiturista - Analítico": {
         "pasta_sp": "BI_LEC/02_PDL_Analitico",
+        "pasta_local": "02_PDL_Analitico",
         "nome_base": "Produtividade Diária Leiturista - Analítico",
-        "regra": "data_dia"
+        "regra": "data_dia",
+        "filtro_grupo_servico": None
+    },
+    "Instalações Não Visitadas": {
+        "pasta_sp": "BI_LEC/04_N_Visitado_Diario",
+        "pasta_local": "04_N_Visitado_Diario",
+        "nome_base": "Instalações Não Visitadas",
+        "regra": "data_dia",
+        "filtro_grupo_servico": "vazio"  # <-- IMPORTANTE: NÃO pode ter GrupoServico=BT
     }
 }
 
-# Para pastas locais (PC)
+# Modo COMPLETO (7 relatórios)
+RELATORIOS_COMPLETOS = {
+    "Efetividade de Leitura Faturamento": {
+        "pasta_sp": "BI_LEC/01_ELF_Diario",
+        "pasta_local": "01_ELF_Diario",
+        "nome_base": "EFL",
+        "regra": "data_dia_unico",
+        "filtro_grupo_servico": None
+    },
+    "Produtividade Diária Leiturista - Analítico": {
+        "pasta_sp": "BI_LEC/02_PDL_Analitico",
+        "pasta_local": "02_PDL_Analitico",
+        "nome_base": "Produtividade Diária Leiturista - Analítico",
+        "regra": "data_dia",
+        "filtro_grupo_servico": None
+    },
+    "Instalações Não Visitadas (Diário)": {
+        "pasta_sp": "BI_LEC/04_N_Visitado_Diario",
+        "pasta_local": "04_N_Visitado_Diario",
+        "nome_base": "Instalações Não Visitadas",
+        "regra": "data_dia",
+        "filtro_grupo_servico": "vazio",  # SEM GrupoServico=BT
+        "nome_exibicao": "Instalações Não Visitadas"
+    },
+    "Instalações Não Visitadas (Histórico)": {
+        "pasta_sp": "BI_LEC/05_Nao_Visitadas_Historico",
+        "pasta_local": "05_N_Visitado_Historico",
+        "nome_base": "Instalações Não Visitadas",
+        "regra": "data_dia",
+        "filtro_grupo_servico": "BT",  # COM GrupoServico=BT
+        "nome_exibicao": "Instalações Não Visitadas"
+    },
+    "Lista Impedimentos Aplicados": {
+        "pasta_sp": "BI_LEC/06_Impedimentos",
+        "pasta_local": "06_Impedimentos",
+        "nome_base": "Lista Impedimentos Aplicados",
+        "regra": "data_dia",
+        "filtro_grupo_servico": None
+    },
+    "Inst. Não Liberadas Faturamento": {
+        "pasta_sp": "BI_LEC/03_N_Lib_Fat_Diario",
+        "pasta_local": "03_N_Lib_Fat_Diario",
+        "nome_base": "Inst. Não Liberadas Faturamento",
+        "regra": "data_dia",
+        "filtro_grupo_servico": None
+    },
+    "Relatório de Efetividade de Entrega de Contas (Prev X Entr)": {
+        "pasta_sp": "BI_LEC/07_Entregas",
+        "pasta_local": "07_Entregas",
+        "nome_base": "Efetividade de Entrega de Contas",
+        "regra": "data_dia",
+        "filtro_grupo_servico": None
+    }
+}
+
+# Pastas locais
 PASTAS_LOCAIS = {
     "01_ELF_Diario": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\01_ELF_Diario",
     "02_PDL_Analitico": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\02_PDL_Analitico",
+    "03_N_Lib_Fat_Diario": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\03_N_Lib_Fat_Diario",
     "04_N_Visitado_Diario": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\04_N_Visitado_Diario",
-    "05_N_Visitado_Historico": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\05_N_Visitado_Historico"
+    "05_N_Visitado_Historico": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\05_Nao_Visitadas_Historico",
+    "06_Impedimentos": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\06_Impedimentos",
+    "07_Entregas": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\07_Entregas"
 }
 
 # =================================================================
-# 4. FUNÇÃO DE UPLOAD PARA SHAREPOINT (APENAS GITHUB)
+# 4. FUNÇÃO DE UPLOAD PARA SHAREPOINT
 # =================================================================
 def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
-    """Envia arquivo para o SharePoint (apenas no GitHub Actions)"""
+    """Envia arquivo para o SharePoint"""
     try:
         import requests
         from urllib.parse import urlparse
@@ -143,10 +209,10 @@ def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
         return False
 
 # =================================================================
-# 5. FUNÇÃO PARA SALVAR LOCALMENTE (PC)
+# 5. FUNÇÃO PARA SALVAR LOCALMENTE
 # =================================================================
 def salvar_localmente(conteudo_bytes, nome_arquivo, pasta_destino):
-    """Salva arquivo localmente no PC"""
+    """Salva arquivo localmente"""
     try:
         os.makedirs(pasta_destino, exist_ok=True)
         caminho_arquivo = os.path.join(pasta_destino, nome_arquivo)
@@ -161,13 +227,10 @@ def salvar_localmente(conteudo_bytes, nome_arquivo, pasta_destino):
         return False
 
 # =================================================================
-# 6. PROCESSAR ZIP E SALVAR/ENVIAR
+# 6. PROCESSAR ZIP
 # =================================================================
-def processar_zip(conteudo_zip, nome_base, regra, destino, tipo_destino="ambos"):
-    """
-    Processa o ZIP e salva/envia conforme o ambiente
-    tipo_destino: "sharepoint", "local", "ambos"
-    """
+def processar_zip(conteudo_zip, nome_base, regra, destino_pasta):
+    """Processa o ZIP e salva/envia"""
     try:
         with zipfile.ZipFile(io.BytesIO(conteudo_zip)) as z:
             arquivo_interno = z.namelist()[0]
@@ -184,28 +247,112 @@ def processar_zip(conteudo_zip, nome_base, regra, destino, tipo_destino="ambos")
             with z.open(arquivo_interno) as f:
                 conteudo = f.read()
             
-            sucesso = False
-            
-            # No GitHub: sempre tenta enviar para SharePoint
             if is_github_actions():
-                sucesso = upload_to_sharepoint(conteudo, nome_final, destino)
+                return upload_to_sharepoint(conteudo, nome_final, destino_pasta)
             else:
-                # No PC: salva localmente
-                sucesso = salvar_localmente(conteudo, nome_final, destino)
-            
-            return sucesso
+                return salvar_localmente(conteudo, nome_final, destino_pasta)
             
     except Exception as e:
         print(f"   ❌ Erro processar ZIP: {e}")
         return False
 
 # =================================================================
-# 7. FUNÇÃO PRINCIPAL
+# 7. FUNÇÃO PARA ENCONTRAR LINHA DO RELATÓRIO (CORRIGIDA)
 # =================================================================
-def run(playwright: Playwright, busca=None) -> None:
+def encontrar_linha_relatorio(linhas, nome_relatorio, filtro_grupo_servico=None):
+    """
+    Encontra a linha mais recente de um relatório com status "Concluído"
+    
+    filtro_grupo_servico:
+    - None: não aplica filtro
+    - "vazio": pega linhas que NÃO contém "&GrupoServico=BT"
+    - "BT": pega linhas que contém "&GrupoServico=BT"
+    """
+    maior_dt = None
+    linha_alvo = None
+    info_adicional = ""
+    
+    for linha in linhas:
+        texto = linha.inner_text()
+        
+        # Verifica se é o relatório correto
+        if nome_relatorio.lower() not in texto.lower():
+            continue
+        
+        # Verifica status
+        if "Concluído" not in texto:
+            continue
+        
+        # =========================================================
+        # FILTRO POR GRUPO SERVICO
+        # =========================================================
+        if filtro_grupo_servico == "vazio":
+            # DIÁRIO: NÃO pode ter "&GrupoServico=BT"
+            if "&GrupoServico=BT" in texto:
+                print(f"   ⏭️ Ignorando (tem GrupoServico=BT): {texto[:80]}...")
+                continue
+                
+        elif filtro_grupo_servico == "BT":
+            # HISTÓRICO: DEVE ter "&GrupoServico=BT"
+            if "&GrupoServico=BT" not in texto:
+                print(f"   ⏭️ Ignorando (não tem GrupoServico=BT): {texto[:80]}...")
+                continue
+        
+        # Extrai data de inclusão
+        m = re.search(r"(\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2})", texto)
+        if m:
+            dt = datetime.strptime(m.group(1), "%d/%m/%Y %H:%M:%S")
+            if maior_dt is None or dt > maior_dt:
+                maior_dt = dt
+                linha_alvo = linha
+                # Captura info para debug
+                params_start = texto.find("Parametros")
+                if params_start != -1:
+                    info_adicional = texto[params_start:params_start+200]
+                else:
+                    info_adicional = texto[:100]
+    
+    return linha_alvo, maior_dt, info_adicional
+
+# =================================================================
+# 8. FUNÇÃO PARA BAIXAR RELATÓRIO
+# =================================================================
+def baixar_relatorio(page, linha_alvo, nome_relatorio):
+    """Faz o download do relatório"""
+    try:
+        print(f"   📥 Baixando...")
+        with page.expect_download() as download_info:
+            linha_alvo.locator("button, a, img").first.click()
+        
+        download = download_info.value
+        temp_path = f"temp_{datetime.now().strftime('%Y%m%d%H%M%S%f')}.zip"
+        download.save_as(temp_path)
+        
+        with open(temp_path, 'rb') as f:
+            conteudo_zip = f.read()
+        
+        os.remove(temp_path)
+        return conteudo_zip
+    except Exception as e:
+        print(f"   ❌ Erro no download: {e}")
+        return None
+
+# =================================================================
+# 9. FUNÇÃO PRINCIPAL
+# =================================================================
+def run(playwright: Playwright, modo="simples") -> None:
+    """
+    modo: "simples" (3 relatórios) ou "completo" (7 relatórios)
+    """
     print(f"\n{'='*60}")
-    print(f"🚀 INICIANDO COLETOR")
+    print(f"🚀 INICIANDO COLETOR - MODO: {modo.upper()}")
     print(f"{'='*60}")
+    
+    # Seleciona os relatórios conforme o modo
+    if modo == "simples":
+        relatorios = RELATORIOS_SIMPLES
+    else:
+        relatorios = RELATORIOS_COMPLETOS
     
     # Diretório para perfil do navegador
     if is_github_actions():
@@ -214,7 +361,6 @@ def run(playwright: Playwright, busca=None) -> None:
     else:
         user_dir = r"C:\Temp\chrome_profile"
     
-    # Configuração do navegador
     launch_args = ['--no-sandbox'] if is_github_actions() else []
     
     context = playwright.chromium.launch_persistent_context(
@@ -253,140 +399,54 @@ def run(playwright: Playwright, busca=None) -> None:
         linhas = page.locator("tbody tr").all()
         print(f"📋 {len(linhas)} linhas encontradas na tabela")
         
-        # =========================================================
-        # RELATÓRIOS GERAIS (ELF e PDL)
-        # =========================================================
-        for nome_rel, conf in MAPEAMENTO_SP.items():
-            if busca and not any(b.lower() in nome_rel.lower() for b in busca):
-                continue
+        # Processa cada relatório
+        relatorios_baixados = 0
+        for nome_chave, conf in relatorios.items():
+            nome_busca = conf.get("nome_exibicao", nome_chave)
+            print(f"\n🔍 Procurando: {nome_busca}")
             
-            print(f"\n🔍 Procurando: {nome_rel}")
-            
-            # Encontrar linha mais recente com status "Concluído"
-            maior_dt = None
-            linha_alvo = None
-            for linha in linhas:
-                texto = linha.inner_text()
-                if nome_rel.lower() in texto.lower() and "Concluído" in texto:
-                    m = re.search(r"(\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2})", texto)
-                    if m:
-                        dt = datetime.strptime(m.group(1), "%d/%m/%Y %H:%M:%S")
-                        if maior_dt is None or dt > maior_dt:
-                            maior_dt = dt
-                            linha_alvo = linha
-                            print(f"   📝 Encontrado: {texto[:80]}...")
+            # Encontra a linha do relatório
+            linha_alvo, data_alvo, info = encontrar_linha_relatorio(
+                linhas, 
+                nome_busca,
+                conf.get("filtro_grupo_servico")
+            )
             
             if linha_alvo:
-                print(f"   📥 Baixando... (Data: {maior_dt})")
-                with page.expect_download() as download_info:
-                    linha_alvo.locator("button, a, img").first.click()
+                print(f"   ✅ Encontrado (Data: {data_alvo})")
+                if info:
+                    print(f"   📝 Parâmetros: {info[:150]}...")
                 
-                download = download_info.value
-                temp_path = f"temp_{datetime.now().strftime('%Y%m%d%H%M%S')}.zip"
-                download.save_as(temp_path)
+                # Faz o download
+                conteudo_zip = baixar_relatorio(page, linha_alvo, nome_busca)
                 
-                with open(temp_path, 'rb') as f:
-                    conteudo_zip = f.read()
-                
-                os.remove(temp_path)
-                
-                # Define o destino (local ou SharePoint)
-                if is_github_actions():
-                    destino = conf["pasta_sp"]
+                if conteudo_zip:
+                    # Define o destino
+                    if is_github_actions():
+                        destino = conf["pasta_sp"]
+                    else:
+                        destino = PASTAS_LOCAIS[conf["pasta_local"]]
+                    
+                    # Processa o arquivo
+                    sucesso = processar_zip(
+                        conteudo_zip, 
+                        conf["nome_base"], 
+                        conf["regra"], 
+                        destino
+                    )
+                    
+                    if sucesso:
+                        relatorios_baixados += 1
+                        print(f"   ✅ {nome_busca} processado com sucesso!")
+                    else:
+                        print(f"   ❌ Falha ao processar {nome_busca}")
                 else:
-                    # Mapeia para pasta local
-                    if "01_ELF_Diario" in conf["pasta_sp"]:
-                        destino = PASTAS_LOCAIS["01_ELF_Diario"]
-                    else:
-                        destino = PASTAS_LOCAIS["02_PDL_Analitico"]
-                
-                print(f"   📤 Processando...")
-                processar_zip(conteudo_zip, conf["nome_base"], conf["regra"], destino)
+                    print(f"   ❌ Falha no download de {nome_busca}")
             else:
-                print(f"   ⚠️ Nenhum relatório 'Concluído' encontrado")
-        
-        # =========================================================
-        # INSTALAÇÕES NÃO VISITADAS (Diário e Histórico)
-        # =========================================================
-        print(f"\n🔍 Procurando: Instalações Não Visitadas")
-        
-        cand_04 = []  # Diário
-        cand_05 = []  # Histórico
-        
-        for linha in linhas:
-            texto = linha.inner_text()
-            if "Instalações Não Visitadas" in texto and "Concluído" in texto:
-                m_data = re.search(r"(\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2})", texto)
-                m_params = re.findall(r"Dt(?:Ini|Fim)PrevLeitura=(\d{2}/\d{2}/\d{4})", texto)
-                
-                if m_data and len(m_params) >= 2:
-                    dt_inclusao = datetime.strptime(m_data.group(1), "%d/%m/%Y %H:%M:%S")
-                    # Se datas início e fim são diferentes = Diário (04)
-                    if m_params[0] != m_params[1]:
-                        cand_04.append({"dt": dt_inclusao, "linha": linha})
-                        print(f"   📝 Diário encontrado: {m_params[0]} ≠ {m_params[1]}")
-                    else:
-                        cand_05.append({"dt": dt_inclusao, "linha": linha})
-                        print(f"   📝 Histórico encontrado: {m_params[0]} = {m_params[1]}")
-        
-        # Download Diário (04)
-        if cand_04:
-            cand_04.sort(key=lambda x: x["dt"], reverse=True)
-            alvo = cand_04[0]
-            print(f"\n📥 Baixando Diário (04): {alvo['dt']}")
-            with page.expect_download() as dw:
-                alvo["linha"].locator("button, a, img").first.click()
-            
-            download = dw.value
-            temp_path = f"temp_diario_{datetime.now().strftime('%Y%m%d%H%M%S')}.zip"
-            download.save_as(temp_path)
-            
-            with open(temp_path, 'rb') as f:
-                conteudo_zip = f.read()
-            
-            os.remove(temp_path)
-            
-            # Define destino
-            if is_github_actions():
-                destino = "BI_LEC/04_N_Visitado_Diario"
-            else:
-                destino = PASTAS_LOCAIS["04_N_Visitado_Diario"]
-            
-            print(f"   📤 Processando...")
-            processar_zip(conteudo_zip, "Instalações Não Visitadas", "data_dia", destino)
-        else:
-            print(f"\n⚠️ Nenhum relatório Diário (04) encontrado")
-        
-        # Download Histórico (05)
-        if cand_05:
-            cand_05.sort(key=lambda x: x["dt"], reverse=True)
-            alvo = cand_05[0]
-            print(f"\n📥 Baixando Histórico (05): {alvo['dt']}")
-            with page.expect_download() as dw:
-                alvo["linha"].locator("button, a, img").first.click()
-            
-            download = dw.value
-            temp_path = f"temp_historico_{datetime.now().strftime('%Y%m%d%H%M%S')}.zip"
-            download.save_as(temp_path)
-            
-            with open(temp_path, 'rb') as f:
-                conteudo_zip = f.read()
-            
-            os.remove(temp_path)
-            
-            # Define destino
-            if is_github_actions():
-                destino = "BI_LEC/05_N_Visitado_Historico"
-            else:
-                destino = PASTAS_LOCAIS["05_N_Visitado_Historico"]
-            
-            print(f"   📤 Processando...")
-            processar_zip(conteudo_zip, "Instalações Não Visitadas", "data_dia", destino)
-        else:
-            print(f"⚠️ Nenhum relatório Histórico (05) encontrado")
+                print(f"   ⚠️ Nenhum relatório 'Concluído' encontrado para: {nome_busca}")
         
         print("\n" + "="*60)
-        print("✅ COLETOR FINALIZADO COM SUCESSO!")
+        print(f"✅ COLETOR FINALIZADO - {relatorios_baixados}/{len(relatorios)} relatórios baixados")
         print("="*60)
         
     except Exception as e:
@@ -404,7 +464,6 @@ def run(playwright: Playwright, busca=None) -> None:
     finally:
         context.close()
         
-        # Limpeza no GitHub Actions
         if is_github_actions():
             user_dir = os.path.join(os.getcwd(), "temp_navegador")
             if os.path.exists(user_dir):
@@ -413,12 +472,19 @@ def run(playwright: Playwright, busca=None) -> None:
                 print("🗑️ Diretório temporário removido")
 
 # =================================================================
-# 8. PONTO DE ENTRADA
+# 10. PONTO DE ENTRADA
 # =================================================================
 if __name__ == "__main__":
-    args = sys.argv[1:] if len(sys.argv) > 1 else None
-    print(f"\n🚀 Iniciando Coletor - Args: {args}")
+    modo = "simples"
+    if len(sys.argv) > 1:
+        arg = sys.argv[1].lower()
+        if arg in ["completo", "full", "7"]:
+            modo = "completo"
+        elif arg in ["simples", "simple", "3"]:
+            modo = "simples"
+    
+    print(f"\n🚀 Iniciando Coletor - Modo: {modo.upper()}")
     print(f"⏰ Horário: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
     with sync_playwright() as playwright:
-        run(playwright, args)
+        run(playwright, modo)
