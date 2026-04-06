@@ -123,7 +123,7 @@ RELATORIOS_COMPLETOS = {
         "nome_exibicao": "Instalações Não Visitadas"
     },
     "Instalações Não Visitadas (Histórico)": {
-        "pasta_sp": "BI_LEC/05_Nao_Visitadas_Historico",
+        "pasta_sp": "BI_LEC/05_N_Visitado_Historico",
         "pasta_local": "05_N_Visitado_Historico",
         "nome_base": "Instalações Não Visitadas",
         "regra_nome": "data_dia",
@@ -162,7 +162,7 @@ PASTAS_LOCAIS = {
     "02_PDL_Analitico": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\02_PDL_Analitico",
     "03_N_Lib_Fat_Diario": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\03_N_Lib_Fat_Diario",
     "04_N_Visitado_Diario": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\04_N_Visitado_Diario",
-    "05_N_Visitado_Historico": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\05_Nao_Visitadas_Historico",
+    "05_N_Visitado_Historico": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\05_N_Visitado_Historico",
     "06_Impedimentos": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\06_Impedimentos",
     "07_Entregas": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\07_Entregas"
 }
