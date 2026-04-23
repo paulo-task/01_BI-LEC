@@ -13,3 +13,145 @@
 [07/04/2026 17:51:22] - ERRO CRÍTICO NO WHATSAPP: Keyboard.press: Target page, context or browser has been closed
 [07/04/2026 17:51:23] - === FIM DA OPERAÇÃO ===
 
+[09/04/2026 19:26:26] - === INÍCIO DA OPERAÇÃO ===
+[09/04/2026 19:26:29] - Iniciando acesso direto ao Power BI...
+[09/04/2026 19:26:37] - Aguardando carregamento (20s)...
+[09/04/2026 19:27:05] - Filtrando PAULISTA...
+[09/04/2026 19:27:28] - Recorte concluído: PRINT_PAULI_2026_04_09_19-26.png
+[09/04/2026 19:27:28] - Filtrando PIRATININGA...
+[09/04/2026 19:27:50] - Recorte concluído: PRINT_PIRAT_2026_04_09_19-26.png
+[09/04/2026 19:28:02] - WhatsApp carregado.
+[09/04/2026 19:28:02] - Abrindo grupo: Gestão CPFL Paulista _ UEN 175
+[09/04/2026 19:28:04] - Digitou 'Gestão CPFL Paulista _ UEN 175', aguardando filtro...
+[09/04/2026 19:28:09] - ✅ Chat carregado: Gestão CPFL Paulista _ UEN 175
+[09/04/2026 19:28:11] - Arquivo anexado.
+[09/04/2026 19:28:12] - ✅ Enviado com sucesso para: Gestão CPFL Paulista _ UEN 175
+[09/04/2026 19:28:17] - Abrindo grupo: Gestão CPFL Piratininga
+[09/04/2026 19:28:18] - Digitou 'Gestão CPFL Piratininga', aguardando filtro...
+[09/04/2026 19:28:23] - ✅ Chat carregado: Gestão CPFL Piratininga
+[09/04/2026 19:28:25] - Arquivo anexado.
+[09/04/2026 19:28:25] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[09/04/2026 19:28:30] - Abrindo grupo: Informativos Administrativo Sorocaba
+[09/04/2026 19:28:31] - Digitou 'Informativos Administrativo Sorocaba', aguardando filtro...
+[09/04/2026 19:28:37] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[09/04/2026 19:28:38] - Arquivo anexado.
+[09/04/2026 19:28:38] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[09/04/2026 19:28:44] - === FIM DA OPERAÇÃO ===
+
+[10/04/2026 14:33:51] - === INÍCIO DA OPERAÇÃO ===
+[10/04/2026 14:33:59] - Iniciando acesso direto ao Power BI...
+[10/04/2026 14:34:19] - Aguardando carregamento (20s)...
+[10/04/2026 14:35:16] - ERRO POWER BI: Locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for get_by_role("tab", name="ELF Hora")
+    - locator resolved to <button role="tab" type="button" mat-list-item="" aria-selected="true" aria-disabled="false" pbitooltipalwaysshow="true" _ngcontent-ng-c3561657973="" aria-label="ELF Hora Selecionado" data-testid="pages-navigation-list-items" class="mat-mdc-list-item mdc-list-item exploration-fluent-li item trimmedTextWithEllipsis fluentTheme-sm-reg mat-mdc-list-item-interactive selected mat-mdc-list-item-single-line mdc-list-item--with-one-line ng-star-inserted">…</button>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - performing click action
+
+[14/04/2026 19:28:36] - === INÍCIO DA OPERAÇÃO ===
+[14/04/2026 19:28:39] - Iniciando acesso direto ao Power BI...
+[14/04/2026 19:28:45] - Aguardando carregamento (20s)...
+[14/04/2026 19:29:11] - Filtrando PAULISTA...
+[14/04/2026 19:29:32] - Recorte concluído: PRINT_PAULI_2026_04_14_19-28.png
+[14/04/2026 19:29:32] - Filtrando PIRATININGA...
+[14/04/2026 19:29:53] - Recorte concluído: PRINT_PIRAT_2026_04_14_19-28.png
+[14/04/2026 19:30:02] - WhatsApp carregado.
+[14/04/2026 19:30:02] - Abrindo grupo: Gestão CPFL Paulista _ UEN 175
+[14/04/2026 19:30:03] - Digitou 'Gestão CPFL Paulista _ UEN 175', aguardando filtro...
+[14/04/2026 19:30:08] - ✅ Chat carregado: Gestão CPFL Paulista _ UEN 175
+[14/04/2026 19:30:09] - Arquivo anexado.
+[14/04/2026 19:30:10] - ✅ Enviado com sucesso para: Gestão CPFL Paulista _ UEN 175
+[14/04/2026 19:30:15] - Abrindo grupo: Gestão CPFL Piratininga
+[14/04/2026 19:30:16] - Digitou 'Gestão CPFL Piratininga', aguardando filtro...
+[14/04/2026 19:30:21] - ✅ Chat carregado: Gestão CPFL Piratininga
+[14/04/2026 19:30:22] - Arquivo anexado.
+[14/04/2026 19:30:23] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[14/04/2026 19:30:28] - Abrindo grupo: Informativos Administrativo Sorocaba
+[14/04/2026 19:30:29] - Digitou 'Informativos Administrativo Sorocaba', aguardando filtro...
+[14/04/2026 19:30:34] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[14/04/2026 19:30:35] - Arquivo anexado.
+[14/04/2026 19:30:36] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[14/04/2026 19:30:42] - === FIM DA OPERAÇÃO ===
+
+[15/04/2026 17:27:52] - === INÍCIO DA OPERAÇÃO ===
+[15/04/2026 17:27:54] - Iniciando acesso direto ao Power BI...
+[15/04/2026 17:28:01] - Aguardando carregamento (20s)...
+[15/04/2026 17:28:28] - Filtrando PAULISTA...
+[15/04/2026 17:28:52] - Recorte concluído: PRINT_PAULI_2026_04_15_17-27.png
+[15/04/2026 17:28:52] - Filtrando PIRATININGA...
+[15/04/2026 19:32:19] - === INÍCIO DA OPERAÇÃO ===
+[15/04/2026 19:32:21] - Iniciando acesso direto ao Power BI...
+[15/04/2026 19:32:26] - Aguardando carregamento (20s)...
+[15/04/2026 19:32:46] - ERRO POWER BI: Locator.click: Target page, context or browser has been closed
+Browser logs:
+
+<launching> C:\Users\paulo.janio\AppData\Local\ms-playwright\chromium-1208\chrome-win64\chrome.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --no-sandbox --start-maximized --user-data-dir=C:\Temp\dados_navegador_print --remote-debugging-pipe about:blank
+<launched> pid=32952
+Call log:
+  - waiting for get_by_role("tab", name="ELF Hora")
+
+[15/04/2026 19:50:56] - === INÍCIO DA OPERAÇÃO ===
+[15/04/2026 19:51:00] - Iniciando acesso direto ao Power BI...
+[15/04/2026 19:51:19] - Aguardando carregamento (20s)...
+[15/04/2026 19:52:13] - ERRO POWER BI: Locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for get_by_role("tab", name="ELF Hora")
+    - locator resolved to <button role="tab" type="button" mat-list-item="" aria-selected="false" aria-disabled="false" aria-label="ELF Hora" pbitooltipalwaysshow="true" _ngcontent-ng-c3561657973="" data-testid="pages-navigation-list-items" class="mat-mdc-list-item mdc-list-item exploration-fluent-li item trimmedTextWithEllipsis fluentTheme-sm-reg mat-mdc-list-item-interactive mat-mdc-list-item-single-line mdc-list-item--with-one-line ng-star-inserted">…</button>
+  - attempting click action
+    - waiting for element to be visible, enabled and stable
+    - element is visible, enabled and stable
+    - scrolling into view if needed
+    - done scrolling
+    - performing click action
+    - click action done
+    - waiting for scheduled navigations to finish
+
+[15/04/2026 19:52:56] - === INÍCIO DA OPERAÇÃO ===
+[15/04/2026 19:53:35] - Iniciando acesso direto ao Power BI...
+[15/04/2026 19:55:04] - === INÍCIO DA OPERAÇÃO ===
+[15/04/2026 19:55:18] - Iniciando acesso direto ao Power BI...
+[15/04/2026 19:55:35] - Aguardando carregamento (20s)...
+[15/04/2026 19:56:30] - ERRO POWER BI: Locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for get_by_role("tab", name="ELF Hora")
+
+[17/04/2026 14:24:56] - === INÍCIO DA OPERAÇÃO ===
+[17/04/2026 14:25:09] - Iniciando acesso direto ao Power BI...
+[17/04/2026 14:25:23] - Aguardando carregamento (20s)...
+[17/04/2026 14:25:55] - Filtrando PAULISTA...
+[17/04/2026 14:26:24] - ERRO POWER BI: Page.screenshot: Target page, context or browser has been closed
+[17/04/2026 14:26:57] - ERRO CRÍTICO NO WHATSAPP: Page.wait_for_selector: Target page, context or browser has been closed
+Call log:
+  - waiting for locator("#pane-side") to be visible
+
+[17/04/2026 14:27:04] - === FIM DA OPERAÇÃO ===
+
+[20/04/2026 09:23:30] - === INÍCIO DA OPERAÇÃO ===
+[20/04/2026 09:23:30] - Iniciando acesso direto ao Power BI...
+[20/04/2026 09:23:34] - Aguardando carregamento (20s)...
+[20/04/2026 09:24:01] - Filtrando PAULISTA...
+[20/04/2026 09:24:23] - Recorte concluído: PRINT_PAULI_2026_04_20_09-23.png
+[20/04/2026 09:24:23] - Filtrando PIRATININGA...
+[20/04/2026 09:24:46] - Recorte concluído: PRINT_PIRAT_2026_04_20_09-23.png
+[20/04/2026 09:25:02] - WhatsApp carregado.
+[20/04/2026 09:25:02] - Abrindo grupo: Gestão CPFL Paulista _ UEN 175
+[20/04/2026 09:25:08] - Digitou 'Gestão CPFL Paulista _ UEN 175', aguardando filtro...
+[20/04/2026 09:25:14] - ✅ Chat carregado: Gestão CPFL Paulista _ UEN 175
+[20/04/2026 09:25:17] - Arquivo anexado.
+[20/04/2026 09:25:20] - ✅ Enviado com sucesso para: Gestão CPFL Paulista _ UEN 175
+[20/04/2026 09:25:25] - Abrindo grupo: Gestão CPFL Piratininga
+[20/04/2026 09:25:28] - Digitou 'Gestão CPFL Piratininga', aguardando filtro...
+[20/04/2026 09:25:33] - ✅ Chat carregado: Gestão CPFL Piratininga
+[20/04/2026 09:25:35] - Arquivo anexado.
+[20/04/2026 09:25:36] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[20/04/2026 09:25:41] - Abrindo grupo: Informativos Administrativo Sorocaba
+[20/04/2026 09:25:43] - Digitou 'Informativos Administrativo Sorocaba', aguardando filtro...
+[20/04/2026 09:25:48] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[20/04/2026 09:25:51] - Arquivo anexado.
+[20/04/2026 09:25:53] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[20/04/2026 09:26:01] - === FIM DA OPERAÇÃO ===
+
