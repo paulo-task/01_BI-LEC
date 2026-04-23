@@ -155,3 +155,4 @@ Call log:
 [20/04/2026 09:25:53] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
 [20/04/2026 09:26:01] - === FIM DA OPERAÇÃO ===
 
+[23/04/2026 10:30:14] - === INÍCIO DA OPERAÇÃO ===
