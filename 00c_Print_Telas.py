@@ -99,23 +99,22 @@ def abrir_grupo(page, grupo):
         search_box = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
         if not search_box.is_visible():
             search_box = page.locator("input[id='r_9']").first
-        if not search_box.is_visible():
-            search_box = page.locator("div[contenteditable='true'][data-testid='chat-list-search']").first
         
         search_box.wait_for(state="visible", timeout=15000)
         search_box.click()
+        time.sleep(0.5)
         
         page.keyboard.press("Control+A")
         page.keyboard.press("Backspace")
-        page.keyboard.type(grupo, delay=30)
+        
+        # Digita parte do nome para buscar
+        parte_busca = grupo.split()[0] + " " + grupo.split()[1] if len(grupo.split()) > 1 else grupo.split()[0]
+        search_box.fill(parte_busca)
         time.sleep(2)
         
-        resultado = page.locator("[id='r_9']").get_by_text(grupo, exact=False).first
-        if not resultado.is_visible():
-            resultado = page.locator("div[data-testid='chat-list']").get_by_text(grupo, exact=False).first
-        resultado.wait_for(state="visible", timeout=5000)
-        resultado.click()
-        time.sleep(2)
+        # Clica no grupo encontrado
+        page.get_by_text(grupo, exact=False).click()
+        time.sleep(3)
         
         page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=10000)
         salvar_log(f"✅ Chat carregado: {grupo}")
