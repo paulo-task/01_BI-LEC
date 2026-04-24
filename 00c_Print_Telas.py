@@ -88,7 +88,7 @@ def capturar_telas():
             salvar_log(f"ERRO POWER BI: {e}")
     return prints_gerados
 
-# --- FUNÇÃO AUXILIAR: ABRE O GRUPO ---
+# --- FUNÇÃO AUXILIAR: ABRE O GRUPO (WHATSAPP WEB) ---
 def abrir_grupo(page, grupo):
     salvar_log(f"Abrindo grupo: {grupo}")
     try:
@@ -96,7 +96,12 @@ def abrir_grupo(page, grupo):
             page.keyboard.press("Escape")
             time.sleep(0.5)
 
-        search_box = page.locator("[id='_r_a_'], [role='textbox'][name*='Pesquisar'], div[data-tab='3']").first
+        search_box = page.locator("div[contenteditable='true'][data-testid='chat-list-search']").first
+        if not search_box.is_visible():
+            search_box = page.locator("input[title='Pesquisar ou começar uma nova conversa']").first
+        if not search_box.is_visible():
+            search_box = page.locator("label[role='textbox']").first
+        
         search_box.wait_for(state="visible", timeout=15000)
         search_box.click()
         
@@ -107,18 +112,19 @@ def abrir_grupo(page, grupo):
         salvar_log(f"Digitou '{grupo}', aguardando filtro...")
         time.sleep(5) 
 
-        resultado = page.locator("#pane-side").get_by_text(grupo, exact=False).first
+        resultado = page.locator("div[data-testid='chat-list']").get_by_text(grupo, exact=False).first
+        if not resultado.is_visible():
+            resultado = page.locator("#pane-side").get_by_text(grupo, exact=False).first
         resultado.click()
-        page.keyboard.press("Enter")
         
-        page.locator("#main").wait_for(state="visible", timeout=10000)
+        page.locator("div[role='textbox']").wait_for(state="visible", timeout=10000)
         salvar_log(f"✅ Chat carregado: {grupo}")
         return True
     except Exception as e:
         salvar_log(f"❌ Erro ao abrir {grupo}: {e}")
         return False
 
-# --- FUNÇÃO DE ENVIO WHATSAPP (AJUSTADA COM NOVO BOTÃO ENVIAR) ---
+# --- FUNÇÃO DE ENVIO WHATSAPP (AJUSTADA PARA WHATSAPP WEB) ---
 def enviar_para_grupos(dicionario_prints):
     regras = [
         {"arquivo": dicionario_prints["PAULISTA"],    "grupos": ["Gestão CPFL Paulista _ UEN 175"]},
@@ -134,7 +140,7 @@ def enviar_para_grupos(dicionario_prints):
         page.goto("https://web.whatsapp.com")
 
         try:
-            page.wait_for_selector("#pane-side", timeout=90000)
+            page.wait_for_selector("div[data-testid='chat-list']", timeout=90000)
             salvar_log("WhatsApp carregado.")
 
             for regra in regras:
@@ -145,22 +151,28 @@ def enviar_para_grupos(dicionario_prints):
                     if not abrir_grupo(page, grupo): continue
 
                     try:
-                        # Clique em Anexar
-                        btn_anexar = page.get_by_role("button", name="Anexar")
+                        time.sleep(2)
+                        
+                        # Clique em Anexar (WhatsApp Web)
+                        btn_anexar = page.locator("span[data-testid='corner-attachment']").first
+                        if not btn_anexar.is_visible():
+                            btn_anexar = page.locator("div[aria-label='Anexar']").first
                         btn_anexar.wait_for(state="visible", timeout=10000)
                         btn_anexar.click()
                         time.sleep(1)
 
                         # Seleção do arquivo
                         with page.expect_file_chooser() as fc_info:
-                            page.get_by_text("Fotos e vídeos").click()
+                            page.locator("li[data-animations='popover']:has-text('Fotos e vídeos')").click()
                         
                         fc_info.value.set_files(arquivo)
                         salvar_log("Arquivo anexado.")
+                        time.sleep(2)
 
-                        # --- AJUSTE AQUI: Novo Seletor para o Botão de Enviar ---
-                        # Busca pelo ícone tradicional OU pelo novo 'wds-ic-send-filled' que você identificou
-                        btn_enviar = page.locator("span[data-icon='send'], span[data-icon='wds-ic-send-filled']").first
+                        # Botão de Enviar (WhatsApp Web)
+                        btn_enviar = page.locator("span[data-testid='corner-send']").first
+                        if not btn_enviar.is_visible():
+                            btn_enviar = page.locator("div[aria-label='Enviar']").first
                         btn_enviar.wait_for(state="visible", timeout=15000)
                         btn_enviar.click()
                         
