@@ -96,35 +96,36 @@ def abrir_grupo(page, grupo):
             page.keyboard.press("Escape")
             time.sleep(0.5)
 
-        search_box = page.locator("div[contenteditable='true'][data-testid='chat-list-search']").first
+        search_box = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
         if not search_box.is_visible():
-            search_box = page.locator("input[title='Pesquisar ou começar uma nova conversa']").first
+            search_box = page.locator("input[id='r_9']").first
         if not search_box.is_visible():
-            search_box = page.locator("label[role='textbox']").first
+            search_box = page.locator("div[contenteditable='true'][data-testid='chat-list-search']").first
         
         search_box.wait_for(state="visible", timeout=15000)
         search_box.click()
         
         page.keyboard.press("Control+A")
         page.keyboard.press("Backspace")
-        page.keyboard.type(grupo, delay=50)
+        search_box.fill(grupo)
+        search_box.press("Enter")
         
         salvar_log(f"Digitou '{grupo}', aguardando filtro...")
         time.sleep(5) 
 
-        resultado = page.locator("div[data-testid='chat-list']").get_by_text(grupo, exact=False).first
+        resultado = page.locator("[id='r_9']").get_by_text(grupo, exact=False).first
         if not resultado.is_visible():
-            resultado = page.locator("#pane-side").get_by_text(grupo, exact=False).first
+            resultado = page.locator("div[data-testid='chat-list']").get_by_text(grupo, exact=False).first
         resultado.click()
         
-        page.locator("div[role='textbox']").wait_for(state="visible", timeout=10000)
+        page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=10000)
         salvar_log(f"✅ Chat carregado: {grupo}")
         return True
     except Exception as e:
         salvar_log(f"❌ Erro ao abrir {grupo}: {e}")
         return False
 
-# --- FUNÇÃO DE ENVIO WHATSAPP (AJUSTADA PARA WHATSAPP WEB) ---
+# --- FUNÇÃO DE ENVIO WHATSAPP (WHATSAPP WEB) ---
 def enviar_para_grupos(dicionario_prints):
     regras = [
         {"arquivo": dicionario_prints["PAULISTA"],    "grupos": ["Gestão CPFL Paulista _ UEN 175"]},
@@ -140,7 +141,7 @@ def enviar_para_grupos(dicionario_prints):
         page.goto("https://web.whatsapp.com")
 
         try:
-            page.wait_for_selector("div[data-testid='chat-list']", timeout=90000)
+            page.get_by_role("textbox", name="Pesquisar ou começar uma nova").wait_for(state="visible", timeout=90000)
             salvar_log("WhatsApp carregado.")
 
             for regra in regras:
@@ -153,26 +154,22 @@ def enviar_para_grupos(dicionario_prints):
                     try:
                         time.sleep(2)
                         
-                        # Clique em Anexar (WhatsApp Web)
-                        btn_anexar = page.locator("span[data-testid='corner-attachment']").first
-                        if not btn_anexar.is_visible():
-                            btn_anexar = page.locator("div[aria-label='Anexar']").first
+                        # Clique em Anexar
+                        btn_anexar = page.get_by_role("button", name="Anexar")
                         btn_anexar.wait_for(state="visible", timeout=10000)
                         btn_anexar.click()
                         time.sleep(1)
 
                         # Seleção do arquivo
                         with page.expect_file_chooser() as fc_info:
-                            page.locator("li[data-animations='popover']:has-text('Fotos e vídeos')").click()
+                            page.get_by_role("menuitem", name="Fotos e vídeos").click()
                         
                         fc_info.value.set_files(arquivo)
                         salvar_log("Arquivo anexado.")
                         time.sleep(2)
 
-                        # Botão de Enviar (WhatsApp Web)
-                        btn_enviar = page.locator("span[data-testid='corner-send']").first
-                        if not btn_enviar.is_visible():
-                            btn_enviar = page.locator("div[aria-label='Enviar']").first
+                        # Botão de Enviar
+                        btn_enviar = page.get_by_role("button", name="Enviar")
                         btn_enviar.wait_for(state="visible", timeout=15000)
                         btn_enviar.click()
                         
