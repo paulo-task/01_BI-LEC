@@ -107,7 +107,7 @@ def abrir_grupo(page, grupo):
         
         page.keyboard.press("Control+A")
         page.keyboard.press("Backspace")
-        search_box.fill(grupo)
+        page.keyboard.type(grupo, delay=50)
         
         salvar_log(f"Digitou '{grupo}', aguardando filtro...")
         time.sleep(5) 
