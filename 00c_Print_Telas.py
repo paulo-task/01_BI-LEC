@@ -107,9 +107,15 @@ def abrir_grupo(page, grupo):
         
         page.keyboard.press("Control+A")
         page.keyboard.press("Backspace")
-        search_box.fill(grupo)
-        search_box.press("Enter")
-        time.sleep(3)
+        page.keyboard.type(grupo, delay=30)
+        time.sleep(2)
+        
+        resultado = page.locator("[id='r_9']").get_by_text(grupo, exact=False).first
+        if not resultado.is_visible():
+            resultado = page.locator("div[data-testid='chat-list']").get_by_text(grupo, exact=False).first
+        resultado.wait_for(state="visible", timeout=5000)
+        resultado.click()
+        time.sleep(2)
         
         page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=10000)
         salvar_log(f"✅ Chat carregado: {grupo}")
