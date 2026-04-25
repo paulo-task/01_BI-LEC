@@ -30,19 +30,16 @@ jobs:
           playwright install chromium --with-deps
 
       - name: 🚀 4. Executar 02_PDL_Analitico
-        working-directory: ./01_LEC
         run: python3 02_PDL_Analitico.py
 
       - name: ⏳ 5. Aguardar 6 minutos (portal processar)
         run: sleep 360
 
       - name: 🚀 6. Executar 04_Nao_Visitadas
-        working-directory: ./01_LEC
         run: python3 04_Nao_Visitadas.py
 
       - name: ⏳ 7. Aguardar 4 minutos (portal processar)
         run: sleep 240
 
       - name: 🚀 8. Executar 00b_Coletor_FDS
-        working-directory: ./01_LEC
         run: python3 00b_Coletor_FDS.py
