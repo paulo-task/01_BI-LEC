@@ -1,0 +1,22 @@
+[24/04/2026 14:21:55] - === INÍCIO DA OPERAÇÃO ===
+[24/04/2026 14:21:57] - Iniciando acesso direto ao Power BI...
+[24/04/2026 14:22:00] - Aguardando carregamento (20s)...
+[24/04/2026 14:22:27] - Filtrando PAULISTA...
+[24/04/2026 14:22:47] - Recorte concluído: PRINT_PAULI_2026_04_24_14-21.png
+[24/04/2026 14:22:47] - Filtrando PIRATININGA...
+[24/04/2026 14:23:08] - Recorte concluído: PRINT_PIRAT_2026_04_24_14-21.png
+[24/04/2026 14:23:16] - WhatsApp carregado.
+[24/04/2026 14:23:16] - Abrindo grupo: Gestão CPFL Paulista _ UEN 175
+[24/04/2026 14:23:23] - ✅ Chat carregado: Gestão CPFL Paulista _ UEN 175
+[24/04/2026 14:23:26] - Arquivo anexado.
+[24/04/2026 14:23:28] - ✅ Enviado com sucesso para: Gestão CPFL Paulista _ UEN 175
+[24/04/2026 14:23:33] - Abrindo grupo: Gestão CPFL Piratininga
+[24/04/2026 14:23:40] - ✅ Chat carregado: Gestão CPFL Piratininga
+[24/04/2026 14:23:43] - Arquivo anexado.
+[24/04/2026 14:23:45] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[24/04/2026 14:23:51] - Abrindo grupo: Informativos Administrativo Sorocaba
+[24/04/2026 14:23:57] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[24/04/2026 14:24:00] - Arquivo anexado.
+[24/04/2026 14:24:03] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[24/04/2026 14:24:08] - === FIM DA OPERAÇÃO ===
+
