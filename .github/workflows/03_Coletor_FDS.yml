@@ -37,4 +37,4 @@ jobs:
       - name: 🚀 4. Executar Script de FDS e Coletor
         # Aqui você coloca o nome do seu script que roda aos sábados
         # Se for o mesmo 00_Coletor.py, mantenha assim:
-        run: python3 00_Coletor.py
+        run: python3 00b_Coletor_FDS.py
