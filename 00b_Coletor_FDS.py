@@ -34,15 +34,18 @@ print("✅ Credenciais CPFL carregadas")
 # =================================================================
 # 2. DETECTAR AMBIENTE
 # =================================================================
+import platform
+
 def is_github_actions():
     return os.getenv("GITHUB_ACTIONS") == "true"
 
-if is_github_actions():
-    USE_HEADLESS = True
-    print("🏗️ Ambiente: GitHub Actions (modo headless)")
+# Headless em qualquer Linux (GitHub Actions ou não)
+USE_HEADLESS = platform.system() != "Windows"
+
+if USE_HEADLESS:
+    print("🏗️ Ambiente: Linux/GitHub Actions (modo headless)")
 else:
-    USE_HEADLESS = False
-    print("🖥️ Ambiente: Local (modo visível)")
+    print("🖥️ Ambiente: Windows/Local (modo visível)")
 
 # =================================================================
 # 3. RELATÓRIOS DO FDS (PDL + Não Visitadas)
