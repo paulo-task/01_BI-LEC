@@ -107,14 +107,8 @@ def abrir_grupo(page, grupo):
         page.keyboard.press("Control+A")
         page.keyboard.press("Backspace")
         
-        # Digita parte do nome para buscar
-        parte_busca = grupo.split()[0] + " " + grupo.split()[1] if len(grupo.split()) > 1 else grupo.split()[0]
-        
-        # Para Paulista, usa nome mais específico
-        if "Paulista" in grupo:
-            parte_busca = "Paulista_UEN" if "_UEN" in grupo else "Paulista"
-        
-        search_box.fill(parte_busca)
+        # Digita o nome completo do grupo para buscar
+        search_box.fill(grupo)
         time.sleep(2)
         
         # Clica no grupo encontrado
@@ -131,7 +125,7 @@ def abrir_grupo(page, grupo):
 # --- FUNÇÃO DE ENVIO WHATSAPP (WHATSAPP WEB) ---
 def enviar_para_grupos(dicionario_prints):
     regras = [
-        {"arquivo": dicionario_prints["PAULISTA"],    "grupos": ["GESTÃO CPFL Paulista_UEN 175"]},
+        {"arquivo": dicionario_prints["PAULISTA"],    "grupos": ["Gestão CPFL Paulista"]},
         {"arquivo": dicionario_prints["PIRATININGA"], "grupos": ["Gestão CPFL Piratininga", "Informativos Administrativo Sorocaba"]}
     ]
 
