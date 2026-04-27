@@ -107,12 +107,12 @@ def abrir_grupo(page, grupo):
         page.keyboard.press("Control+A")
         page.keyboard.press("Backspace")
         
-        # Digita o nome completo do grupo para busca precisa
+        # Digita o nome completo do grupo para busca
         search_box.fill(grupo)
         time.sleep(2)
         
-        # Clica no grupo encontrado (exact match)
-        page.get_by_text(grupo, exact=True).click()
+        # Clica no grupo encontrado (sem exact para aceitar variações)
+        page.get_by_text(grupo, exact=False).click()
         time.sleep(3)
         
         page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=10000)
@@ -125,7 +125,7 @@ def abrir_grupo(page, grupo):
 # --- FUNÇÃO DE ENVIO WHATSAPP (WHATSAPP WEB) ---
 def enviar_para_grupos(dicionario_prints):
     regras = [
-        {"arquivo": dicionario_prints["PAULISTA"],    "grupos": ["Gestão CPFL Paulista _ UEN 175"]},
+        {"arquivo": dicionario_prints["PAULISTA"],    "grupos": ["GESTÃO CPFL Paulista_UEN 175"]},
         {"arquivo": dicionario_prints["PIRATININGA"], "grupos": ["Gestão CPFL Piratininga", "Informativos Administrativo Sorocaba"]}
     ]
 
