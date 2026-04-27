@@ -107,13 +107,12 @@ def abrir_grupo(page, grupo):
         page.keyboard.press("Control+A")
         page.keyboard.press("Backspace")
         
-        # Digita parte do nome para buscar
-        parte_busca = grupo.split()[0] + " " + grupo.split()[1] if len(grupo.split()) > 1 else grupo.split()[0]
-        search_box.fill(parte_busca)
+        # Digita o nome completo do grupo para busca precisa
+        search_box.fill(grupo)
         time.sleep(2)
         
-        # Clica no grupo encontrado
-        page.get_by_text(grupo, exact=False).click()
+        # Clica no grupo encontrado (exact match)
+        page.get_by_text(grupo, exact=True).click()
         time.sleep(3)
         
         page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=10000)
