@@ -92,30 +92,33 @@ def capturar_telas():
 def abrir_grupo(page, grupo):
     salvar_log(f"Abrindo grupo: {grupo}")
     try:
-        for _ in range(3):
+        for _ in range(2):
             page.keyboard.press("Escape")
-            time.sleep(0.3)
+            time.sleep(0.5)
 
-        time.sleep(1)
+        search_box = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
+        if not search_box.is_visible():
+            search_box = page.locator("input[id='r_9']").first
         
-        # Procura a caixa de busca
-        search_box = page.locator("div[contenteditable='true'][role='textbox']").first
         search_box.wait_for(state="visible", timeout=15000)
         search_box.click()
         time.sleep(0.5)
         
         page.keyboard.press("Control+A")
         page.keyboard.press("Backspace")
-        time.sleep(0.5)
         
-        # Digita o nome do grupo
-        search_box.fill(grupo)
-        time.sleep(3)
+        # Digita parte do nome para buscar
+        parte_busca = grupo.split()[0] + " " + grupo.split()[1] if len(grupo.split()) > 1 else grupo.split()[0]
         
-        # Clica no primeiro resultado da lista
-        grupo_selecionado = page.locator("div[role='listbox'] div[role='option']").first
-        grupo_selecionado.wait_for(state="visible", timeout=10000)
-        grupo_selecionado.click()
+        # Para Paulista, usa nome mais específico
+        if "Paulista" in grupo:
+            parte_busca = "Paulista_UEN" if "_UEN" in grupo else "Paulista"
+        
+        search_box.fill(parte_busca)
+        time.sleep(2)
+        
+        # Clica no grupo encontrado
+        page.get_by_text(grupo, exact=False).click()
         time.sleep(3)
         
         page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=10000)
