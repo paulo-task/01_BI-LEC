@@ -149,24 +149,28 @@ def enviar_para_grupos(dicionario_prints):
                     if not abrir_grupo(page, grupo): continue
 
                     try:
+                        time.sleep(3)
+                        
+                        # Espera a caixa de mensagem aparecer
+                        page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=15000)
                         time.sleep(2)
                         
-                        # Clique em Anexar
-                        btn_anexar = page.get_by_role("button", name="Anexar")
+                        # Clique em Anexar (botão +)
+                        btn_anexar = page.locator("button[data-testid='compose-btn-attach']").first
                         btn_anexar.wait_for(state="visible", timeout=10000)
                         btn_anexar.click()
                         time.sleep(1)
 
                         # Seleção do arquivo
                         with page.expect_file_chooser() as fc_info:
-                            page.get_by_role("menuitem", name="Fotos e vídeos").click()
+                            page.locator("li[data-testid='attach-menu-item-image']").click()
                         
                         fc_info.value.set_files(arquivo)
                         salvar_log("Arquivo anexado.")
-                        time.sleep(2)
+                        time.sleep(3)
 
                         # Botão de Enviar
-                        btn_enviar = page.get_by_role("button", name="Enviar")
+                        btn_enviar = page.locator("button[data-testid='compose-btn-send']").first
                         btn_enviar.wait_for(state="visible", timeout=15000)
                         btn_enviar.click()
                         
