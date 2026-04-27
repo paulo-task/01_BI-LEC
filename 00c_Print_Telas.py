@@ -92,27 +92,30 @@ def capturar_telas():
 def abrir_grupo(page, grupo):
     salvar_log(f"Abrindo grupo: {grupo}")
     try:
-        for _ in range(2):
+        for _ in range(3):
             page.keyboard.press("Escape")
-            time.sleep(0.5)
+            time.sleep(0.3)
 
-        search_box = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
-        if not search_box.is_visible():
-            search_box = page.locator("input[id='r_9']").first
+        time.sleep(1)
         
+        # Procura a caixa de busca
+        search_box = page.locator("div[contenteditable='true'][role='textbox']").first
         search_box.wait_for(state="visible", timeout=15000)
         search_box.click()
         time.sleep(0.5)
         
         page.keyboard.press("Control+A")
         page.keyboard.press("Backspace")
+        time.sleep(0.5)
         
-        # Digita o nome completo do grupo para busca
+        # Digita o nome do grupo
         search_box.fill(grupo)
-        time.sleep(2)
+        time.sleep(3)
         
-        # Clica no grupo encontrado (sem exact para aceitar variações)
-        page.get_by_text(grupo, exact=False).click()
+        # Clica no primeiro resultado da lista
+        grupo_selecionado = page.locator("div[role='listbox'] div[role='option']").first
+        grupo_selecionado.wait_for(state="visible", timeout=10000)
+        grupo_selecionado.click()
         time.sleep(3)
         
         page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=10000)
