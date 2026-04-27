@@ -112,7 +112,7 @@ def abrir_grupo(page, grupo):
         time.sleep(2)
         
         # Clica no grupo encontrado
-        page.get_by_text(grupo, exact=False).click()
+        page.get_by_text(grupo, exact=False).first.click()
         time.sleep(3)
         
         page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=10000)
@@ -150,11 +150,6 @@ def enviar_para_grupos(dicionario_prints):
 
                     try:
                         time.sleep(2)
-                        
-                        # Para Paulista, clica primeiro na caixa de mensagem
-                        if "Paulista" in grupo:
-                            page.get_by_test_id("conversation-compose-box-input").click()
-                            time.sleep(1)
                         
                         # Clique em Anexar
                         btn_anexar = page.get_by_role("button", name="Anexar")
