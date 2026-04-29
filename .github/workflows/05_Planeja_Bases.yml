@@ -6,7 +6,7 @@ on:
 jobs:
   executar_planejamento:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     env:
       TZ: America/Sao_Paulo
@@ -48,9 +48,9 @@ jobs:
       - name: 🚀 4. Executar Planejamento Q1
         run: python3 -u 15_Planeja_Bases_Q1.py
 
-      - name: ⏳ 5. Aguardar (60s)
+      - name: ⏳ 5. Aguardar (10s)
         if: steps.check_day.outputs.rodar_q2 == 'true'
-        run: sleep 60
+        run: sleep 10
 
       - name: 🚀 6. Executar Planejamento Q2 + Upload SharePoint
         if: steps.check_day.outputs.rodar_q2 == 'true'
