@@ -92,26 +92,34 @@ def capturar_telas():
 def abrir_grupo(page, grupo):
     salvar_log(f"Abrindo grupo: {grupo}")
     try:
-        for _ in range(2):
+        # Fecha qualquer overlay/menu aberto
+        for _ in range(3):
             page.keyboard.press("Escape")
-            time.sleep(0.5)
-
+            time.sleep(0.3)
+        
+        # Usa atalho Ctrl+F para garantir foco na barra de busca
+        time.sleep(1)
+        
+        # Tenta localizar a barra de pesquisa
         search_box = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
-        if not search_box.is_visible():
-            search_box = page.locator("input[id='r_9']").first
+        if not search_box.is_visible(timeout=3000):
+            # Fallback: clica na área de pesquisa via atalho
+            page.keyboard.press("Control+f")
+            time.sleep(1)
+            search_box = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
         
         search_box.wait_for(state="visible", timeout=15000)
         search_box.click()
         time.sleep(0.5)
         
+        # Limpa e digita o nome do grupo
         page.keyboard.press("Control+A")
         page.keyboard.press("Backspace")
-        
-        # Digita o nome completo do grupo para buscar
+        time.sleep(0.3)
         search_box.fill(grupo)
-        time.sleep(2)
+        time.sleep(3)
         
-        # Clica no grupo encontrado
+        # Clica no grupo encontrado nos resultados
         page.get_by_text(grupo, exact=False).first.click()
         time.sleep(3)
         
@@ -170,7 +178,7 @@ def enviar_para_grupos(dicionario_prints):
                         btn_enviar.click()
                         
                         salvar_log(f"✅ Enviado com sucesso para: {grupo}")
-                        time.sleep(5) 
+                        time.sleep(8) 
                         
                     except Exception as e:
                         salvar_log(f"⚠️ Falha no envio em {grupo}: {e}")
