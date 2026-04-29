@@ -1,0 +1,106 @@
+name: 📋 05 Planejamento Bases (Q1 + Q2)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  executar_planejamento:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      TZ: America/Sao_Paulo
+      CPFL_USER: ${{ secrets.CPFL_USER }}
+      CPFL_PASS: ${{ secrets.CPFL_PASS }}
+      SP_CLIENT_ID: ${{ secrets.SP_CLIENT_ID }}
+      SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
+      SP_TENANT_ID: ${{ secrets.SP_TENANT_ID }}
+      PYTHONUNBUFFERED: 1
+
+    steps:
+      - name: 📅 0. Verificar dia do mês
+        id: check_day
+        run: |
+          DIA=$(TZ=America/Sao_Paulo date +%d)
+          echo "dia=$DIA" >> $GITHUB_OUTPUT
+          if [ "$DIA" -ge 16 ]; then
+            echo "rodar_q2=true" >> $GITHUB_OUTPUT
+            echo "Dia $DIA - Rodará Q1 + Q2"
+          else
+            echo "rodar_q2=false" >> $GITHUB_OUTPUT
+            echo "Dia $DIA - Rodará apenas Q1"
+          fi
+
+      - name: 📥 1. Sincronizar Repositório
+        uses: actions/checkout@v4
+
+      - name: 🐍 2. Preparar Ambiente Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 📦 3. Instalar Bibliotecas
+        run: |
+          pip install --upgrade pip
+          pip install playwright pandas requests
+          playwright install chromium --with-deps
+
+      - name: 🚀 4. Executar Planejamento Q1
+        run: python3 -u 15_Planeja_Bases_Q1.py
+
+      - name: ⏳ 5. Aguardar (60s)
+        if: steps.check_day.outputs.rodar_q2 == 'true'
+        run: sleep 60
+
+      - name: 🚀 6. Executar Planejamento Q2 + Upload SharePoint
+        if: steps.check_day.outputs.rodar_q2 == 'true'
+        run: python3 -u 15_Planeja_Bases_Q2.py
+
+      - name: ☁️ 7. Upload Q1 para SharePoint (dias 1-15)
+        if: steps.check_day.outputs.rodar_q2 == 'false'
+        run: |
+          python3 -c "
+          import os, glob, requests
+          from urllib.parse import urlparse
+
+          SP_CLIENT_ID = os.getenv('SP_CLIENT_ID','').strip()
+          SP_CLIENT_SECRET = os.getenv('SP_CLIENT_SECRET','').strip()
+          SP_TENANT_ID = os.getenv('SP_TENANT_ID','').strip()
+          if not SP_CLIENT_ID:
+              print('⚠️ SharePoint: credenciais não configuradas')
+              exit(0)
+
+          arquivos = glob.glob('downloads/Planejamento_Base_*.csv')
+          if not arquivos:
+              print('Nenhum arquivo para upload')
+              exit(0)
+
+          caminho = arquivos[0]
+          nome = os.path.basename(caminho)
+
+          r = requests.post(
+              f'https://login.microsoftonline.com/{SP_TENANT_ID}/oauth2/v2.0/token',
+              data={'grant_type':'client_credentials','client_id':SP_CLIENT_ID,'client_secret':SP_CLIENT_SECRET,'scope':'https://graph.microsoft.com/.default'}
+          )
+          r.raise_for_status()
+          token = r.json()['access_token']
+          headers = {'Authorization': f'Bearer {token}'}
+
+          parsed = urlparse('https://engelmigproject.sharepoint.com/sites/LEC_ENGELMIG')
+          r = requests.get(f'https://graph.microsoft.com/v1.0/sites/{parsed.netloc}:/{parsed.path.strip(\"/\")}', headers=headers)
+          r.raise_for_status()
+          site_id = r.json()['id']
+
+          r = requests.get(f'https://graph.microsoft.com/v1.0/sites/{site_id}/drives', headers=headers)
+          r.raise_for_status()
+          drive_id = next(d['id'] for d in r.json()['value'] if d['name']=='Workspace')
+
+          with open(caminho,'rb') as f:
+              r = requests.put(
+                  f'https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/root:/BI_LEC/15_Planeja_Bases/{nome}:/content',
+                  headers={**headers,'Content-Type':'application/octet-stream'},
+                  data=f.read()
+              )
+          r.raise_for_status()
+          print(f'☁️ Upload SharePoint: {nome}')
+          "
