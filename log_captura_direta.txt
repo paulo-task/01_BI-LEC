@@ -595,3 +595,7 @@ Call log:
 [29/04/2026 14:19:49] - Filtrando PAULISTA...
 [29/04/2026 14:20:20] - Recorte concluído: PRINT_PAULI_2026_04_29_14-19.png
 [29/04/2026 14:20:20] - Filtrando PIRATININGA...
+[29/04/2026 14:20:42] - Recorte concluído: PRINT_PIRAT_2026_04_29_14-19.png
+[29/04/2026 14:21:01] - WhatsApp carregado.
+[29/04/2026 14:21:01] - Abrindo grupo: Gestão CPFL Paulista
+[29/04/2026 14:21:10] - ✅ Chat carregado: Gestão CPFL Paulista
