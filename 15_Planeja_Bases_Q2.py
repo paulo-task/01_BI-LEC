@@ -190,7 +190,7 @@ def run(playwright: Playwright) -> None:
                         info.append(data_atual_str) # Adiciona DT_RELATORIO identico ao script 1
                         dados_totais.append(info)
 
-            page.locator(".rc-tree-checkbox.rc-tree-checkbox-checked").click()
+            page.locator(".rc-tree-checkbox.rc-tree-checkbox-checked").click(force=True)
             page.wait_for_timeout(500)
 
         # --- LÓGICA DE MESCLAGEM (APPEND SEM CABEÇALHO) ---

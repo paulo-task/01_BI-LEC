@@ -127,7 +127,7 @@ def run(playwright: Playwright) -> None:
                         info.append(data_atual_str) 
                         dados_totais.append(info)
 
-            page.locator(".rc-tree-checkbox.rc-tree-checkbox-checked").click()
+            page.locator(".rc-tree-checkbox.rc-tree-checkbox-checked").click(force=True)
             page.wait_for_timeout(500)
 
         if dados_totais:
