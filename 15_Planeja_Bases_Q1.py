@@ -114,7 +114,13 @@ def run(playwright: Playwright) -> None:
 
             page.wait_for_timeout(3000)
             page.get_by_title("Filtrar por data prevista").click()
-            page.wait_for_timeout(12000) 
+            
+            # Primeira base do dia demora mais para o servidor responder
+            tempo_espera = 30000 if i == 0 else 12000
+            page.wait_for_timeout(tempo_espera)
+            
+            # Aguarda tabela estar presente
+            page.locator("tbody tr").first.wait_for(state="visible", timeout=30000) 
 
             linhas = page.locator("tbody tr").all()
             for linha in linhas:
