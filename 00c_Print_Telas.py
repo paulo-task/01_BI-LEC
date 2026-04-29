@@ -151,13 +151,21 @@ def enviar_para_grupos(dicionario_prints):
                     try:
                         time.sleep(2)
                         
-                        # Anexa arquivo direto no compose box (método codegen)
-                        page.get_by_test_id("conversation-compose-box-input").set_input_files(arquivo)
+                        # Clique em Anexar
+                        btn_anexar = page.get_by_role("button", name="Anexar")
+                        btn_anexar.wait_for(state="visible", timeout=10000)
+                        btn_anexar.click()
+                        time.sleep(1)
+
+                        # Seleção do arquivo via Fotos e vídeos
+                        with page.expect_file_chooser() as fc_info:
+                            page.get_by_role("menuitem", name="Fotos e vídeos").click()
+                        fc_info.value.set_files(arquivo)
                         salvar_log("Arquivo anexado.")
                         time.sleep(2)
 
-                        # Botão de Enviar (na tela de pré-visualização)
-                        btn_enviar = page.get_by_test_id("drawer-middle").locator('[aria-label="Enviar"]')
+                        # Botão de Enviar (primeiro match dentro da pré-visualização)
+                        btn_enviar = page.get_by_test_id("drawer-middle").get_by_role("button", name="Enviar").first
                         btn_enviar.wait_for(state="visible", timeout=15000)
                         btn_enviar.click()
                         
