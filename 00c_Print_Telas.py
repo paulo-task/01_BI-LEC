@@ -157,7 +157,7 @@ def enviar_para_grupos(dicionario_prints):
                         time.sleep(2)
 
                         # Botão de Enviar (na tela de pré-visualização)
-                        btn_enviar = page.get_by_test_id("drawer-middle").get_by_role("button", name="Enviar")
+                        btn_enviar = page.get_by_test_id("drawer-middle").locator('[aria-label="Enviar"]')
                         btn_enviar.wait_for(state="visible", timeout=15000)
                         btn_enviar.click()
                         
