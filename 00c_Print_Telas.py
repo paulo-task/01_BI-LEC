@@ -165,8 +165,8 @@ def enviar_para_grupos(dicionario_prints):
                         salvar_log("Arquivo anexado.")
                         time.sleep(2)
 
-                        # Botão de Enviar
-                        btn_enviar = page.get_by_role("button", name="Enviar")
+                        # Botão de Enviar (na tela de pré-visualização)
+                        btn_enviar = page.get_by_test_id("drawer-middle").get_by_role("button", name="Enviar")
                         btn_enviar.wait_for(state="visible", timeout=15000)
                         btn_enviar.click()
                         
@@ -175,8 +175,16 @@ def enviar_para_grupos(dicionario_prints):
                         
                     except Exception as e:
                         salvar_log(f"⚠️ Falha no envio em {grupo}: {e}")
-                        page.keyboard.press("Escape")
-                        page.keyboard.press("Escape")
+                        # Fecha qualquer tela aberta (pré-visualização, menus, etc.)
+                        for _ in range(5):
+                            page.keyboard.press("Escape")
+                            time.sleep(0.5)
+                        # Aguarda a tela principal do WhatsApp voltar
+                        try:
+                            page.get_by_role("textbox", name="Pesquisar ou começar uma nova").wait_for(state="visible", timeout=10000)
+                            salvar_log("✅ Tela principal recuperada, continuando...")
+                        except:
+                            salvar_log("⚠️ Não conseguiu voltar à tela principal, tentando próximo grupo mesmo assim...")
 
             context.close()
         except Exception as e:
