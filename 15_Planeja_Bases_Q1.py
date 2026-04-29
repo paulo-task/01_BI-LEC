@@ -1,23 +1,38 @@
 import os
 import pandas as pd
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from playwright.sync_api import Playwright, sync_playwright
-from dotenv import load_dotenv
 
-# Carrega as variáveis do arquivo .env
-load_dotenv(dotenv_path=".pass")
+# --- DETECÇÃO DE AMBIENTE ---
+IS_GITHUB = os.getenv('GITHUB_ACTIONS') == 'true'
+FUSO_SP = ZoneInfo('America/Sao_Paulo')
 
-# Recupera os dados centralizados
-usuario = os.getenv("CPFL_USER")
-senha = os.getenv("CPFL_PASS")
+if IS_GITHUB:
+    usuario = os.getenv("CPFL_USER")
+    senha = os.getenv("CPFL_PASS")
+else:
+    from dotenv import load_dotenv
+    load_dotenv(dotenv_path=".pass")
+    usuario = os.getenv("CPFL_USER")
+    senha = os.getenv("CPFL_PASS")
+
+def get_diretorio_destino():
+    if IS_GITHUB:
+        path = os.path.join(os.getcwd(), 'downloads')
+        os.makedirs(path, exist_ok=True)
+        return path
+    else:
+        path = r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\15_Planeja_Bases"
+        os.makedirs(path, exist_ok=True)
+        return path
 
 def run(playwright: Playwright) -> None:
     # --- CONFIGURAÇÕES DE CAMINHO ---
-    diretorio_destino = r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\15_Planeja_Bases"
-    if not os.path.exists(diretorio_destino): os.makedirs(diretorio_destino)
+    diretorio_destino = get_diretorio_destino()
     
     # --- AJUSTE DE DATAS ---
-    hoje = datetime.now()
+    hoje = datetime.now(FUSO_SP)
     data_atual_str = hoje.strftime("%d/%m/%Y") # Para a coluna DT_RELATORIO
     
     # Cálculo do primeiro dia útil do mês
@@ -43,7 +58,7 @@ def run(playwright: Playwright) -> None:
             print(f"\n[ERRO CRÍTICO] O arquivo {nome_csv} já existe e está aberto!")
             return
 
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=IS_GITHUB)
     context = browser.new_context()
     page = context.new_page()
     
