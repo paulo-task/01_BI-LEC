@@ -96,7 +96,7 @@ def run(playwright: Playwright) -> None:
     
     # --- AJUSTE DE DATAS ---
     hoje = datetime.now(FUSO_SP)
-    data_atual_str = hoje.strftime("%d/%m/%Y") # Identico ao primeiro script
+    data_atual_str = hoje.strftime("%d/%m/%Y %H:%M") # Identico ao primeiro script
     
     # Data 1: Dia 16 do mês corrente
     data_inicio_filtro = hoje.replace(day=16).strftime("%d/%m/%Y")

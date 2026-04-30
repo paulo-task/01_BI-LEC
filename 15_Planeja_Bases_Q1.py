@@ -33,7 +33,7 @@ def run(playwright: Playwright) -> None:
     
     # --- AJUSTE DE DATAS ---
     hoje = datetime.now(FUSO_SP)
-    data_atual_str = hoje.strftime("%d/%m/%Y") # Para a coluna DT_RELATORIO
+    data_atual_str = hoje.strftime("%d/%m/%Y %H:%M") # Para a coluna DT_RELATORIO
     
     # Cálculo do primeiro dia útil do mês
     dt_inicio = hoje.replace(day=1)
