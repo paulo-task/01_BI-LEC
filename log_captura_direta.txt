@@ -190,3 +190,127 @@ Call log:
 [29/04/2026 16:21:34] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
 [29/04/2026 16:21:40] - === FIM DA OPERAÇÃO ===
 
+[29/04/2026 17:19:03] - === INÍCIO DA OPERAÇÃO ===
+[29/04/2026 17:19:07] - Iniciando acesso direto ao Power BI...
+[29/04/2026 17:19:15] - Aguardando carregamento (20s)...
+[29/04/2026 17:19:45] - Filtrando PAULISTA...
+[29/04/2026 17:20:09] - Recorte concluído: PRINT_PAULI_2026_04_29_17-19.png
+[29/04/2026 17:20:09] - Filtrando PIRATININGA...
+[29/04/2026 17:20:30] - Recorte concluído: PRINT_PIRAT_2026_04_29_17-19.png
+[29/04/2026 17:21:17] - WhatsApp carregado.
+[29/04/2026 17:21:17] - Abrindo grupo: Gestão CPFL Paulista
+[29/04/2026 17:21:25] - ✅ Chat carregado: Gestão CPFL Paulista
+[29/04/2026 17:21:29] - Arquivo anexado.
+[29/04/2026 17:21:32] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[29/04/2026 17:21:37] - Abrindo grupo: Gestão CPFL Piratininga
+[29/04/2026 17:21:44] - ✅ Chat carregado: Gestão CPFL Piratininga
+[29/04/2026 17:21:47] - Arquivo anexado.
+[29/04/2026 17:36:28] - === INÍCIO DA OPERAÇÃO ===
+[29/04/2026 17:36:29] - Iniciando acesso direto ao Power BI...
+[29/04/2026 17:36:32] - Aguardando carregamento (20s)...
+[29/04/2026 17:36:58] - Filtrando PAULISTA...
+[29/04/2026 17:37:19] - Recorte concluído: PRINT_PAULI_2026_04_29_17-36.png
+[29/04/2026 17:37:19] - Filtrando PIRATININGA...
+[29/04/2026 17:37:41] - Recorte concluído: PRINT_PIRAT_2026_04_29_17-36.png
+[29/04/2026 17:37:51] - WhatsApp carregado.
+[29/04/2026 17:37:51] - Abrindo grupo: Gestão CPFL Paulista
+[29/04/2026 17:38:00] - ✅ Chat carregado: Gestão CPFL Paulista
+[29/04/2026 17:38:04] - Arquivo anexado.
+[29/04/2026 17:38:06] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[29/04/2026 17:38:14] - Abrindo grupo: Gestão CPFL Piratininga
+[29/04/2026 17:38:23] - ✅ Chat carregado: Gestão CPFL Piratininga
+[29/04/2026 17:38:26] - Arquivo anexado.
+[29/04/2026 17:38:28] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[29/04/2026 17:38:36] - Abrindo grupo: Informativos Administrativo Sorocaba
+[29/04/2026 17:38:45] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[29/04/2026 17:38:48] - Arquivo anexado.
+[29/04/2026 17:38:50] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[29/04/2026 17:38:59] - === FIM DA OPERAÇÃO ===
+
+[29/04/2026 18:19:02] - === INÍCIO DA OPERAÇÃO ===
+[29/04/2026 18:19:05] - Iniciando acesso direto ao Power BI...
+[29/04/2026 18:19:16] - Aguardando carregamento (20s)...
+[29/04/2026 18:19:43] - Filtrando PAULISTA...
+[29/04/2026 18:20:05] - Recorte concluído: PRINT_PAULI_2026_04_29_18-19.png
+[29/04/2026 18:20:05] - Filtrando PIRATININGA...
+[29/04/2026 18:20:27] - Recorte concluído: PRINT_PIRAT_2026_04_29_18-19.png
+[29/04/2026 18:20:40] - WhatsApp carregado.
+[29/04/2026 18:20:40] - Abrindo grupo: Gestão CPFL Paulista
+[29/04/2026 18:20:50] - ✅ Chat carregado: Gestão CPFL Paulista
+[29/04/2026 18:20:53] - Arquivo anexado.
+[29/04/2026 18:20:55] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[29/04/2026 18:21:03] - Abrindo grupo: Gestão CPFL Piratininga
+[29/04/2026 18:21:12] - ✅ Chat carregado: Gestão CPFL Piratininga
+[29/04/2026 18:21:16] - Arquivo anexado.
+[29/04/2026 18:21:18] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[29/04/2026 18:21:26] - Abrindo grupo: Informativos Administrativo Sorocaba
+[29/04/2026 18:21:35] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[29/04/2026 18:21:38] - Arquivo anexado.
+[29/04/2026 18:21:40] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[29/04/2026 18:21:49] - === FIM DA OPERAÇÃO ===
+
+[29/04/2026 19:19:02] - === INÍCIO DA OPERAÇÃO ===
+[29/04/2026 19:19:05] - Iniciando acesso direto ao Power BI...
+[29/04/2026 19:19:14] - Aguardando carregamento (20s)...
+[29/04/2026 19:19:40] - Filtrando PAULISTA...
+[29/04/2026 19:20:02] - Recorte concluído: PRINT_PAULI_2026_04_29_19-19.png
+[29/04/2026 19:20:02] - Filtrando PIRATININGA...
+[29/04/2026 19:20:24] - Recorte concluído: PRINT_PIRAT_2026_04_29_19-19.png
+[29/04/2026 19:20:34] - WhatsApp carregado.
+[29/04/2026 19:20:34] - Abrindo grupo: Gestão CPFL Paulista
+[29/04/2026 19:20:44] - ✅ Chat carregado: Gestão CPFL Paulista
+[29/04/2026 19:20:47] - Arquivo anexado.
+[29/04/2026 19:20:49] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[29/04/2026 19:20:57] - Abrindo grupo: Gestão CPFL Piratininga
+[29/04/2026 19:21:06] - ✅ Chat carregado: Gestão CPFL Piratininga
+[29/04/2026 19:21:10] - Arquivo anexado.
+[29/04/2026 19:21:12] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[29/04/2026 19:21:20] - Abrindo grupo: Informativos Administrativo Sorocaba
+[29/04/2026 19:21:29] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[29/04/2026 19:21:32] - Arquivo anexado.
+[29/04/2026 19:21:34] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[29/04/2026 19:21:43] - === FIM DA OPERAÇÃO ===
+
+[30/04/2026 09:19:05] - === INÍCIO DA OPERAÇÃO ===
+[30/04/2026 09:19:13] - Iniciando acesso direto ao Power BI...
+[30/04/2026 09:19:22] - Aguardando carregamento (20s)...
+[30/04/2026 10:19:02] - === INÍCIO DA OPERAÇÃO ===
+[30/04/2026 10:19:03] - Iniciando acesso direto ao Power BI...
+[30/04/2026 10:19:11] - Aguardando carregamento (20s)...
+[30/04/2026 10:19:37] - Filtrando PAULISTA...
+[30/04/2026 10:19:58] - Recorte concluído: PRINT_PAULI_2026_04_30_10-19.png
+[30/04/2026 10:19:58] - Filtrando PIRATININGA...
+[30/04/2026 10:20:18] - ERRO POWER BI: Locator.wait_for: Timeout 20000ms exceeded.
+Call log:
+  - waiting for locator("iframe").first.content_frame.get_by_role("radio", name="PIRATININGA") to be visible
+
+[30/04/2026 10:20:30] - WhatsApp carregado.
+[30/04/2026 10:20:30] - Abrindo grupo: Gestão CPFL Paulista
+[30/04/2026 10:20:39] - ✅ Chat carregado: Gestão CPFL Paulista
+[30/04/2026 10:20:43] - Arquivo anexado.
+[30/04/2026 10:20:45] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[30/04/2026 10:20:53] - === FIM DA OPERAÇÃO ===
+
+[30/04/2026 11:19:02] - === INÍCIO DA OPERAÇÃO ===
+[30/04/2026 11:19:04] - Iniciando acesso direto ao Power BI...
+[30/04/2026 11:19:12] - Aguardando carregamento (20s)...
+[30/04/2026 12:19:02] - === INÍCIO DA OPERAÇÃO ===
+[30/04/2026 12:19:07] - Iniciando acesso direto ao Power BI...
+[30/04/2026 12:19:17] - Aguardando carregamento (20s)...
+[30/04/2026 14:19:03] - === INÍCIO DA OPERAÇÃO ===
+[30/04/2026 14:19:06] - Iniciando acesso direto ao Power BI...
+[30/04/2026 14:19:27] - Aguardando carregamento (20s)...
+[30/04/2026 14:19:54] - Filtrando PAULISTA...
+[30/04/2026 14:20:16] - Recorte concluído: PRINT_PAULI_2026_04_30_14-19.png
+[30/04/2026 14:20:16] - Filtrando PIRATININGA...
+[30/04/2026 14:20:36] - ERRO POWER BI: Locator.wait_for: Timeout 20000ms exceeded.
+Call log:
+  - waiting for locator("iframe").first.content_frame.get_by_role("radio", name="PIRATININGA") to be visible
+
+[30/04/2026 14:20:49] - WhatsApp carregado.
+[30/04/2026 14:20:49] - Abrindo grupo: Gestão CPFL Paulista
+[30/04/2026 14:20:59] - ✅ Chat carregado: Gestão CPFL Paulista
+[30/04/2026 14:21:02] - Arquivo anexado.
+[30/04/2026 14:21:05] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[30/04/2026 14:21:13] - === FIM DA OPERAÇÃO ===
+
