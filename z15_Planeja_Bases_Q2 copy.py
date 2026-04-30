@@ -1,24 +1,101 @@
 import os
 import pandas as pd
 import calendar
+import requests
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
+from urllib.parse import urlparse
 from playwright.sync_api import Playwright, sync_playwright
-from dotenv import load_dotenv
 
-# Carrega as variáveis do arquivo .env
-load_dotenv(dotenv_path=".pass")
+# --- DETECÇÃO DE AMBIENTE ---
+IS_GITHUB = os.getenv('GITHUB_ACTIONS') == 'true'
+FUSO_SP = ZoneInfo('America/Sao_Paulo')
 
-# Recupera os dados centralizados
-usuario = os.getenv("CPFL_USER")
-senha = os.getenv("CPFL_PASS")
+if IS_GITHUB:
+    usuario = os.getenv("CPFL_USER")
+    senha = os.getenv("CPFL_PASS")
+else:
+    from dotenv import load_dotenv
+    load_dotenv(dotenv_path=".pass")
+    usuario = os.getenv("CPFL_USER")
+    senha = os.getenv("CPFL_PASS")
+
+def get_diretorio_destino():
+    if IS_GITHUB:
+        path = os.path.join(os.getcwd(), 'downloads')
+        os.makedirs(path, exist_ok=True)
+        return path
+    else:
+        path = r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\15_Planeja_Bases"
+        os.makedirs(path, exist_ok=True)
+        return path
+
+def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
+    """Envia arquivo para o SharePoint via Microsoft Graph API"""
+    try:
+        SP_CLIENT_ID = os.getenv("SP_CLIENT_ID", "").strip()
+        SP_CLIENT_SECRET = os.getenv("SP_CLIENT_SECRET", "").strip()
+        SP_TENANT_ID = os.getenv("SP_TENANT_ID", "").strip()
+        SITE_URL = "https://engelmigproject.sharepoint.com/sites/LEC_ENGELMIG"
+        
+        if not SP_CLIENT_ID:
+            print("   ⚠️ SharePoint: credenciais não configuradas")
+            return False
+        
+        url_token = f'https://login.microsoftonline.com/{SP_TENANT_ID}/oauth2/v2.0/token'
+        data = {
+            'grant_type': 'client_credentials',
+            'client_id': SP_CLIENT_ID,
+            'client_secret': SP_CLIENT_SECRET,
+            'scope': 'https://graph.microsoft.com/.default'
+        }
+        r = requests.post(url_token, data=data)
+        r.raise_for_status()
+        token = r.json()['access_token']
+        
+        parsed = urlparse(SITE_URL)
+        host = parsed.netloc
+        site_path = parsed.path.strip("/")
+        url_site = f"https://graph.microsoft.com/v1.0/sites/{host}:/{site_path}"
+        headers = {"Authorization": f"Bearer {token}"}
+        r = requests.get(url_site, headers=headers)
+        r.raise_for_status()
+        site_id = r.json()["id"]
+        
+        url_drives = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives"
+        r = requests.get(url_drives, headers={"Authorization": f"Bearer {token}"})
+        r.raise_for_status()
+        
+        drive_id = None
+        for drive in r.json().get('value', []):
+            if drive.get('name') == 'Workspace':
+                drive_id = drive.get('id')
+                break
+        
+        if not drive_id:
+            raise Exception("Workspace não encontrado")
+        
+        url_upload = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/root:/{pasta_sharepoint}/{nome_arquivo}:/content"
+        headers_upload = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/octet-stream"
+        }
+        r = requests.put(url_upload, headers=headers_upload, data=conteudo_bytes)
+        r.raise_for_status()
+        
+        print(f"   ☁️ Upload SharePoint: {nome_arquivo}")
+        return True
+        
+    except Exception as e:
+        print(f"   ⚠️ Erro upload SharePoint: {e}")
+        return False
 
 def run(playwright: Playwright) -> None:
     # --- CONFIGURAÇÕES DE CAMINHO ---
-    diretorio_destino = r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\15_Planeja_Bases"
-    if not os.path.exists(diretorio_destino): os.makedirs(diretorio_destino)
+    diretorio_destino = get_diretorio_destino()
     
     # --- AJUSTE DE DATAS ---
-    hoje = datetime.now()
+    hoje = datetime.now(FUSO_SP)
     data_atual_str = hoje.strftime("%d/%m/%Y") # Identico ao primeiro script
     
     # Data 1: Dia 16 do mês corrente
@@ -47,7 +124,7 @@ def run(playwright: Playwright) -> None:
             print(f"\n[ERRO CRÍTICO] O arquivo {nome_csv} está aberto! Feche o Excel.")
             return
 
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=IS_GITHUB)
     context = browser.new_context()
     page = context.new_page()
     
@@ -101,7 +178,10 @@ def run(playwright: Playwright) -> None:
 
             page.wait_for_timeout(3000)
             page.get_by_title("Filtrar por data prevista").click()
-            page.wait_for_timeout(12000) 
+            
+            # Primeira base do dia demora mais para o servidor responder
+            tempo_espera = 45000 if i == 0 else 15000
+            page.wait_for_timeout(tempo_espera)
 
             linhas = page.locator("tbody tr").all()
             for linha in linhas:
@@ -113,7 +193,7 @@ def run(playwright: Playwright) -> None:
                         info.append(data_atual_str) # Adiciona DT_RELATORIO identico ao script 1
                         dados_totais.append(info)
 
-            page.locator(".rc-tree-checkbox.rc-tree-checkbox-checked").click()
+            page.locator(".rc-tree-checkbox.rc-tree-checkbox-checked").click(force=True)
             page.wait_for_timeout(500)
 
         # --- LÓGICA DE MESCLAGEM (APPEND SEM CABEÇALHO) ---
@@ -121,13 +201,17 @@ def run(playwright: Playwright) -> None:
             df_novo = pd.DataFrame(dados_totais, columns=CABECALHOS)
             
             if not os.path.exists(caminho_final):
-                # Se o arquivo do script 1 não existir (raro), cria um novo com cabeçalho
                 df_novo.to_csv(caminho_final, sep=';', index=False, encoding='latin1')
                 print(f"Novo arquivo criado: {nome_csv}")
             else:
-                # Se já existir (gerado pelo script 1), cola abaixo sem cabeçalho
                 df_novo.to_csv(caminho_final, sep=';', index=False, encoding='latin1', mode='a', header=False)
                 print(f"Dados do período Q2 mesclados abaixo dos dados do Q1 em {nome_csv}.")
+            
+            # Upload para SharePoint (apenas no GitHub Actions)
+            if IS_GITHUB and os.path.exists(caminho_final):
+                with open(caminho_final, 'rb') as f:
+                    conteudo = f.read()
+                upload_to_sharepoint(conteudo, nome_csv, "BI_LEC/15_Planeja_Bases")
         else:
             print("Nenhum dado extraído.")
 
