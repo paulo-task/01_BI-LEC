@@ -172,10 +172,8 @@ def enviar_para_grupos(dicionario_prints):
                         salvar_log("Arquivo anexado.")
                         time.sleep(2)
 
-                        # Botão de Enviar (primeiro match dentro da pré-visualização)
-                        btn_enviar = page.get_by_test_id("drawer-middle").get_by_role("button", name="Enviar").first
-                        btn_enviar.wait_for(state="visible", timeout=15000)
-                        btn_enviar.click()
+                        # Envia via tecla Enter (mais robusto que clicar na seta de enviar)
+                        page.keyboard.press("Enter")
                         
                         salvar_log(f"✅ Enviado com sucesso para: {grupo}")
                         time.sleep(8) 
