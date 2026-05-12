@@ -1,0 +1,49 @@
+name: Relatórios Power BI para WhatsApp
+
+on:
+  workflow_dispatch:  # Disparo manual via botão no GitHub
+  schedule:
+    - cron: '0 7 * * *'  # 07:00 todos os dias (use Power Automate para substituir isso)
+
+jobs:
+  executar-relatorios:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependências Python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Instalar Chromium para Playwright
+        run: |
+          playwright install chromium chromium-headless-shell
+          playwright install-deps chromium
+
+      - name: Executar script de automação
+        env:
+          GITHUB_ACTIONS: true
+          EVOLUTION_URL: ${{ secrets.EVOLUTION_URL }}
+          EVOLUTION_API_KEY: ${{ secrets.EVOLUTION_API_KEY }}
+          EVOLUTION_INSTANCE: engelmig
+          PB_USER: ${{ secrets.PB_USER }}
+          PB_PASS: ${{ secrets.PB_PASS }}
+        run: |
+          python 00z_capturar_envia.py
+
+      - name: Upload de logs em caso de erro
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs-automacao
+          path: /tmp/prints/log_automacao.txt
+          retention-days: 2
