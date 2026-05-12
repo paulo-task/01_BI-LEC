@@ -93,12 +93,12 @@ def capturar_powerbi():
         ]
         
         context = p.chromium.launch_persistent_context(
-            USER_DATA_PBI,
-            headless=IS_HEADLESS,
-            args=["--start-maximized"] + args,
-            no_viewport=True,
-            slow_mo=1000 if not IS_HEADLESS else 500
-        )
+    USER_DATA_PBI,
+    headless=IS_HEADLESS,  # ← Deixe como está (usa headless no GitHub)
+    args=["--start-maximized"] + args,
+    no_viewport=True,
+    slow_mo=2000  # ← Aumentar para 2000ms
+)
         
         page = context.pages[0]
         agora = datetime.now().strftime("%Y_%m_%d_%H-%M")
