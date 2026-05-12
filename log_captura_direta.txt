@@ -1,0 +1,890 @@
+[06/05/2026 17:19:00] - === INÍCIO DA OPERAÇÃO ===
+[06/05/2026 17:19:02] - Iniciando acesso direto ao Power BI...
+[06/05/2026 17:19:04] - Aguardando carregamento (20s)...
+[06/05/2026 17:19:30] - Filtrando PAULISTA...
+[06/05/2026 17:19:51] - Recorte concluído: PRINT_PAULI_2026_05_06_17-19.png
+[06/05/2026 17:19:51] - Filtrando PIRATININGA...
+[06/05/2026 17:20:12] - Recorte concluído: PRINT_PIRAT_2026_05_06_17-19.png
+[06/05/2026 17:20:19] - WhatsApp carregado.
+[06/05/2026 17:20:19] - Abrindo grupo: Gestão CPFL Paulista
+[06/05/2026 17:20:28] - ✅ Chat carregado: Gestão CPFL Paulista
+[06/05/2026 17:20:31] - Arquivo anexado.
+[06/05/2026 17:20:33] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[06/05/2026 17:20:41] - Abrindo grupo: Gestão CPFL Piratininga
+[06/05/2026 17:20:51] - ✅ Chat carregado: Gestão CPFL Piratininga
+[06/05/2026 17:20:54] - Arquivo anexado.
+[06/05/2026 17:20:56] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[06/05/2026 17:21:04] - Abrindo grupo: Informativos Administrativo Sorocaba
+[06/05/2026 17:21:13] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[06/05/2026 17:21:16] - Arquivo anexado.
+[06/05/2026 17:21:18] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[06/05/2026 17:21:26] - === FIM DA OPERAÇÃO ===
+
+[06/05/2026 18:19:01] - === INÍCIO DA OPERAÇÃO ===
+[06/05/2026 18:19:01] - Iniciando acesso direto ao Power BI...
+[06/05/2026 18:19:04] - Aguardando carregamento (20s)...
+[06/05/2026 18:19:30] - Filtrando PAULISTA...
+[06/05/2026 18:19:50] - Recorte concluído: PRINT_PAULI_2026_05_06_18-19.png
+[06/05/2026 18:19:50] - Filtrando PIRATININGA...
+[06/05/2026 18:20:11] - Recorte concluído: PRINT_PIRAT_2026_05_06_18-19.png
+[06/05/2026 18:20:20] - WhatsApp carregado.
+[06/05/2026 18:20:20] - Abrindo grupo: Gestão CPFL Paulista
+[06/05/2026 18:20:29] - ✅ Chat carregado: Gestão CPFL Paulista
+[06/05/2026 18:20:32] - Arquivo anexado.
+[06/05/2026 18:20:34] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[06/05/2026 18:20:42] - Abrindo grupo: Gestão CPFL Piratininga
+[06/05/2026 18:20:51] - ✅ Chat carregado: Gestão CPFL Piratininga
+[06/05/2026 18:20:54] - Arquivo anexado.
+[06/05/2026 18:20:56] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[06/05/2026 18:21:04] - Abrindo grupo: Informativos Administrativo Sorocaba
+[06/05/2026 18:21:13] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[06/05/2026 18:21:17] - Arquivo anexado.
+[06/05/2026 18:21:19] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[06/05/2026 18:21:27] - === FIM DA OPERAÇÃO ===
+
+[06/05/2026 19:19:00] - === INÍCIO DA OPERAÇÃO ===
+[06/05/2026 19:19:01] - Iniciando acesso direto ao Power BI...
+[06/05/2026 19:19:03] - Aguardando carregamento (20s)...
+[06/05/2026 19:19:30] - Filtrando PAULISTA...
+[06/05/2026 19:19:50] - Recorte concluído: PRINT_PAULI_2026_05_06_19-19.png
+[06/05/2026 19:19:50] - Filtrando PIRATININGA...
+[06/05/2026 19:20:11] - Recorte concluído: PRINT_PIRAT_2026_05_06_19-19.png
+[06/05/2026 19:20:19] - WhatsApp carregado.
+[06/05/2026 19:20:19] - Abrindo grupo: Gestão CPFL Paulista
+[06/05/2026 19:20:28] - ✅ Chat carregado: Gestão CPFL Paulista
+[06/05/2026 19:20:32] - Arquivo anexado.
+[06/05/2026 19:20:34] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[06/05/2026 19:20:42] - Abrindo grupo: Gestão CPFL Piratininga
+[06/05/2026 19:20:51] - ✅ Chat carregado: Gestão CPFL Piratininga
+[06/05/2026 19:20:54] - Arquivo anexado.
+[06/05/2026 19:20:56] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[06/05/2026 19:21:04] - Abrindo grupo: Informativos Administrativo Sorocaba
+[06/05/2026 19:21:13] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[06/05/2026 19:21:16] - Arquivo anexado.
+[06/05/2026 19:21:18] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[06/05/2026 19:21:27] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 09:19:03] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 09:19:05] - Iniciando acesso direto ao Power BI...
+[07/05/2026 09:19:10] - Aguardando carregamento (20s)...
+[07/05/2026 09:19:36] - Filtrando PAULISTA...
+[07/05/2026 09:19:56] - ERRO POWER BI: Page.screenshot: Target page, context or browser has been closed
+[07/05/2026 09:21:48] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 09:21:48] - Iniciando acesso direto ao Power BI...
+[07/05/2026 09:21:51] - Aguardando carregamento (20s)...
+[07/05/2026 09:22:17] - Filtrando PAULISTA...
+[07/05/2026 09:22:38] - Recorte concluído: PRINT_PAULI_2026_05_07_09-21.png
+[07/05/2026 09:22:38] - Filtrando PIRATININGA...
+[07/05/2026 09:22:58] - Recorte concluído: PRINT_PIRAT_2026_05_07_09-21.png
+[07/05/2026 09:23:06] - WhatsApp carregado.
+[07/05/2026 09:23:06] - Abrindo grupo: Gestão CPFL Paulista
+[07/05/2026 09:23:15] - ✅ Chat carregado: Gestão CPFL Paulista
+[07/05/2026 09:23:19] - Arquivo anexado.
+[07/05/2026 09:23:21] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[07/05/2026 09:23:29] - Abrindo grupo: Gestão CPFL Piratininga
+[07/05/2026 09:23:38] - ✅ Chat carregado: Gestão CPFL Piratininga
+[07/05/2026 09:23:41] - Arquivo anexado.
+[07/05/2026 09:23:43] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[07/05/2026 09:23:51] - Abrindo grupo: Informativos Administrativo Sorocaba
+[07/05/2026 09:24:00] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[07/05/2026 09:24:03] - Arquivo anexado.
+[07/05/2026 09:24:05] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[07/05/2026 09:24:14] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 10:19:01] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 10:19:02] - Iniciando acesso direto ao Power BI...
+[07/05/2026 10:19:07] - Aguardando carregamento (20s)...
+[07/05/2026 10:19:34] - Filtrando PAULISTA...
+[07/05/2026 10:19:54] - Recorte concluído: PRINT_PAULI_2026_05_07_10-19.png
+[07/05/2026 10:19:54] - Filtrando PIRATININGA...
+[07/05/2026 10:20:14] - ERRO POWER BI: Locator.wait_for: Timeout 20000ms exceeded.
+Call log:
+  - waiting for locator("iframe").first.content_frame.get_by_role("radio", name="PIRATININGA") to be visible
+
+[07/05/2026 10:20:24] - WhatsApp carregado.
+[07/05/2026 10:20:24] - Abrindo grupo: Gestão CPFL Paulista
+[07/05/2026 10:20:33] - ✅ Chat carregado: Gestão CPFL Paulista
+[07/05/2026 10:20:36] - Arquivo anexado.
+[07/05/2026 10:20:38] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[07/05/2026 10:20:47] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 10:24:10] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 10:24:10] - Iniciando acesso direto ao Power BI...
+[07/05/2026 10:24:12] - Aguardando carregamento (20s)...
+[07/05/2026 10:24:38] - Filtrando PAULISTA...
+[07/05/2026 10:24:59] - ERRO POWER BI: Page.screenshot: Target page, context or browser has been closed
+[07/05/2026 10:25:03] - ERRO CRÍTICO NO WHATSAPP: Locator.wait_for: Target page, context or browser has been closed
+Call log:
+  - waiting for get_by_role("textbox", name="Pesquisar ou começar uma nova") to be visible
+
+[07/05/2026 10:25:04] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 11:19:01] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 11:19:02] - Iniciando acesso direto ao Power BI...
+[07/05/2026 11:19:08] - Aguardando carregamento (20s)...
+[07/05/2026 11:19:34] - Filtrando PAULISTA...
+[07/05/2026 11:19:55] - Recorte concluído: PRINT_PAULI_2026_05_07_11-19.png
+[07/05/2026 11:19:55] - Filtrando PIRATININGA...
+[07/05/2026 11:20:15] - ERRO POWER BI: Locator.wait_for: Timeout 20000ms exceeded.
+Call log:
+  - waiting for locator("iframe").first.content_frame.get_by_role("radio", name="PIRATININGA") to be visible
+
+[07/05/2026 11:20:22] - WhatsApp carregado.
+[07/05/2026 11:20:22] - Abrindo grupo: Gestão CPFL Paulista
+[07/05/2026 11:20:31] - ✅ Chat carregado: Gestão CPFL Paulista
+[07/05/2026 11:20:34] - Arquivo anexado.
+[07/05/2026 11:20:36] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[07/05/2026 11:20:45] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 12:19:02] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 12:19:04] - Iniciando acesso direto ao Power BI...
+[07/05/2026 12:19:10] - Aguardando carregamento (20s)...
+[07/05/2026 12:19:36] - Filtrando PAULISTA...
+[07/05/2026 12:19:58] - Recorte concluído: PRINT_PAULI_2026_05_07_12-19.png
+[07/05/2026 12:19:58] - Filtrando PIRATININGA...
+[07/05/2026 12:20:18] - Recorte concluído: PRINT_PIRAT_2026_05_07_12-19.png
+[07/05/2026 12:20:32] - WhatsApp carregado.
+[07/05/2026 12:20:32] - Abrindo grupo: Gestão CPFL Paulista
+[07/05/2026 12:20:41] - ✅ Chat carregado: Gestão CPFL Paulista
+[07/05/2026 12:20:44] - Arquivo anexado.
+[07/05/2026 12:20:46] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[07/05/2026 12:20:54] - Abrindo grupo: Gestão CPFL Piratininga
+[07/05/2026 12:21:04] - ✅ Chat carregado: Gestão CPFL Piratininga
+[07/05/2026 12:21:07] - Arquivo anexado.
+[07/05/2026 12:21:09] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[07/05/2026 12:21:17] - Abrindo grupo: Informativos Administrativo Sorocaba
+[07/05/2026 12:21:26] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[07/05/2026 12:21:29] - Arquivo anexado.
+[07/05/2026 12:21:31] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[07/05/2026 12:21:40] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 14:19:01] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 14:19:03] - Iniciando acesso direto ao Power BI...
+[07/05/2026 14:19:06] - Aguardando carregamento (20s)...
+[07/05/2026 14:19:32] - Filtrando PAULISTA...
+[07/05/2026 14:19:53] - Recorte concluído: PRINT_PAULI_2026_05_07_14-19.png
+[07/05/2026 14:19:53] - Filtrando PIRATININGA...
+[07/05/2026 14:20:14] - Recorte concluído: PRINT_PIRAT_2026_05_07_14-19.png
+[07/05/2026 14:20:23] - WhatsApp carregado.
+[07/05/2026 14:20:23] - Abrindo grupo: Gestão CPFL Paulista
+[07/05/2026 14:20:32] - ✅ Chat carregado: Gestão CPFL Paulista
+[07/05/2026 14:20:35] - Arquivo anexado.
+[07/05/2026 14:20:37] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[07/05/2026 14:20:45] - Abrindo grupo: Gestão CPFL Piratininga
+[07/05/2026 14:20:54] - ✅ Chat carregado: Gestão CPFL Piratininga
+[07/05/2026 14:20:58] - Arquivo anexado.
+[07/05/2026 14:21:00] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[07/05/2026 14:21:08] - Abrindo grupo: Informativos Administrativo Sorocaba
+[07/05/2026 14:21:17] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[07/05/2026 14:21:20] - Arquivo anexado.
+[07/05/2026 14:21:22] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[07/05/2026 14:21:30] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 14:37:40] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 14:37:41] - Iniciando acesso direto ao Power BI...
+[07/05/2026 14:37:44] - Aguardando carregamento (20s)...
+[07/05/2026 14:38:10] - Filtrando PAULISTA...
+[07/05/2026 14:38:31] - Recorte concluído: PRINT_PAULI_2026_05_07_14-37.png
+[07/05/2026 14:38:31] - Filtrando PIRATININGA...
+[07/05/2026 14:38:51] - Recorte concluído: PRINT_PIRAT_2026_05_07_14-37.png
+[07/05/2026 14:38:58] - WhatsApp carregado.
+[07/05/2026 14:38:58] - Abrindo grupo: Gestão CPFL Paulista
+[07/05/2026 14:39:08] - ✅ Chat carregado: Gestão CPFL Paulista
+[07/05/2026 14:39:11] - Arquivo anexado.
+[07/05/2026 14:39:13] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[07/05/2026 14:39:21] - Abrindo grupo: Gestão CPFL Piratininga
+[07/05/2026 14:39:30] - ✅ Chat carregado: Gestão CPFL Piratininga
+[07/05/2026 14:39:33] - Arquivo anexado.
+[07/05/2026 14:39:35] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[07/05/2026 14:39:43] - Abrindo grupo: Informativos Administrativo Sorocaba
+[07/05/2026 14:39:52] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[07/05/2026 14:39:55] - Arquivo anexado.
+[07/05/2026 14:39:57] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[07/05/2026 14:40:06] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 15:19:01] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 15:19:02] - Iniciando acesso direto ao Power BI...
+[07/05/2026 15:19:04] - Aguardando carregamento (20s)...
+[07/05/2026 15:19:30] - Filtrando PAULISTA...
+[07/05/2026 15:19:50] - Recorte concluído: PRINT_PAULI_2026_05_07_15-19.png
+[07/05/2026 15:19:50] - Filtrando PIRATININGA...
+[07/05/2026 15:20:11] - Recorte concluído: PRINT_PIRAT_2026_05_07_15-19.png
+[07/05/2026 15:20:19] - WhatsApp carregado.
+[07/05/2026 15:20:19] - Abrindo grupo: Gestão CPFL Paulista
+[07/05/2026 15:20:28] - ✅ Chat carregado: Gestão CPFL Paulista
+[07/05/2026 15:20:32] - Arquivo anexado.
+[07/05/2026 15:20:34] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[07/05/2026 15:20:42] - Abrindo grupo: Gestão CPFL Piratininga
+[07/05/2026 15:20:51] - ✅ Chat carregado: Gestão CPFL Piratininga
+[07/05/2026 15:20:54] - Arquivo anexado.
+[07/05/2026 15:20:56] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[07/05/2026 15:21:04] - Abrindo grupo: Informativos Administrativo Sorocaba
+[07/05/2026 15:21:13] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[07/05/2026 15:21:16] - Arquivo anexado.
+[07/05/2026 15:21:18] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[07/05/2026 15:21:27] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 16:19:01] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 16:19:02] - Iniciando acesso direto ao Power BI...
+[07/05/2026 16:19:04] - Aguardando carregamento (20s)...
+[07/05/2026 16:19:31] - Filtrando PAULISTA...
+[07/05/2026 16:19:51] - Recorte concluído: PRINT_PAULI_2026_05_07_16-19.png
+[07/05/2026 16:19:51] - Filtrando PIRATININGA...
+[07/05/2026 16:20:12] - Recorte concluído: PRINT_PIRAT_2026_05_07_16-19.png
+[07/05/2026 16:20:19] - WhatsApp carregado.
+[07/05/2026 16:20:19] - Abrindo grupo: Gestão CPFL Paulista
+[07/05/2026 16:20:28] - ✅ Chat carregado: Gestão CPFL Paulista
+[07/05/2026 16:20:31] - Arquivo anexado.
+[07/05/2026 16:20:33] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[07/05/2026 16:20:41] - Abrindo grupo: Gestão CPFL Piratininga
+[07/05/2026 16:20:50] - ✅ Chat carregado: Gestão CPFL Piratininga
+[07/05/2026 16:20:54] - Arquivo anexado.
+[07/05/2026 16:20:56] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[07/05/2026 16:21:04] - Abrindo grupo: Informativos Administrativo Sorocaba
+[07/05/2026 16:21:13] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[07/05/2026 16:21:16] - Arquivo anexado.
+[07/05/2026 16:21:18] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[07/05/2026 16:21:27] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 16:28:12] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 16:28:13] - Iniciando acesso direto ao Power BI...
+[07/05/2026 16:28:15] - Aguardando carregamento (20s)...
+[07/05/2026 16:28:42] - Filtrando PAULISTA...
+[07/05/2026 17:19:01] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 17:19:01] - Iniciando acesso direto ao Power BI...
+[07/05/2026 17:19:03] - Aguardando carregamento (20s)...
+[07/05/2026 17:19:30] - Filtrando PAULISTA...
+[07/05/2026 17:19:50] - Recorte concluído: PRINT_PAULI_2026_05_07_17-19.png
+[07/05/2026 17:19:50] - Filtrando PIRATININGA...
+[07/05/2026 17:20:11] - Recorte concluído: PRINT_PIRAT_2026_05_07_17-19.png
+[07/05/2026 17:20:19] - WhatsApp carregado.
+[07/05/2026 17:20:19] - Abrindo grupo: Gestão CPFL Paulista
+[07/05/2026 17:20:28] - ✅ Chat carregado: Gestão CPFL Paulista
+[07/05/2026 17:20:31] - Arquivo anexado.
+[07/05/2026 17:20:33] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[07/05/2026 17:20:41] - Abrindo grupo: Gestão CPFL Piratininga
+[07/05/2026 17:20:50] - ✅ Chat carregado: Gestão CPFL Piratininga
+[07/05/2026 17:20:54] - Arquivo anexado.
+[07/05/2026 17:20:56] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[07/05/2026 17:21:04] - Abrindo grupo: Informativos Administrativo Sorocaba
+[07/05/2026 17:21:13] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[07/05/2026 17:21:16] - Arquivo anexado.
+[07/05/2026 17:21:18] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[07/05/2026 17:21:26] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 18:19:01] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 18:19:03] - Iniciando acesso direto ao Power BI...
+[07/05/2026 18:19:06] - Aguardando carregamento (20s)...
+[07/05/2026 18:19:32] - Filtrando PAULISTA...
+[07/05/2026 18:19:53] - Recorte concluído: PRINT_PAULI_2026_05_07_18-19.png
+[07/05/2026 18:19:53] - Filtrando PIRATININGA...
+[07/05/2026 18:20:14] - Recorte concluído: PRINT_PIRAT_2026_05_07_18-19.png
+[07/05/2026 18:20:22] - WhatsApp carregado.
+[07/05/2026 18:20:22] - Abrindo grupo: Gestão CPFL Paulista
+[07/05/2026 18:20:31] - ✅ Chat carregado: Gestão CPFL Paulista
+[07/05/2026 18:20:35] - Arquivo anexado.
+[07/05/2026 18:20:37] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[07/05/2026 18:20:45] - Abrindo grupo: Gestão CPFL Piratininga
+[07/05/2026 18:20:54] - ✅ Chat carregado: Gestão CPFL Piratininga
+[07/05/2026 18:20:57] - Arquivo anexado.
+[07/05/2026 18:20:59] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[07/05/2026 18:21:07] - Abrindo grupo: Informativos Administrativo Sorocaba
+[07/05/2026 18:21:16] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[07/05/2026 18:21:19] - Arquivo anexado.
+[07/05/2026 18:21:21] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[07/05/2026 18:21:30] - === FIM DA OPERAÇÃO ===
+
+[07/05/2026 19:19:01] - === INÍCIO DA OPERAÇÃO ===
+[07/05/2026 19:19:01] - Iniciando acesso direto ao Power BI...
+[07/05/2026 19:19:04] - Aguardando carregamento (20s)...
+[07/05/2026 19:19:30] - Filtrando PAULISTA...
+[07/05/2026 19:19:51] - Recorte concluído: PRINT_PAULI_2026_05_07_19-19.png
+[07/05/2026 19:19:51] - Filtrando PIRATININGA...
+[07/05/2026 19:20:11] - Recorte concluído: PRINT_PIRAT_2026_05_07_19-19.png
+[07/05/2026 19:20:20] - WhatsApp carregado.
+[07/05/2026 19:20:20] - Abrindo grupo: Gestão CPFL Paulista
+[07/05/2026 19:20:29] - ✅ Chat carregado: Gestão CPFL Paulista
+[07/05/2026 19:20:32] - Arquivo anexado.
+[07/05/2026 19:20:34] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[07/05/2026 19:20:42] - Abrindo grupo: Gestão CPFL Piratininga
+[07/05/2026 19:20:51] - ✅ Chat carregado: Gestão CPFL Piratininga
+[07/05/2026 19:20:54] - Arquivo anexado.
+[07/05/2026 19:20:56] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[07/05/2026 19:21:04] - Abrindo grupo: Informativos Administrativo Sorocaba
+[07/05/2026 19:21:13] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[07/05/2026 19:21:17] - Arquivo anexado.
+[07/05/2026 19:21:19] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[07/05/2026 19:21:27] - === FIM DA OPERAÇÃO ===
+
+[08/05/2026 09:19:03] - === INÍCIO DA OPERAÇÃO ===
+[08/05/2026 09:19:10] - Iniciando acesso direto ao Power BI...
+[08/05/2026 09:19:15] - Aguardando carregamento (20s)...
+[08/05/2026 09:19:41] - Filtrando PAULISTA...
+[08/05/2026 09:20:02] - Recorte concluído: PRINT_PAULI_2026_05_08_09-19.png
+[08/05/2026 09:20:02] - Filtrando PIRATININGA...
+[08/05/2026 09:20:22] - Recorte concluído: PRINT_PIRAT_2026_05_08_09-19.png
+[08/05/2026 09:20:31] - WhatsApp carregado.
+[08/05/2026 09:20:31] - Abrindo grupo: Gestão CPFL Paulista
+[08/05/2026 09:20:40] - ✅ Chat carregado: Gestão CPFL Paulista
+[08/05/2026 09:20:43] - Arquivo anexado.
+[08/05/2026 09:20:45] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[08/05/2026 09:20:53] - Abrindo grupo: Gestão CPFL Piratininga
+[08/05/2026 09:21:02] - ✅ Chat carregado: Gestão CPFL Piratininga
+[08/05/2026 09:21:06] - Arquivo anexado.
+[08/05/2026 09:21:08] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[08/05/2026 09:21:16] - Abrindo grupo: Informativos Administrativo Sorocaba
+[08/05/2026 09:21:25] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[08/05/2026 09:21:28] - Arquivo anexado.
+[08/05/2026 09:21:30] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[08/05/2026 09:21:38] - === FIM DA OPERAÇÃO ===
+
+[08/05/2026 10:19:01] - === INÍCIO DA OPERAÇÃO ===
+[08/05/2026 10:19:02] - Iniciando acesso direto ao Power BI...
+[08/05/2026 10:19:06] - Aguardando carregamento (20s)...
+[08/05/2026 10:19:32] - Filtrando PAULISTA...
+[08/05/2026 10:19:53] - Recorte concluído: PRINT_PAULI_2026_05_08_10-19.png
+[08/05/2026 10:19:53] - Filtrando PIRATININGA...
+[08/05/2026 10:20:14] - Recorte concluído: PRINT_PIRAT_2026_05_08_10-19.png
+[08/05/2026 10:20:23] - WhatsApp carregado.
+[08/05/2026 10:20:23] - Abrindo grupo: Gestão CPFL Paulista
+[08/05/2026 10:20:32] - ✅ Chat carregado: Gestão CPFL Paulista
+[08/05/2026 10:20:35] - Arquivo anexado.
+[08/05/2026 10:20:37] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[08/05/2026 10:20:45] - Abrindo grupo: Gestão CPFL Piratininga
+[08/05/2026 10:20:54] - ✅ Chat carregado: Gestão CPFL Piratininga
+[08/05/2026 10:20:58] - Arquivo anexado.
+[08/05/2026 10:21:00] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[08/05/2026 10:21:08] - Abrindo grupo: Informativos Administrativo Sorocaba
+[08/05/2026 10:21:17] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[08/05/2026 10:21:20] - Arquivo anexado.
+[08/05/2026 10:21:22] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[08/05/2026 10:21:30] - === FIM DA OPERAÇÃO ===
+
+[08/05/2026 11:19:01] - === INÍCIO DA OPERAÇÃO ===
+[08/05/2026 11:19:02] - Iniciando acesso direto ao Power BI...
+[08/05/2026 11:19:04] - Aguardando carregamento (20s)...
+[08/05/2026 11:19:31] - Filtrando PAULISTA...
+[08/05/2026 11:19:52] - Recorte concluído: PRINT_PAULI_2026_05_08_11-19.png
+[08/05/2026 11:19:52] - Filtrando PIRATININGA...
+[08/05/2026 11:20:12] - Recorte concluído: PRINT_PIRAT_2026_05_08_11-19.png
+[08/05/2026 11:20:21] - WhatsApp carregado.
+[08/05/2026 11:20:21] - Abrindo grupo: Gestão CPFL Paulista
+[08/05/2026 11:20:30] - ✅ Chat carregado: Gestão CPFL Paulista
+[08/05/2026 11:20:33] - Arquivo anexado.
+[08/05/2026 11:20:35] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[08/05/2026 11:20:43] - Abrindo grupo: Gestão CPFL Piratininga
+[08/05/2026 11:20:52] - ✅ Chat carregado: Gestão CPFL Piratininga
+[08/05/2026 11:20:55] - Arquivo anexado.
+[08/05/2026 11:20:57] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[08/05/2026 11:21:05] - Abrindo grupo: Informativos Administrativo Sorocaba
+[08/05/2026 11:21:15] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[08/05/2026 11:21:18] - Arquivo anexado.
+[08/05/2026 11:21:20] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[08/05/2026 11:21:28] - === FIM DA OPERAÇÃO ===
+
+[08/05/2026 12:19:01] - === INÍCIO DA OPERAÇÃO ===
+[08/05/2026 12:19:03] - Iniciando acesso direto ao Power BI...
+[08/05/2026 12:19:07] - Aguardando carregamento (20s)...
+[08/05/2026 12:19:33] - Filtrando PAULISTA...
+[08/05/2026 12:19:54] - Recorte concluído: PRINT_PAULI_2026_05_08_12-19.png
+[08/05/2026 12:19:54] - Filtrando PIRATININGA...
+[08/05/2026 12:20:15] - Recorte concluído: PRINT_PIRAT_2026_05_08_12-19.png
+[08/05/2026 12:20:25] - WhatsApp carregado.
+[08/05/2026 12:20:25] - Abrindo grupo: Gestão CPFL Paulista
+[08/05/2026 12:20:35] - ✅ Chat carregado: Gestão CPFL Paulista
+[08/05/2026 12:20:38] - Arquivo anexado.
+[08/05/2026 12:20:40] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[08/05/2026 12:20:48] - Abrindo grupo: Gestão CPFL Piratininga
+[08/05/2026 12:20:57] - ✅ Chat carregado: Gestão CPFL Piratininga
+[08/05/2026 12:21:01] - Arquivo anexado.
+[08/05/2026 12:21:03] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[08/05/2026 12:21:11] - Abrindo grupo: Informativos Administrativo Sorocaba
+[08/05/2026 12:21:20] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[08/05/2026 12:21:23] - Arquivo anexado.
+[08/05/2026 12:21:25] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[08/05/2026 12:21:35] - === FIM DA OPERAÇÃO ===
+
+[08/05/2026 14:19:01] - === INÍCIO DA OPERAÇÃO ===
+[08/05/2026 14:19:03] - Iniciando acesso direto ao Power BI...
+[08/05/2026 14:19:05] - Aguardando carregamento (20s)...
+[08/05/2026 14:19:31] - Filtrando PAULISTA...
+[08/05/2026 14:19:52] - Recorte concluído: PRINT_PAULI_2026_05_08_14-19.png
+[08/05/2026 14:19:52] - Filtrando PIRATININGA...
+[08/05/2026 14:20:13] - Recorte concluído: PRINT_PIRAT_2026_05_08_14-19.png
+[08/05/2026 14:20:23] - WhatsApp carregado.
+[08/05/2026 14:20:23] - Abrindo grupo: Gestão CPFL Paulista
+[08/05/2026 14:20:32] - ✅ Chat carregado: Gestão CPFL Paulista
+[08/05/2026 14:20:36] - Arquivo anexado.
+[08/05/2026 14:20:38] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[08/05/2026 14:20:46] - Abrindo grupo: Gestão CPFL Piratininga
+[08/05/2026 14:20:55] - ✅ Chat carregado: Gestão CPFL Piratininga
+[08/05/2026 14:20:58] - Arquivo anexado.
+[08/05/2026 14:21:00] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[08/05/2026 14:21:08] - Abrindo grupo: Informativos Administrativo Sorocaba
+[08/05/2026 14:21:17] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[08/05/2026 14:21:20] - Arquivo anexado.
+[08/05/2026 14:21:23] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[08/05/2026 14:21:31] - === FIM DA OPERAÇÃO ===
+
+[08/05/2026 15:19:01] - === INÍCIO DA OPERAÇÃO ===
+[08/05/2026 15:19:01] - Iniciando acesso direto ao Power BI...
+[08/05/2026 15:19:04] - Aguardando carregamento (20s)...
+[08/05/2026 15:19:30] - Filtrando PAULISTA...
+[08/05/2026 15:19:51] - Recorte concluído: PRINT_PAULI_2026_05_08_15-19.png
+[08/05/2026 15:19:51] - Filtrando PIRATININGA...
+[08/05/2026 15:20:11] - Recorte concluído: PRINT_PIRAT_2026_05_08_15-19.png
+[08/05/2026 15:20:20] - WhatsApp carregado.
+[08/05/2026 15:20:20] - Abrindo grupo: Gestão CPFL Paulista
+[08/05/2026 15:20:29] - ✅ Chat carregado: Gestão CPFL Paulista
+[08/05/2026 15:20:33] - Arquivo anexado.
+[08/05/2026 15:20:35] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[08/05/2026 15:20:43] - Abrindo grupo: Gestão CPFL Piratininga
+[08/05/2026 15:20:52] - ✅ Chat carregado: Gestão CPFL Piratininga
+[08/05/2026 15:20:55] - Arquivo anexado.
+[08/05/2026 15:20:57] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[08/05/2026 15:21:05] - Abrindo grupo: Informativos Administrativo Sorocaba
+[08/05/2026 15:21:14] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[08/05/2026 15:21:17] - Arquivo anexado.
+[08/05/2026 15:21:19] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[08/05/2026 15:21:28] - === FIM DA OPERAÇÃO ===
+
+[08/05/2026 16:19:01] - === INÍCIO DA OPERAÇÃO ===
+[08/05/2026 16:19:02] - Iniciando acesso direto ao Power BI...
+[08/05/2026 16:19:05] - Aguardando carregamento (20s)...
+[08/05/2026 16:19:31] - Filtrando PAULISTA...
+[08/05/2026 16:19:52] - Recorte concluído: PRINT_PAULI_2026_05_08_16-19.png
+[08/05/2026 16:19:52] - Filtrando PIRATININGA...
+[08/05/2026 16:20:12] - Recorte concluído: PRINT_PIRAT_2026_05_08_16-19.png
+[08/05/2026 16:20:21] - WhatsApp carregado.
+[08/05/2026 16:20:21] - Abrindo grupo: Gestão CPFL Paulista
+[08/05/2026 16:20:31] - ✅ Chat carregado: Gestão CPFL Paulista
+[08/05/2026 16:20:34] - Arquivo anexado.
+[08/05/2026 16:20:36] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[08/05/2026 16:20:44] - Abrindo grupo: Gestão CPFL Piratininga
+[08/05/2026 16:20:53] - ✅ Chat carregado: Gestão CPFL Piratininga
+[08/05/2026 16:20:56] - Arquivo anexado.
+[08/05/2026 16:20:58] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[08/05/2026 16:21:06] - Abrindo grupo: Informativos Administrativo Sorocaba
+[08/05/2026 16:21:15] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[08/05/2026 16:21:19] - Arquivo anexado.
+[08/05/2026 16:21:21] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[08/05/2026 16:21:29] - === FIM DA OPERAÇÃO ===
+
+[08/05/2026 17:19:01] - === INÍCIO DA OPERAÇÃO ===
+[08/05/2026 17:19:01] - Iniciando acesso direto ao Power BI...
+[08/05/2026 17:19:04] - Aguardando carregamento (20s)...
+[08/05/2026 17:19:30] - Filtrando PAULISTA...
+[08/05/2026 17:19:51] - Recorte concluído: PRINT_PAULI_2026_05_08_17-19.png
+[08/05/2026 17:19:51] - Filtrando PIRATININGA...
+[08/05/2026 17:20:12] - Recorte concluído: PRINT_PIRAT_2026_05_08_17-19.png
+[08/05/2026 17:20:20] - WhatsApp carregado.
+[08/05/2026 17:20:20] - Abrindo grupo: Gestão CPFL Paulista
+[08/05/2026 17:20:29] - ✅ Chat carregado: Gestão CPFL Paulista
+[08/05/2026 17:20:32] - Arquivo anexado.
+[08/05/2026 17:20:34] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[08/05/2026 17:20:42] - Abrindo grupo: Gestão CPFL Piratininga
+[08/05/2026 17:20:52] - ✅ Chat carregado: Gestão CPFL Piratininga
+[08/05/2026 17:20:55] - Arquivo anexado.
+[08/05/2026 17:20:57] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[08/05/2026 17:21:05] - Abrindo grupo: Informativos Administrativo Sorocaba
+[08/05/2026 17:21:14] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[08/05/2026 17:21:17] - Arquivo anexado.
+[08/05/2026 17:21:19] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[08/05/2026 17:21:28] - === FIM DA OPERAÇÃO ===
+
+[08/05/2026 18:19:01] - === INÍCIO DA OPERAÇÃO ===
+[08/05/2026 18:19:03] - Iniciando acesso direto ao Power BI...
+[08/05/2026 18:19:06] - Aguardando carregamento (20s)...
+[08/05/2026 18:19:32] - Filtrando PAULISTA...
+[08/05/2026 18:19:53] - Recorte concluído: PRINT_PAULI_2026_05_08_18-19.png
+[08/05/2026 18:19:53] - Filtrando PIRATININGA...
+[08/05/2026 18:20:14] - Recorte concluído: PRINT_PIRAT_2026_05_08_18-19.png
+[08/05/2026 18:20:22] - WhatsApp carregado.
+[08/05/2026 18:20:22] - Abrindo grupo: Gestão CPFL Paulista
+[08/05/2026 18:20:31] - ✅ Chat carregado: Gestão CPFL Paulista
+[08/05/2026 18:20:35] - Arquivo anexado.
+[08/05/2026 18:20:37] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[08/05/2026 18:20:45] - Abrindo grupo: Gestão CPFL Piratininga
+[08/05/2026 18:20:54] - ✅ Chat carregado: Gestão CPFL Piratininga
+[08/05/2026 18:20:57] - Arquivo anexado.
+[08/05/2026 18:20:59] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[08/05/2026 18:21:07] - Abrindo grupo: Informativos Administrativo Sorocaba
+[08/05/2026 18:21:16] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[08/05/2026 18:21:19] - Arquivo anexado.
+[08/05/2026 18:21:21] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[08/05/2026 18:21:30] - === FIM DA OPERAÇÃO ===
+
+[08/05/2026 19:19:01] - === INÍCIO DA OPERAÇÃO ===
+[08/05/2026 19:19:01] - Iniciando acesso direto ao Power BI...
+[08/05/2026 19:19:03] - Aguardando carregamento (20s)...
+[08/05/2026 19:19:29] - Filtrando PAULISTA...
+[08/05/2026 19:19:50] - Recorte concluído: PRINT_PAULI_2026_05_08_19-19.png
+[08/05/2026 19:19:50] - Filtrando PIRATININGA...
+[08/05/2026 19:20:10] - Recorte concluído: PRINT_PIRAT_2026_05_08_19-19.png
+[08/05/2026 19:20:19] - WhatsApp carregado.
+[08/05/2026 19:20:19] - Abrindo grupo: Gestão CPFL Paulista
+[08/05/2026 19:20:29] - ✅ Chat carregado: Gestão CPFL Paulista
+[08/05/2026 19:20:32] - Arquivo anexado.
+[08/05/2026 19:20:34] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[08/05/2026 19:20:42] - Abrindo grupo: Gestão CPFL Piratininga
+[08/05/2026 19:20:51] - ✅ Chat carregado: Gestão CPFL Piratininga
+[08/05/2026 19:20:54] - Arquivo anexado.
+[08/05/2026 19:20:56] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[08/05/2026 19:21:04] - Abrindo grupo: Informativos Administrativo Sorocaba
+[08/05/2026 19:21:13] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[08/05/2026 19:21:17] - Arquivo anexado.
+[08/05/2026 19:21:19] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[08/05/2026 19:21:27] - === FIM DA OPERAÇÃO ===
+
+[11/05/2026 09:19:04] - === INÍCIO DA OPERAÇÃO ===
+[11/05/2026 09:19:10] - Iniciando acesso direto ao Power BI...
+[11/05/2026 09:19:19] - Aguardando carregamento (20s)...
+[11/05/2026 09:19:45] - Filtrando PAULISTA...
+[11/05/2026 09:20:07] - Recorte concluído: PRINT_PAULI_2026_05_11_09-19.png
+[11/05/2026 09:20:07] - Filtrando PIRATININGA...
+[11/05/2026 09:20:27] - Recorte concluído: PRINT_PIRAT_2026_05_11_09-19.png
+[11/05/2026 09:20:36] - WhatsApp carregado.
+[11/05/2026 09:20:36] - Abrindo grupo: Gestão CPFL Paulista
+[11/05/2026 09:20:46] - ✅ Chat carregado: Gestão CPFL Paulista
+[11/05/2026 09:20:49] - Arquivo anexado.
+[11/05/2026 09:20:51] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[11/05/2026 09:20:59] - Abrindo grupo: Gestão CPFL Piratininga
+[11/05/2026 09:21:08] - ✅ Chat carregado: Gestão CPFL Piratininga
+[11/05/2026 09:21:12] - Arquivo anexado.
+[11/05/2026 09:21:14] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[11/05/2026 09:21:22] - Abrindo grupo: Informativos Administrativo Sorocaba
+[11/05/2026 09:21:31] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[11/05/2026 09:21:34] - Arquivo anexado.
+[11/05/2026 09:21:36] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[11/05/2026 09:21:45] - === FIM DA OPERAÇÃO ===
+
+[11/05/2026 10:19:01] - === INÍCIO DA OPERAÇÃO ===
+[11/05/2026 10:19:02] - Iniciando acesso direto ao Power BI...
+[11/05/2026 10:19:09] - Aguardando carregamento (20s)...
+[11/05/2026 10:19:35] - Filtrando PAULISTA...
+[11/05/2026 10:19:56] - Recorte concluído: PRINT_PAULI_2026_05_11_10-19.png
+[11/05/2026 10:19:56] - Filtrando PIRATININGA...
+[11/05/2026 10:20:16] - Recorte concluído: PRINT_PIRAT_2026_05_11_10-19.png
+[11/05/2026 10:20:26] - WhatsApp carregado.
+[11/05/2026 10:20:26] - Abrindo grupo: Gestão CPFL Paulista
+[11/05/2026 10:20:35] - ✅ Chat carregado: Gestão CPFL Paulista
+[11/05/2026 10:20:38] - Arquivo anexado.
+[11/05/2026 10:20:40] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[11/05/2026 10:20:48] - Abrindo grupo: Gestão CPFL Piratininga
+[11/05/2026 10:20:57] - ✅ Chat carregado: Gestão CPFL Piratininga
+[11/05/2026 10:21:00] - Arquivo anexado.
+[11/05/2026 10:21:02] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[11/05/2026 10:21:10] - Abrindo grupo: Informativos Administrativo Sorocaba
+[11/05/2026 10:21:19] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[11/05/2026 10:21:23] - Arquivo anexado.
+[11/05/2026 10:21:25] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[11/05/2026 10:21:33] - === FIM DA OPERAÇÃO ===
+
+[11/05/2026 11:19:01] - === INÍCIO DA OPERAÇÃO ===
+[11/05/2026 11:19:02] - Iniciando acesso direto ao Power BI...
+[11/05/2026 11:19:06] - Aguardando carregamento (20s)...
+[11/05/2026 11:19:32] - Filtrando PAULISTA...
+[11/05/2026 11:19:53] - Recorte concluído: PRINT_PAULI_2026_05_11_11-19.png
+[11/05/2026 11:19:53] - Filtrando PIRATININGA...
+[11/05/2026 11:20:13] - Recorte concluído: PRINT_PIRAT_2026_05_11_11-19.png
+[11/05/2026 11:20:21] - WhatsApp carregado.
+[11/05/2026 11:20:21] - Abrindo grupo: Gestão CPFL Paulista
+[11/05/2026 11:20:31] - ✅ Chat carregado: Gestão CPFL Paulista
+[11/05/2026 11:20:34] - Arquivo anexado.
+[11/05/2026 11:20:36] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[11/05/2026 11:20:44] - Abrindo grupo: Gestão CPFL Piratininga
+[11/05/2026 11:20:53] - ✅ Chat carregado: Gestão CPFL Piratininga
+[11/05/2026 11:20:56] - Arquivo anexado.
+[11/05/2026 11:20:58] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[11/05/2026 11:21:06] - Abrindo grupo: Informativos Administrativo Sorocaba
+[11/05/2026 11:21:15] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[11/05/2026 11:21:19] - Arquivo anexado.
+[11/05/2026 11:21:21] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[11/05/2026 11:21:29] - === FIM DA OPERAÇÃO ===
+
+[11/05/2026 12:19:01] - === INÍCIO DA OPERAÇÃO ===
+[11/05/2026 12:19:03] - Iniciando acesso direto ao Power BI...
+[11/05/2026 12:19:09] - Aguardando carregamento (20s)...
+[11/05/2026 12:19:35] - Filtrando PAULISTA...
+[11/05/2026 12:19:56] - Recorte concluído: PRINT_PAULI_2026_05_11_12-19.png
+[11/05/2026 12:19:56] - Filtrando PIRATININGA...
+[11/05/2026 12:20:17] - Recorte concluído: PRINT_PIRAT_2026_05_11_12-19.png
+[11/05/2026 12:20:28] - WhatsApp carregado.
+[11/05/2026 12:20:28] - Abrindo grupo: Gestão CPFL Paulista
+[11/05/2026 12:20:37] - ✅ Chat carregado: Gestão CPFL Paulista
+[11/05/2026 12:20:41] - Arquivo anexado.
+[11/05/2026 12:20:43] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[11/05/2026 12:20:51] - Abrindo grupo: Gestão CPFL Piratininga
+[11/05/2026 12:21:00] - ✅ Chat carregado: Gestão CPFL Piratininga
+[11/05/2026 12:21:03] - Arquivo anexado.
+[11/05/2026 12:21:05] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[11/05/2026 12:21:13] - Abrindo grupo: Informativos Administrativo Sorocaba
+[11/05/2026 12:21:22] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[11/05/2026 12:21:25] - Arquivo anexado.
+[11/05/2026 12:21:27] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[11/05/2026 12:21:36] - === FIM DA OPERAÇÃO ===
+
+[11/05/2026 14:19:01] - === INÍCIO DA OPERAÇÃO ===
+[11/05/2026 14:19:03] - Iniciando acesso direto ao Power BI...
+[11/05/2026 14:19:07] - Aguardando carregamento (20s)...
+[11/05/2026 14:19:33] - Filtrando PAULISTA...
+[11/05/2026 14:19:54] - Recorte concluído: PRINT_PAULI_2026_05_11_14-19.png
+[11/05/2026 14:19:54] - Filtrando PIRATININGA...
+[11/05/2026 14:20:14] - Recorte concluído: PRINT_PIRAT_2026_05_11_14-19.png
+[11/05/2026 14:20:22] - WhatsApp carregado.
+[11/05/2026 14:20:22] - Abrindo grupo: Gestão CPFL Paulista
+[11/05/2026 14:20:32] - ✅ Chat carregado: Gestão CPFL Paulista
+[11/05/2026 14:20:35] - Arquivo anexado.
+[11/05/2026 14:20:37] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[11/05/2026 14:20:45] - Abrindo grupo: Gestão CPFL Piratininga
+[11/05/2026 14:20:54] - ✅ Chat carregado: Gestão CPFL Piratininga
+[11/05/2026 14:20:57] - Arquivo anexado.
+[11/05/2026 14:20:59] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[11/05/2026 14:21:07] - Abrindo grupo: Informativos Administrativo Sorocaba
+[11/05/2026 14:21:16] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[11/05/2026 14:21:20] - Arquivo anexado.
+[11/05/2026 14:21:22] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[11/05/2026 14:21:30] - === FIM DA OPERAÇÃO ===
+
+[11/05/2026 15:19:00] - === INÍCIO DA OPERAÇÃO ===
+[11/05/2026 15:19:01] - Iniciando acesso direto ao Power BI...
+[11/05/2026 15:19:04] - Aguardando carregamento (20s)...
+[11/05/2026 15:19:30] - Filtrando PAULISTA...
+[11/05/2026 15:19:50] - Recorte concluído: PRINT_PAULI_2026_05_11_15-19.png
+[11/05/2026 15:19:50] - Filtrando PIRATININGA...
+[11/05/2026 15:20:11] - Recorte concluído: PRINT_PIRAT_2026_05_11_15-19.png
+[11/05/2026 15:20:19] - WhatsApp carregado.
+[11/05/2026 15:20:19] - Abrindo grupo: Gestão CPFL Paulista
+[11/05/2026 15:20:28] - ✅ Chat carregado: Gestão CPFL Paulista
+[11/05/2026 15:20:32] - Arquivo anexado.
+[11/05/2026 15:20:34] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[11/05/2026 15:20:42] - Abrindo grupo: Gestão CPFL Piratininga
+[11/05/2026 15:20:51] - ✅ Chat carregado: Gestão CPFL Piratininga
+[11/05/2026 15:20:55] - Arquivo anexado.
+[11/05/2026 15:20:57] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[11/05/2026 15:21:05] - Abrindo grupo: Informativos Administrativo Sorocaba
+[11/05/2026 15:21:14] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[11/05/2026 15:21:17] - Arquivo anexado.
+[11/05/2026 15:21:20] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[11/05/2026 15:21:28] - === FIM DA OPERAÇÃO ===
+
+[11/05/2026 16:19:01] - === INÍCIO DA OPERAÇÃO ===
+[11/05/2026 16:19:01] - Iniciando acesso direto ao Power BI...
+[11/05/2026 16:19:03] - Aguardando carregamento (20s)...
+[11/05/2026 16:19:30] - Filtrando PAULISTA...
+[11/05/2026 16:19:50] - Recorte concluído: PRINT_PAULI_2026_05_11_16-19.png
+[11/05/2026 16:19:50] - Filtrando PIRATININGA...
+[11/05/2026 16:20:11] - Recorte concluído: PRINT_PIRAT_2026_05_11_16-19.png
+[11/05/2026 16:20:18] - WhatsApp carregado.
+[11/05/2026 16:20:18] - Abrindo grupo: Gestão CPFL Paulista
+[11/05/2026 16:20:27] - ✅ Chat carregado: Gestão CPFL Paulista
+[11/05/2026 16:20:31] - Arquivo anexado.
+[11/05/2026 16:20:33] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[11/05/2026 16:20:41] - Abrindo grupo: Gestão CPFL Piratininga
+[11/05/2026 16:20:50] - ✅ Chat carregado: Gestão CPFL Piratininga
+[11/05/2026 16:20:54] - Arquivo anexado.
+[11/05/2026 16:20:56] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[11/05/2026 16:21:04] - Abrindo grupo: Informativos Administrativo Sorocaba
+[11/05/2026 16:21:13] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[11/05/2026 16:21:16] - Arquivo anexado.
+[11/05/2026 16:21:18] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[11/05/2026 16:21:26] - === FIM DA OPERAÇÃO ===
+
+[11/05/2026 17:19:01] - === INÍCIO DA OPERAÇÃO ===
+[11/05/2026 17:19:02] - Iniciando acesso direto ao Power BI...
+[11/05/2026 17:19:05] - Aguardando carregamento (20s)...
+[11/05/2026 17:19:31] - Filtrando PAULISTA...
+[11/05/2026 17:19:52] - Recorte concluído: PRINT_PAULI_2026_05_11_17-19.png
+[11/05/2026 17:19:52] - Filtrando PIRATININGA...
+[11/05/2026 17:20:12] - Recorte concluído: PRINT_PIRAT_2026_05_11_17-19.png
+[11/05/2026 17:20:21] - WhatsApp carregado.
+[11/05/2026 17:20:21] - Abrindo grupo: Gestão CPFL Paulista
+[11/05/2026 17:20:30] - ✅ Chat carregado: Gestão CPFL Paulista
+[11/05/2026 17:20:33] - Arquivo anexado.
+[11/05/2026 17:20:35] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[11/05/2026 17:20:43] - Abrindo grupo: Gestão CPFL Piratininga
+[11/05/2026 17:20:52] - ✅ Chat carregado: Gestão CPFL Piratininga
+[11/05/2026 17:20:56] - Arquivo anexado.
+[11/05/2026 17:20:58] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[11/05/2026 17:21:06] - Abrindo grupo: Informativos Administrativo Sorocaba
+[11/05/2026 17:21:15] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[11/05/2026 17:21:18] - Arquivo anexado.
+[11/05/2026 17:21:20] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[11/05/2026 17:21:29] - === FIM DA OPERAÇÃO ===
+
+[11/05/2026 18:19:01] - === INÍCIO DA OPERAÇÃO ===
+[11/05/2026 18:19:02] - Iniciando acesso direto ao Power BI...
+[11/05/2026 18:19:05] - Aguardando carregamento (20s)...
+[11/05/2026 18:19:31] - Filtrando PAULISTA...
+[11/05/2026 18:19:52] - Recorte concluído: PRINT_PAULI_2026_05_11_18-19.png
+[11/05/2026 18:19:52] - Filtrando PIRATININGA...
+[11/05/2026 18:20:12] - Recorte concluído: PRINT_PIRAT_2026_05_11_18-19.png
+[11/05/2026 18:20:22] - WhatsApp carregado.
+[11/05/2026 18:20:22] - Abrindo grupo: Gestão CPFL Paulista
+[11/05/2026 18:20:31] - ✅ Chat carregado: Gestão CPFL Paulista
+[11/05/2026 18:20:34] - Arquivo anexado.
+[11/05/2026 18:20:36] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[11/05/2026 18:20:44] - Abrindo grupo: Gestão CPFL Piratininga
+[11/05/2026 18:20:53] - ✅ Chat carregado: Gestão CPFL Piratininga
+[11/05/2026 18:20:57] - Arquivo anexado.
+[11/05/2026 18:20:59] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[11/05/2026 18:21:07] - Abrindo grupo: Informativos Administrativo Sorocaba
+[11/05/2026 18:21:16] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[11/05/2026 18:21:19] - Arquivo anexado.
+[11/05/2026 18:21:21] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[11/05/2026 18:21:29] - === FIM DA OPERAÇÃO ===
+
+[11/05/2026 19:19:01] - === INÍCIO DA OPERAÇÃO ===
+[11/05/2026 19:19:01] - Iniciando acesso direto ao Power BI...
+[11/05/2026 19:19:04] - Aguardando carregamento (20s)...
+[11/05/2026 19:19:30] - Filtrando PAULISTA...
+[11/05/2026 19:19:51] - Recorte concluído: PRINT_PAULI_2026_05_11_19-19.png
+[11/05/2026 19:19:51] - Filtrando PIRATININGA...
+[11/05/2026 19:20:11] - Recorte concluído: PRINT_PIRAT_2026_05_11_19-19.png
+[11/05/2026 19:20:21] - WhatsApp carregado.
+[11/05/2026 19:20:21] - Abrindo grupo: Gestão CPFL Paulista
+[11/05/2026 19:20:30] - ✅ Chat carregado: Gestão CPFL Paulista
+[11/05/2026 19:20:33] - Arquivo anexado.
+[11/05/2026 19:20:35] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[11/05/2026 19:20:43] - Abrindo grupo: Gestão CPFL Piratininga
+[11/05/2026 19:20:53] - ✅ Chat carregado: Gestão CPFL Piratininga
+[11/05/2026 19:20:56] - Arquivo anexado.
+[11/05/2026 19:20:58] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[11/05/2026 19:21:06] - Abrindo grupo: Informativos Administrativo Sorocaba
+[11/05/2026 19:21:16] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[11/05/2026 19:21:19] - Arquivo anexado.
+[11/05/2026 19:21:21] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[11/05/2026 19:21:29] - === FIM DA OPERAÇÃO ===
+
+[12/05/2026 10:33:48] - === INÍCIO DA OPERAÇÃO ===
+[12/05/2026 10:33:50] - Iniciando acesso direto ao Power BI...
+[12/05/2026 10:33:58] - Aguardando carregamento (20s)...
+[12/05/2026 10:34:26] - Filtrando PAULISTA...
+[12/05/2026 10:34:49] - Recorte concluído: PRINT_PAULI_2026_05_12_10-33.png
+[12/05/2026 10:34:50] - Filtrando PIRATININGA...
+[12/05/2026 10:35:12] - Recorte concluído: PRINT_PIRAT_2026_05_12_10-33.png
+[12/05/2026 10:35:23] - WhatsApp carregado.
+[12/05/2026 10:35:23] - Abrindo grupo: Gestão CPFL Paulista
+[12/05/2026 10:35:33] - ✅ Chat carregado: Gestão CPFL Paulista
+[12/05/2026 10:35:36] - Arquivo anexado.
+[12/05/2026 10:35:38] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[12/05/2026 10:35:46] - Abrindo grupo: Gestão CPFL Piratininga
+[12/05/2026 10:35:56] - ✅ Chat carregado: Gestão CPFL Piratininga
+[12/05/2026 10:35:59] - Arquivo anexado.
+[12/05/2026 10:36:01] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[12/05/2026 10:36:09] - Abrindo grupo: Informativos Administrativo Sorocaba
+[12/05/2026 10:36:18] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[12/05/2026 10:36:21] - Arquivo anexado.
+[12/05/2026 10:36:24] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[12/05/2026 10:36:32] - === FIM DA OPERAÇÃO ===
+
+[12/05/2026 12:53:06] - === INÍCIO DA OPERAÇÃO ===
+[12/05/2026 12:53:09] - Iniciando acesso direto ao Power BI...
+[12/05/2026 12:53:17] - Aguardando carregamento (20s)...
+[12/05/2026 12:53:43] - Filtrando PAULISTA...
+[12/05/2026 12:54:04] - Recorte concluído: PRINT_PAULI_2026_05_12_12-53.png
+[12/05/2026 12:54:04] - Filtrando PIRATININGA...
+[12/05/2026 12:54:24] - Recorte concluído: PRINT_PIRAT_2026_05_12_12-53.png
+[12/05/2026 12:54:32] - WhatsApp carregado.
+[12/05/2026 12:54:32] - Abrindo grupo: Gestão CPFL Paulista
+[12/05/2026 12:54:42] - ✅ Chat carregado: Gestão CPFL Paulista
+[12/05/2026 12:54:45] - Arquivo anexado.
+[12/05/2026 12:54:47] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[12/05/2026 12:54:55] - Abrindo grupo: Gestão CPFL Piratininga
+[12/05/2026 12:55:04] - ✅ Chat carregado: Gestão CPFL Piratininga
+[12/05/2026 12:55:07] - Arquivo anexado.
+[12/05/2026 12:55:09] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[12/05/2026 12:55:17] - Abrindo grupo: Informativos Administrativo Sorocaba
+[12/05/2026 12:55:26] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[12/05/2026 12:55:30] - Arquivo anexado.
+[12/05/2026 12:55:32] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[12/05/2026 12:55:40] - === FIM DA OPERAÇÃO ===
+
+[12/05/2026 14:19:01] - === INÍCIO DA OPERAÇÃO ===
+[12/05/2026 14:19:05] - Iniciando acesso direto ao Power BI...
+[12/05/2026 14:19:12] - Aguardando carregamento (20s)...
+[12/05/2026 14:19:38] - Filtrando PAULISTA...
+[12/05/2026 14:19:59] - Recorte concluído: PRINT_PAULI_2026_05_12_14-19.png
+[12/05/2026 14:19:59] - Filtrando PIRATININGA...
+[12/05/2026 14:20:19] - Recorte concluído: PRINT_PIRAT_2026_05_12_14-19.png
+[12/05/2026 14:20:27] - WhatsApp carregado.
+[12/05/2026 14:20:27] - Abrindo grupo: Gestão CPFL Paulista
+[12/05/2026 14:20:36] - ✅ Chat carregado: Gestão CPFL Paulista
+[12/05/2026 14:20:40] - Arquivo anexado.
+[12/05/2026 14:20:42] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[12/05/2026 14:20:50] - Abrindo grupo: Gestão CPFL Piratininga
+[12/05/2026 14:20:59] - ✅ Chat carregado: Gestão CPFL Piratininga
+[12/05/2026 14:21:02] - Arquivo anexado.
+[12/05/2026 14:21:04] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[12/05/2026 14:21:12] - Abrindo grupo: Informativos Administrativo Sorocaba
+[12/05/2026 14:21:21] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[12/05/2026 14:21:24] - Arquivo anexado.
+[12/05/2026 14:21:26] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[12/05/2026 14:21:35] - === FIM DA OPERAÇÃO ===
+
+[12/05/2026 15:19:01] - === INÍCIO DA OPERAÇÃO ===
+[12/05/2026 15:19:02] - Iniciando acesso direto ao Power BI...
+[12/05/2026 15:19:10] - Aguardando carregamento (20s)...
+[12/05/2026 15:19:36] - Filtrando PAULISTA...
+[12/05/2026 15:19:57] - Recorte concluído: PRINT_PAULI_2026_05_12_15-19.png
+[12/05/2026 15:19:57] - Filtrando PIRATININGA...
+[12/05/2026 15:20:18] - Recorte concluído: PRINT_PIRAT_2026_05_12_15-19.png
+[12/05/2026 15:20:26] - WhatsApp carregado.
+[12/05/2026 15:20:26] - Abrindo grupo: Gestão CPFL Paulista
+[12/05/2026 15:20:36] - ✅ Chat carregado: Gestão CPFL Paulista
+[12/05/2026 15:20:39] - Arquivo anexado.
+[12/05/2026 15:20:41] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[12/05/2026 15:20:49] - Abrindo grupo: Gestão CPFL Piratininga
+[12/05/2026 15:20:58] - ✅ Chat carregado: Gestão CPFL Piratininga
+[12/05/2026 15:21:01] - Arquivo anexado.
+[12/05/2026 15:21:03] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[12/05/2026 15:21:11] - Abrindo grupo: Informativos Administrativo Sorocaba
+[12/05/2026 15:21:20] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[12/05/2026 15:21:24] - Arquivo anexado.
+[12/05/2026 15:21:26] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[12/05/2026 15:21:34] - === FIM DA OPERAÇÃO ===
+
+[12/05/2026 16:19:01] - === INÍCIO DA OPERAÇÃO ===
+[12/05/2026 16:19:02] - Iniciando acesso direto ao Power BI...
+[12/05/2026 16:19:08] - Aguardando carregamento (20s)...
+[12/05/2026 16:19:34] - Filtrando PAULISTA...
+[12/05/2026 16:19:56] - Recorte concluído: PRINT_PAULI_2026_05_12_16-19.png
+[12/05/2026 16:19:56] - Filtrando PIRATININGA...
+[12/05/2026 16:20:16] - Recorte concluído: PRINT_PIRAT_2026_05_12_16-19.png
+[12/05/2026 16:20:25] - WhatsApp carregado.
+[12/05/2026 16:20:25] - Abrindo grupo: Gestão CPFL Paulista
+[12/05/2026 16:20:34] - ✅ Chat carregado: Gestão CPFL Paulista
+[12/05/2026 16:20:38] - Arquivo anexado.
+[12/05/2026 16:20:40] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[12/05/2026 16:20:48] - Abrindo grupo: Gestão CPFL Piratininga
+[12/05/2026 16:20:57] - ✅ Chat carregado: Gestão CPFL Piratininga
+[12/05/2026 16:21:00] - Arquivo anexado.
+[12/05/2026 16:21:02] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[12/05/2026 16:21:10] - Abrindo grupo: Informativos Administrativo Sorocaba
+[12/05/2026 16:21:19] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[12/05/2026 16:21:22] - Arquivo anexado.
+[12/05/2026 16:21:24] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[12/05/2026 16:21:33] - === FIM DA OPERAÇÃO ===
+
+[12/05/2026 17:19:01] - === INÍCIO DA OPERAÇÃO ===
+[12/05/2026 17:19:03] - Iniciando acesso direto ao Power BI...
+[12/05/2026 17:19:11] - Aguardando carregamento (20s)...
+[12/05/2026 17:19:37] - Filtrando PAULISTA...
+[12/05/2026 17:19:57] - Recorte concluído: PRINT_PAULI_2026_05_12_17-19.png
+[12/05/2026 17:19:58] - Filtrando PIRATININGA...
+[12/05/2026 17:20:18] - Recorte concluído: PRINT_PIRAT_2026_05_12_17-19.png
+[12/05/2026 17:20:26] - WhatsApp carregado.
+[12/05/2026 17:20:26] - Abrindo grupo: Gestão CPFL Paulista
+[12/05/2026 17:20:35] - ✅ Chat carregado: Gestão CPFL Paulista
+[12/05/2026 17:20:38] - Arquivo anexado.
+[12/05/2026 17:20:40] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[12/05/2026 17:20:49] - Abrindo grupo: Gestão CPFL Piratininga
+[12/05/2026 17:20:58] - ✅ Chat carregado: Gestão CPFL Piratininga
+[12/05/2026 17:21:01] - Arquivo anexado.
+[12/05/2026 17:21:03] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[12/05/2026 17:21:11] - Abrindo grupo: Informativos Administrativo Sorocaba
+[12/05/2026 17:21:20] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[12/05/2026 17:21:23] - Arquivo anexado.
+[12/05/2026 17:21:25] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[12/05/2026 17:21:34] - === FIM DA OPERAÇÃO ===
+

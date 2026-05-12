@@ -1,0 +1,13 @@
+2026/05/12-17:37:12.840 4070 Reusing MANIFEST C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\03 Repository\01_BI-LEC\dados_pbi\Default\Session Storage/MANIFEST-000001
+2026/05/12-17:37:12.844 4070 Recovering log #3
+2026/05/12-17:37:12.845 4070 Level-0 table #3: started
+2026/05/12-17:37:12.866 4070 Level-0 table #3: 30674 bytes OK
+2026/05/12-17:37:12.867 4070 Recovering log #4
+2026/05/12-17:37:12.871 4070 Reusing old log C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\03 Repository\01_BI-LEC\dados_pbi\Default\Session Storage/000004.log 
+2026/05/12-17:37:12.874 4070 Delete type=0 #3
+2026/05/12-17:38:13.322 5e08 Level-0 table #6: started
+2026/05/12-17:38:13.337 5e08 Level-0 table #6: 57084 bytes OK
+2026/05/12-17:38:13.339 5e08 Delete type=0 #4
+2026/05/12-17:38:55.418 5e08 Level-0 table #8: started
+2026/05/12-17:38:55.474 5e08 Level-0 table #8: 29565 bytes OK
+2026/05/12-17:38:55.477 5e08 Delete type=0 #5
