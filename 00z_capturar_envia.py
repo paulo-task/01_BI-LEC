@@ -88,17 +88,16 @@ def capturar_powerbi():
         args = [
             "--disable-blink-features=AutomationControlled",
             "--disable-gpu",
-            "--disable-dev-shm-usage"
+            "--disable-dev-shm-usage",
+            "--no-sandbox"
         ]
-        if IS_HEADLESS:
-            args.append("--no-sandbox")
         
         context = p.chromium.launch_persistent_context(
-    USER_DATA_PBI,
-    headless=False,  # ← Mude para False (mostra a janela)
-    args=["--start-maximized"] + args,  # ← Maximiza a janela
-    no_viewport=True,
-    slow_mo=1000 if not IS_HEADLESS else 500
+            USER_DATA_PBI,
+            headless=IS_HEADLESS,
+            args=["--start-maximized"] + args,
+            no_viewport=True,
+            slow_mo=1000 if not IS_HEADLESS else 500
         )
         
         page = context.pages[0]

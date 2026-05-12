@@ -25,7 +25,7 @@ jobs:
 
       - name: Instalar Chromium para Playwright
         run: |
-          playwright install chromium chromium-headless-shell
+          playwright install chromium
           playwright install-deps chromium
 
       - name: Executar script de automação
