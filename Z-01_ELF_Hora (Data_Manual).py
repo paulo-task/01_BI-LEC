@@ -27,7 +27,7 @@ def run(playwright: Playwright) -> None:
         # 2. ACESSO E LOGIN
         page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login")
         page.get_by_role("textbox", name="Usuário").fill("CT34979")
-        page.get_by_role("textbox", name="Senha").fill("FABI@1992")
+        page.get_by_role("textbox", name="Senha").fill("FAMB@2015")
         page.get_by_role("button", name="Login").click()
         
         page.wait_for_load_state("networkidle")
