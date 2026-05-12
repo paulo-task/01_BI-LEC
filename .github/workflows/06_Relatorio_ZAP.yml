@@ -1,4 +1,4 @@
-name: Relatórios Power BI para WhatsApp
+name: ♻️Relatórios Power BI para WhatsApp
 
 on:
   workflow_dispatch:  # Disparo manual via botão no GitHub
@@ -41,7 +41,7 @@ jobs:
 
       - name: Upload de logs em caso de erro
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: logs-automacao
           path: /tmp/prints/log_automacao.txt
