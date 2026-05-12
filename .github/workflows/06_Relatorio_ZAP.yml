@@ -25,8 +25,9 @@ jobs:
 
       - name: Instalar Chromium para Playwright
         run: |
+          sudo apt-get update
+          sudo apt-get install -y libatk1.0-0 libatk-bridge2.0-0 libxcomposite1 libxdamage1 libxext6 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libpangocairo-1.0-0 libxshmfence1 libxslt1.1
           playwright install chromium
-          playwright install-deps chromium
 
       - name: Executar script de automação
         env:
