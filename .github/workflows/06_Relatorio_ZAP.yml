@@ -2,8 +2,7 @@ name: Relatórios Power BI para WhatsApp
 
 on:
   workflow_dispatch:  # Disparo manual via botão no GitHub
-  schedule:
-    - cron: '0 7 * * *'  # 07:00 todos os dias (use Power Automate para substituir isso)
+  
 
 jobs:
   executar-relatorios:
