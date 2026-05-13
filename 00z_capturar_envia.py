@@ -174,7 +174,7 @@ def enviar_whatsapp(prints):
     with sync_playwright() as p:
         context = p.chromium.launch_persistent_context(
             USER_DATA_ZAP,
-            headless=False,
+            headless=True,
             args=["--start-maximized"],
             no_viewport=True,
             slow_mo=1000
