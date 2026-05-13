@@ -142,10 +142,12 @@ def capturar_powerbi():
         try:
             log("Acessando Power BI...")
             page.goto(URL_POWERBI, timeout=120000)
+            log(f"URL após goto: {page.url}")
 
             # Login (só se necessário)
             try:
                 time.sleep(10) # Aguarda redirects iniciais
+                log(f"URL após 10s: {page.url}")
                 # 1. Verifica se pediu o email (tela de login nova)
                 email_input = page.locator("input[type='email'], input[name='loginfmt']").first
                 if email_input.is_visible(timeout=10000):
@@ -230,6 +232,12 @@ def capturar_powerbi():
             context.close()
         except Exception as e:
             log(f"❌ ERRO CRÍTICO: {e}")
+            try:
+                erro_path = os.path.join(TEMP_DIR, "PRINT_ERRO_CRITICO.png")
+                page.screenshot(path=erro_path)
+                log(f"📸 Screenshot do erro salvo em: {erro_path}")
+            except:
+                pass
             context.close()
 
     return prints
