@@ -148,23 +148,64 @@ def capturar_powerbi():
             try:
                 time.sleep(10) # Aguarda redirects iniciais
                 log(f"URL após 10s: {page.url}")
-                # 1. Verifica se pediu o email (tela de login nova)
-                email_input = page.locator("input[type='email'], input[name='loginfmt']").first
-                if email_input.is_visible(timeout=10000):
+                # 1. Verifica se pediu o email (tela de login nova ou tela de 'Enter email' do Power BI)
+                email_input = page.locator("input[type='email'], input[name='loginfmt'], input[placeholder='Enter email'], input[placeholder*='email']").first
+                
+                # Se não achar pelos seletores acima, tenta pegar o primeiro textbox na tela
+                if not email_input.is_visible(timeout=5000):
+                    fallback = page.get_by_role("textbox").first
+                    if fallback.is_visible(timeout=2000):
+                        email_input = fallback
+
+                if email_input.is_visible(timeout=5000):
                     log("Fazendo login no Power BI (inserindo email)...")
                     if POWERBI_USER:
                         email_input.fill(POWERBI_USER)
-                    email_input.press("Enter")
                     
+                    # Tenta clicar em "Enviar" / "Submit" ou aperta Enter
+                    try:
+                        btn_enviar = page.get_by_role("button", name="Enviar")
+                        if btn_enviar.is_visible(timeout=2000):
+                            btn_enviar.click()
+                        else:
+                            email_input.press("Enter")
+                    except:
+                        email_input.press("Enter")
+                    
+                    # Aguarda para ver se vai para a tela de senha ou se pede email novamente
+                    time.sleep(5)
+                    
+                    # Pode ser que ele tenha redirecionado para a tela oficial da Microsoft e peça o email de novo
+                    email_input_ms = page.locator("input[type='email'], input[name='loginfmt']").first
+                    if email_input_ms.is_visible(timeout=5000):
+                        log("Preenchendo email novamente na tela da Microsoft...")
+                        if POWERBI_USER:
+                            email_input_ms.fill(POWERBI_USER)
+                        email_input_ms.press("Enter")
+                        time.sleep(3)
+                    
+                    log("Aguardando campo de senha...")
                     pass_input = page.locator("input[type='password'], input[name='passwd']").first
-                    pass_input.wait_for(state="visible", timeout=15000)
+                    pass_input.wait_for(state="visible", timeout=20000)
+                    
                     if POWERBI_PASS:
                         pass_input.fill(POWERBI_PASS)
-                    pass_input.press("Enter")
+                    time.sleep(1)
                     
+                    try:
+                        btn_entrar = page.get_by_role("button", name="Entrar")
+                        if btn_entrar.is_visible(timeout=2000):
+                            btn_entrar.click()
+                        else:
+                            pass_input.press("Enter")
+                    except:
+                        pass_input.press("Enter")
+                    
+                    # Clica no "Sim" (Continuar conectado)
                     try:
                         btn_sim = page.locator("input[type='submit'], button[type='submit'], #idSIButton9").first
                         if btn_sim.is_visible(timeout=10000):
+                            log("Clicando em Sim para manter conectado...")
                             btn_sim.click()
                     except:
                         pass

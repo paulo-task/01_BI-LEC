@@ -235,3 +235,21 @@ Call log:
 [13/05/2026 18:19:02] - Iniciando acesso direto ao Power BI...
 [13/05/2026 18:19:05] - Aguardando carregamento (20s)...
 [13/05/2026 18:19:31] - Filtrando PAULISTA...
+[13/05/2026 18:19:52] - Recorte concluído: PRINT_PAULI_2026_05_13_18-19.png
+[13/05/2026 18:19:52] - Filtrando PIRATININGA...
+[13/05/2026 18:20:12] - Recorte concluído: PRINT_PIRAT_2026_05_13_18-19.png
+[13/05/2026 18:20:21] - WhatsApp carregado.
+[13/05/2026 18:20:21] - Abrindo grupo: Gestão CPFL Paulista
+[13/05/2026 18:20:30] - ✅ Chat carregado: Gestão CPFL Paulista
+[13/05/2026 18:20:33] - Arquivo anexado.
+[13/05/2026 18:20:35] - ✅ Enviado com sucesso para: Gestão CPFL Paulista
+[13/05/2026 18:20:43] - Abrindo grupo: Gestão CPFL Piratininga
+[13/05/2026 18:20:52] - ✅ Chat carregado: Gestão CPFL Piratininga
+[13/05/2026 18:20:56] - Arquivo anexado.
+[13/05/2026 18:20:58] - ✅ Enviado com sucesso para: Gestão CPFL Piratininga
+[13/05/2026 18:21:06] - Abrindo grupo: Informativos Administrativo Sorocaba
+[13/05/2026 18:21:15] - ✅ Chat carregado: Informativos Administrativo Sorocaba
+[13/05/2026 18:21:18] - Arquivo anexado.
+[13/05/2026 18:21:20] - ✅ Enviado com sucesso para: Informativos Administrativo Sorocaba
+[13/05/2026 18:21:29] - === FIM DA OPERAÇÃO ===
+
