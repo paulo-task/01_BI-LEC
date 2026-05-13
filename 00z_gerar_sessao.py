@@ -43,8 +43,6 @@ EXCLUIR_DIRS = {
     "DawnGraphiteCache", "DawnWebGPUCache", "GrShaderCache",
     "blob_storage", "CrashpadMetrics-active.pma",
     "component_crx_cache", "hyphen-data",
-    "Media Cache", "Service Worker", "Session Storage",
-    "VideoDecodeStats", "File System", "WebStorage",
 }
 EXCLUIR_ARQUIVOS = {
     "SingletonLock", "SingletonSocket", "lockfile",
