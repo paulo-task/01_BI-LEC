@@ -238,7 +238,8 @@ def capturar_powerbi():
                 botao.wait_for(state="visible", timeout=20000)
                 botao.click()
 
-            X1, Y1, X2, Y2 = 450, 110, 1743, 878
+            # Ajuste de coordenadas para capturar quase toda a tela (ignorando apenas as barras de menu do Power BI nas bordas)
+            X1, Y1, X2, Y2 = 50, 50, 1900, 1020
 
             # PAULISTA
             try:
