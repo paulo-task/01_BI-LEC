@@ -303,77 +303,81 @@ def enviar_whatsapp(prints):
 
 
 def enviar_para_grupo(page, arquivo, grupo_nome):
+    log(f"Abrindo grupo: {grupo_nome}")
     try:
-        log(f"Procurando grupo: {grupo_nome}")
+        # Fecha qualquer overlay/menu aberto
+        for _ in range(3):
+            page.keyboard.press("Escape")
+            time.sleep(0.3)
         
-        # 1. Tenta várias formas de encontrar a caixa de pesquisa
-        search_box = None
-        locators = [
-            page.locator("div[title='Caixa de texto de pesquisa']").first,
-            page.locator("div[title='Search input textbox']").first,
-            page.locator("div[data-tab='3']").first,
-            page.locator("div[data-tab='2']").first,
-            page.get_by_role("textbox").first,
-            page.locator("div[contenteditable='true']").nth(0),
-            page.locator("div[contenteditable='true']").nth(1),
-            page.locator("div[contenteditable='true']").nth(2)
-        ]
-        
-        for loc in locators:
-            try:
-                if loc.is_visible(timeout=3000):
-                    search_box = loc
-                    log(f"🔎 Caixa de pesquisa encontrada usando: {loc}")
-                    break
-            except:
-                continue
-                
-        if not search_box:
-            raise Exception("Não foi possível encontrar a caixa de pesquisa!")
-            
-        search_box.click()
-        search_box.fill("")
+        # Usa atalho Ctrl+F para garantir foco na barra de busca
         time.sleep(1)
+        
+        # Tenta localizar a barra de pesquisa
+        search_box = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
+        if not search_box.is_visible(timeout=3000):
+            # Fallback: clica na área de pesquisa via atalho
+            page.keyboard.press("Control+f")
+            time.sleep(1)
+            search_box = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
+            
+        # Se ainda não achar, usa um seletor genérico
+        if not search_box.is_visible(timeout=2000):
+            search_box = page.locator("div[contenteditable='true'], [role='textbox']").first
+        
+        search_box.wait_for(state="visible", timeout=15000)
+        search_box.click()
+        time.sleep(0.5)
+        
+        # Limpa e digita o nome do grupo
+        page.keyboard.press("Control+A")
+        page.keyboard.press("Backspace")
+        time.sleep(0.3)
         search_box.fill(grupo_nome)
         time.sleep(3)
         
-        # 2. Seleciona o grupo nos resultados (usando o title do span que contém o nome)
-        grupo = page.locator(f"span[title='{grupo_nome}']").first
-        if not grupo.is_visible(timeout=10000):
-            # Fallback: tentar get_by_text se o title não funcionar
-            grupo = page.get_by_text(grupo_nome, exact=True).last
-            if not grupo.is_visible(timeout=5000):
-                log(f"Grupo não encontrado na busca: {grupo_nome}")
-                return False
-                
-        grupo.click()
+        # Clica no grupo encontrado nos resultados
+        page.get_by_text(grupo_nome, exact=False).first.click()
         time.sleep(3)
-
-        # 3. Clica no botão Anexar (+ ou clipe)
-        btn_anexar = page.locator("span[data-icon='clip'], span[data-icon='plus'], div[title='Anexar'], button[aria-label='Anexar']").first
+        
+        # Tenta achar a caixa de texto de conversa para garantir que abriu
+        try:
+            page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=10000)
+        except:
+            pass # Ignora se não achar pelo test-id, pois o grupo pode ter aberto mesmo assim
+            
+        log(f"✅ Chat carregado: {grupo_nome}")
+        
+        # Clique em Anexar
+        btn_anexar = page.get_by_role("button", name="Anexar")
+        if not btn_anexar.is_visible(timeout=5000):
+             # Fallback para ícone
+             btn_anexar = page.locator("span[data-icon='clip'], span[data-icon='plus']").first
+             
         btn_anexar.wait_for(state="visible", timeout=10000)
         btn_anexar.click()
         time.sleep(1)
 
-        # 4. Seleciona Fotos e Vídeos (pode chamar Fotos e vídeos, Galeria ou usar o ícone de imagem)
+        # Seleção do arquivo via Fotos e vídeos
         with page.expect_file_chooser() as fc_info:
-            opcao_img = page.locator("li:has-text('Fotos e vídeos'), li:has-text('Galeria'), span[data-icon='image']").first
-            opcao_img.click()
+            opcao = page.get_by_role("menuitem", name="Fotos e vídeos")
+            if not opcao.is_visible(timeout=3000):
+                 opcao = page.locator("li:has-text('Fotos e vídeos'), li:has-text('Galeria')").first
+            opcao.click()
             
         fc_info.value.set_files(arquivo)
         log(f"Arquivo selecionado: {arquivo}")
-        time.sleep(3)
+        time.sleep(2)
 
-        # 5. Clica em Enviar
-        btn_enviar = page.locator(
-            "span[data-icon='send'], span[data-icon='wds-ic-send-filled']"
-        ).first
-        btn_enviar.wait_for(state="visible", timeout=15000)
-        btn_enviar.click()
+        # Envia via tecla Enter (mais robusto que clicar na seta de enviar)
+        page.keyboard.press("Enter")
+        
+        time.sleep(8) 
         return True
+        
     except Exception as e:
         import traceback
-        log(f"Erro ao enviar para {grupo_nome}: {e}")
+        log(f"⚠️ Falha no envio em {grupo_nome}: {e}")
         log(traceback.format_exc())
         try:
             safe_name = "".join([c for c in grupo_nome if c.isalnum() or c in (' ', '_')]).replace(' ', '_')
@@ -382,6 +386,12 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
             log(f"📸 Screenshot do erro salvo em: {erro_path}")
         except:
             pass
+            
+        # Tenta limpar a tela caso falhe
+        for _ in range(5):
+            page.keyboard.press("Escape")
+            time.sleep(0.5)
+            
         return False
 
 
