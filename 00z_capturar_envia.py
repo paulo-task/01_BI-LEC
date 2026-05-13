@@ -140,7 +140,7 @@ def capturar_powerbi():
             try:
                 log("Capturando PAULISTA...")
                 radio = page.get_by_role("radio", name="PAULISTA")
-                radio.click(timeout=10000)
+                radio.click(timeout=20000)
                 time.sleep(25)
                 
                 path_temp = os.path.join(TEMP_DIR, f"temp_pau_{agora}.png")
@@ -157,7 +157,7 @@ def capturar_powerbi():
             try:
                 log("Capturando PIRATININGA...")
                 radio = page.get_by_role("radio", name="PIRATININGA")
-                radio.click(timeout=10000)
+                radio.click(timeout=20000)
                 time.sleep(25)
                 
                 path_temp = os.path.join(TEMP_DIR, f"temp_pira_{agora}.png")
