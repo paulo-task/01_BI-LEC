@@ -255,8 +255,9 @@ def enviar_whatsapp(prints):
         context = p.chromium.launch_persistent_context(
             USER_DATA_ZAP,
             headless=IS_HEADLESS,
-            args=["--no-sandbox", "--disable-dev-shm-usage"],
-            viewport={"width": 1280, "height": 900} if IS_HEADLESS else None,
+            args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-blink-features=AutomationControlled"],
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            viewport={"width": 1920, "height": 1080} if IS_HEADLESS else None,
             no_viewport=not IS_HEADLESS,
             slow_mo=1000,
         )
@@ -285,6 +286,12 @@ def enviar_whatsapp(prints):
             context.close()
         except Exception as e:
             log(f"❌ ERRO WhatsApp: {e}")
+            try:
+                erro_path = os.path.join(TEMP_DIR, "PRINT_ERRO_WHATSAPP.png")
+                page.screenshot(path=erro_path)
+                log(f"📸 Screenshot do erro salvo em: {erro_path}")
+            except:
+                pass
             context.close()
 
 
