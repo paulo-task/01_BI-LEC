@@ -36,7 +36,7 @@ jobs:
           GITHUB_ACTIONS: "true"
           PB_USER: ${{ secrets.PB_USER }}
           PB_PASS: ${{ secrets.PB_PASS }}
-          WHATSAPP_SESSION: ${{ secrets.WHATSAPP_SESSION }}
+          WHATSAPP_KEY: ${{ secrets.WHATSAPP_KEY }}
         run: |
           python 00z_capturar_envia.py
 

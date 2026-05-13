@@ -1,41 +1,84 @@
 #!/usr/bin/env python3
 """
-GERADOR DE SESSÃO WHATSAPP
-─────────────────────────────────────────────────────────────────
-Execute este script UMA VEZ no seu PC para autenticar o WhatsApp Web
-e gerar o Secret WHATSAPP_SESSION para o GitHub Actions.
+GERADOR DE SESSAO WHATSAPP
+--------------------------------------------------------------
+Execute UMA VEZ no seu PC para autenticar o WhatsApp Web e
+gerar o arquivo criptografado whatsapp_session.enc.
 
 Passos:
   1. python 00z_gerar_sessao.py
-  2. Escaneie o QR Code que aparecer no navegador
-  3. Aguarde o script finalizar e gerar o arquivo sessao_base64.txt
-  4. Copie o conteúdo do arquivo e cole como Secret no GitHub:
-     Repositório → Settings → Secrets → Actions → New secret
-     Nome: WHATSAPP_SESSION
-─────────────────────────────────────────────────────────────────
+  2. Escaneie o QR Code no navegador
+  3. O script gera:
+       - whatsapp_session.enc  (commitar no repositorio)
+       - whatsapp_key.txt      (NAO commitar - e o Secret!)
+  4. Adicione a CHAVE como Secret no GitHub:
+       Nome:  WHATSAPP_KEY
+       Valor: conteudo do arquivo whatsapp_key.txt
+  5. Commit apenas o whatsapp_session.enc:
+       git add whatsapp_session.enc
+       git commit -m "chore: atualiza sessao whatsapp"
+       git push
+--------------------------------------------------------------
 """
 
 import os
 import sys
 import time
-import base64
 import zipfile
 import shutil
 from pathlib import Path
 from playwright.sync_api import sync_playwright
+from cryptography.fernet import Fernet
 
-# Pasta dados_zap dentro do próprio repositório (funciona em qualquer PC)
-_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# Pasta dados_zap dentro do repositorio
+_SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
 USER_DATA_ZAP = os.path.join(_SCRIPT_DIR, "dados_zap")
-ZIP_SAIDA     = os.path.join(_SCRIPT_DIR, "dados_zap_sessao.zip")
-TXT_SAIDA     = os.path.join(_SCRIPT_DIR, "sessao_base64.txt")
+ENC_SAIDA     = os.path.join(_SCRIPT_DIR, "whatsapp_session.enc")
+KEY_SAIDA     = os.path.join(_SCRIPT_DIR, "whatsapp_key.txt")
+ZIP_TMP       = os.path.join(_SCRIPT_DIR, "dados_zap_tmp.zip")
+
+# Pastas do Chromium que NAO precisam ser salvas (cache, etc.)
+EXCLUIR_DIRS = {
+    "Cache", "Code Cache", "GPUCache", "ShaderCache",
+    "DawnGraphiteCache", "DawnWebGPUCache", "GrShaderCache",
+    "blob_storage", "CrashpadMetrics-active.pma",
+    "component_crx_cache", "hyphen-data",
+    "Media Cache", "Service Worker", "Session Storage",
+    "VideoDecodeStats", "File System", "WebStorage",
+}
+EXCLUIR_ARQUIVOS = {
+    "SingletonLock", "SingletonSocket", "lockfile",
+    "SingletonCookie", "LOCK", "LOG", "LOG.old",
+}
+
+
+def compactar_sessao(pasta_origem, zip_destino):
+    """Compacta apenas os arquivos essenciais da sessao."""
+    total_bytes = 0
+    contagem = 0
+    with zipfile.ZipFile(zip_destino, "w", zipfile.ZIP_DEFLATED) as zf:
+        for root, dirs, files in os.walk(pasta_origem):
+            # Remove dirs de cache da lista de visita
+            dirs[:] = [d for d in dirs if d not in EXCLUIR_DIRS]
+            for file in files:
+                if file in EXCLUIR_ARQUIVOS:
+                    continue
+                caminho_abs = os.path.join(root, file)
+                caminho_rel = os.path.relpath(caminho_abs, pasta_origem)
+                try:
+                    zf.write(caminho_abs, caminho_rel)
+                    total_bytes += os.path.getsize(caminho_abs)
+                    contagem += 1
+                except (PermissionError, OSError):
+                    pass  # ignora arquivos bloqueados
+    return contagem, total_bytes
 
 
 def main():
     print("=" * 60)
-    print("  GERADOR DE SESSÃO WHATSAPP PARA GITHUB ACTIONS")
+    print("  GERADOR DE SESSAO WHATSAPP PARA GITHUB ACTIONS")
     print("=" * 60)
-    print(f"\nDiretório de sessão: {USER_DATA_ZAP}\n")
+    print(f"\nDiretorio de sessao: {USER_DATA_ZAP}\n")
 
     Path(USER_DATA_ZAP).mkdir(parents=True, exist_ok=True)
 
@@ -67,53 +110,59 @@ def main():
 
         context.close()
 
-    # Compacta a pasta de sessão
-    print(f"\n[ZIP] Compactando sessao em {ZIP_SAIDA}...")
-    if os.path.exists(ZIP_SAIDA):
-        os.remove(ZIP_SAIDA)
+    # Compacta apenas arquivos essenciais
+    print(f"\n[ZIP] Compactando sessao (sem cache)...")
+    if os.path.exists(ZIP_TMP):
+        os.remove(ZIP_TMP)
 
-    with zipfile.ZipFile(ZIP_SAIDA, "w", zipfile.ZIP_DEFLATED) as zf:
-        for root, dirs, files in os.walk(USER_DATA_ZAP):
-            # Ignora arquivos de lock que o Chromium cria
-            dirs[:] = [d for d in dirs if d not in ["SingletonLock", "SingletonSocket"]]
-            for file in files:
-                if file in ("SingletonLock", "SingletonSocket", "lockfile"):
-                    continue
-                caminho_abs = os.path.join(root, file)
-                caminho_rel = os.path.relpath(caminho_abs, USER_DATA_ZAP)
-                zf.write(caminho_abs, caminho_rel)
+    qtd, total = compactar_sessao(USER_DATA_ZAP, ZIP_TMP)
+    tamanho_mb = os.path.getsize(ZIP_TMP) / (1024 * 1024)
+    print(f"   {qtd} arquivos | {tamanho_mb:.1f} MB compactado")
 
-    tamanho_mb = os.path.getsize(ZIP_SAIDA) / (1024 * 1024)
-    print(f"   Tamanho: {tamanho_mb:.1f} MB")
+    # Criptografa com Fernet
+    print("[ENC] Criptografando...")
+    chave = Fernet.generate_key()
+    f = Fernet(chave)
 
-    # Codifica em base64
-    print(f"[B64] Codificando em base64 -> {TXT_SAIDA}...")
-    with open(ZIP_SAIDA, "rb") as f:
-        conteudo_b64 = base64.b64encode(f.read()).decode("utf-8")
+    with open(ZIP_TMP, "rb") as fp:
+        dados_zip = fp.read()
 
-    with open(TXT_SAIDA, "w") as f:
-        f.write(conteudo_b64)
+    dados_enc = f.encrypt(dados_zip)
 
-    tamanho_kb = os.path.getsize(TXT_SAIDA) / 1024
-    print(f"   Tamanho base64: {tamanho_kb:.0f} KB")
+    with open(ENC_SAIDA, "wb") as fp:
+        fp.write(dados_enc)
+
+    tamanho_enc_kb = os.path.getsize(ENC_SAIDA) / 1024
+    print(f"   Arquivo criptografado: {tamanho_enc_kb:.0f} KB")
+
+    # Salva a chave
+    with open(KEY_SAIDA, "w") as fp:
+        fp.write(chave.decode())
+
+    # Remove zip temporario
+    os.remove(ZIP_TMP)
 
     print("\n" + "=" * 60)
     print("  [OK] CONCLUIDO!")
     print("=" * 60)
     print(f"""
-PROXIMO PASSO -- Adicione o Secret no GitHub:
+PROXIMOS PASSOS:
 
-  1. Abra:  github.com -> seu repositorio
-  2. Va em: Settings -> Secrets and variables -> Actions
-  3. Clique: New repository secret
-  4. Nome:   WHATSAPP_SESSION
-  5. Valor:  cole o conteudo do arquivo '{TXT_SAIDA}'
+1. Adicione a CHAVE como Secret no GitHub:
+   URL: github.com -> seu repositorio -> Settings
+        -> Secrets and variables -> Actions
+        -> New repository secret
+   Nome:  WHATSAPP_KEY
+   Valor: {chave.decode()}
 
-ATENCAO: O arquivo gerado pode ter varios KB -- use Ctrl+A para
-    selecionar tudo no bloco de notas antes de copiar.
+   (ou copie do arquivo: {KEY_SAIDA})
 
-ATENCAO: Repita este processo se o WhatsApp deslogar (troca de
-    celular, inatividade longa, etc).
+2. Commite o arquivo criptografado (pode commitar com seguranca):
+   git add whatsapp_session.enc
+   git commit -m "chore: atualiza sessao whatsapp"
+   git push
+
+3. NAO commite o whatsapp_key.txt !
 """)
 
 

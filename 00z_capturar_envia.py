@@ -8,7 +8,6 @@ Roda localmente ou no GitHub Actions (com sessão WhatsApp restaurada via Secret
 import os
 import sys
 import time
-import base64
 import zipfile
 import shutil
 from datetime import datetime
@@ -16,29 +15,35 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 from PIL import Image
 from dotenv import load_dotenv
+from cryptography.fernet import Fernet
 
 load_dotenv()
 
 IS_GITHUB = os.getenv("GITHUB_ACTIONS", "false").lower() == "true"
 IS_HEADLESS = IS_GITHUB
 
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 if IS_GITHUB:
     TEMP_DIR        = "/tmp/relatorios"
     USER_DATA_PBI   = "/tmp/dados_pbi"
     USER_DATA_ZAP   = "/tmp/dados_zap"
     LOG_FILE        = "/tmp/relatorios/log_automacao.txt"
+    SESSION_ENC     = os.path.join(_SCRIPT_DIR, "whatsapp_session.enc")
 else:
-    _BASE = r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\03 Repository\01_BI-LEC"
-    TEMP_DIR        = os.path.join(_BASE, "relatorios")
-    USER_DATA_PBI   = os.path.join(_BASE, "dados_pbi")
-    USER_DATA_ZAP   = os.path.join(_BASE, "dados_zap")
+    # Local - usa o diretório do script
+    TEMP_DIR        = os.path.join(_SCRIPT_DIR, "relatorios")
+    USER_DATA_PBI   = os.path.join(_SCRIPT_DIR, "dados_pbi")
+    USER_DATA_ZAP   = os.path.join(_SCRIPT_DIR, "dados_zap")
     LOG_FILE        = os.path.join(TEMP_DIR, "log_automacao.txt")
+    SESSION_ENC     = os.path.join(_SCRIPT_DIR, "whatsapp_session.enc")
 
 for d in [TEMP_DIR, USER_DATA_PBI, USER_DATA_ZAP]:
     Path(d).mkdir(parents=True, exist_ok=True)
 
 POWERBI_USER = os.getenv("PB_USER")
 POWERBI_PASS = os.getenv("PB_PASS")
+WHATSAPP_KEY = os.getenv("WHATSAPP_KEY", "")
 
 URL_POWERBI = (
     "https://app.powerbi.com/groups/33331c64-94a0-477c-b682-9f40a7ac809b"
@@ -59,23 +64,28 @@ def log(mensagem):
 
 
 def restaurar_sessao_zap():
-    """
-    No GitHub Actions, restaura a sessão do WhatsApp Web a partir
-    do Secret WHATSAPP_SESSION (zip em base64).
-    """
-    sessao_b64 = os.getenv("WHATSAPP_SESSION", "")
-    if not sessao_b64:
-        log("⚠️  WHATSAPP_SESSION não definido — WhatsApp sem sessão prévia.")
+    """Descriptografa whatsapp_session.enc usando WHATSAPP_KEY e restaura em USER_DATA_ZAP."""
+    if not WHATSAPP_KEY:
+        log("AVISO: WHATSAPP_KEY não definida — WhatsApp sem sessão prévia.")
+        return False
+    if not os.path.exists(SESSION_ENC):
+        log(f"AVISO: Arquivo de sessão não encontrado: {SESSION_ENC}")
         return False
 
-    zip_path = "/tmp/dados_zap.zip"
+    zip_tmp = "/tmp/dados_zap_dec.zip"
     try:
-        with open(zip_path, "wb") as f:
-            f.write(base64.b64decode(sessao_b64))
+        f = Fernet(WHATSAPP_KEY.encode())
+        with open(SESSION_ENC, "rb") as fp:
+            dados_enc = fp.read()
+        dados_zip = f.decrypt(dados_enc)
+        with open(zip_tmp, "wb") as fp:
+            fp.write(dados_zip)
+
         if os.path.exists(USER_DATA_ZAP):
             shutil.rmtree(USER_DATA_ZAP)
-        with zipfile.ZipFile(zip_path, "r") as z:
+        with zipfile.ZipFile(zip_tmp, "r") as z:
             z.extractall(USER_DATA_ZAP)
+
         log("✅ Sessão WhatsApp restaurada com sucesso.")
         return True
     except Exception as e:
@@ -118,10 +128,10 @@ def capturar_powerbi():
         context = p.chromium.launch_persistent_context(
             USER_DATA_PBI,
             headless=IS_HEADLESS,
-            args=([] if not IS_GITHUB else []) + args,
+            args=args,
             viewport={"width": 1920, "height": 1080} if IS_GITHUB else None,
             no_viewport=not IS_GITHUB,
-            slow_mo=2000,
+            slow_mo=1000,
         )
 
         page = context.pages[0]
@@ -134,16 +144,27 @@ def capturar_powerbi():
             # Login (só se necessário)
             try:
                 email_input = page.locator("input[type='email']")
-                if email_input.is_visible(timeout=5000):
+                if email_input.is_visible(timeout=8000):
                     log("Fazendo login...")
                     email_input.fill(POWERBI_USER)
                     page.get_by_role("button", name="Próximo").click()
-                    time.sleep(3)
+                    
+                    page.locator("input[type='password']").wait_for(state="visible", timeout=15000)
                     page.locator("input[type='password']").fill(POWERBI_PASS)
                     page.get_by_role("button", name="Entrar").click()
-                    time.sleep(10)
-            except Exception:
-                log("Sessão já autenticada")
+                    
+                    # Trata "Continuar conectado?" (Stay signed in?)
+                    try:
+                        btn_sim = page.get_by_role("button", name="Sim")
+                        if btn_sim.is_visible(timeout=10000):
+                            btn_sim.click()
+                    except:
+                        pass
+                    
+                    log("Aguardando carregamento pós-login (20s)...")
+                    time.sleep(20)
+            except Exception as e:
+                log(f"Aviso de login: {e} (Pode ser que já esteja logado)")
 
             log("Aguardando carregamento (40s)...")
             time.sleep(40)
@@ -270,10 +291,21 @@ def enviar_whatsapp(prints):
 def enviar_para_grupo(page, arquivo, grupo_nome):
     try:
         log(f"Procurando grupo: {grupo_nome}")
+        
+        # Clica na caixa de pesquisa
+        search_box = page.locator("div[contenteditable='true']").first
+        search_box.click()
+        # Limpa e digita o nome
+        search_box.fill("")
+        search_box.fill(grupo_nome)
+        time.sleep(3)
+        
+        # Seleciona o resultado
         grupo = page.locator("#pane-side").get_by_text(grupo_nome, exact=False).first
-        if not grupo.is_visible(timeout=5000):
-            log(f"Grupo não encontrado: {grupo_nome}")
+        if not grupo.is_visible(timeout=8000):
+            log(f"Grupo não encontrado na busca: {grupo_nome}")
             return False
+            
         grupo.click()
         time.sleep(3)
 
