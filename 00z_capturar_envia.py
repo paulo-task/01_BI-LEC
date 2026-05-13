@@ -145,57 +145,63 @@ def capturar_powerbi():
 
             # Login (só se necessário)
             try:
+                # 1. Verifica se pediu o email (tela de login nova)
                 email_input = page.locator("input[type='email'], input[name='loginfmt']").first
-                if email_input.is_visible(timeout=15000):
-                    log("Fazendo login no Power BI...")
-                    email_input.fill(POWERBI_USER)
-                    # Pressiona Enter em vez de procurar botão "Submit" ou "Próximo"
+                if email_input.is_visible(timeout=8000):
+                    log("Fazendo login no Power BI (inserindo email)...")
+                    if POWERBI_USER:
+                        email_input.fill(POWERBI_USER)
                     email_input.press("Enter")
                     
                     pass_input = page.locator("input[type='password'], input[name='passwd']").first
                     pass_input.wait_for(state="visible", timeout=15000)
-                    pass_input.fill(POWERBI_PASS)
+                    if POWERBI_PASS:
+                        pass_input.fill(POWERBI_PASS)
                     pass_input.press("Enter")
                     
-                    # Trata "Continuar conectado?" (Stay signed in?)
                     try:
-                        # Pega o botão principal (Sim/Yes)
                         btn_sim = page.locator("input[type='submit'], button[type='submit'], #idSIButton9").first
                         if btn_sim.is_visible(timeout=10000):
                             btn_sim.click()
                     except:
                         pass
+                else:
+                    # 2. Verifica se apareceu a tela de escolher conta já salva
+                    btn_conta = page.locator("div[role='button'][data-test-id]").first
+                    if btn_conta.is_visible(timeout=3000):
+                        log("Clicando na conta salva...")
+                        btn_conta.click()
+                        try:
+                            page.get_by_role("button", name="Sim").click(timeout=5000)
+                        except:
+                            pass
                     
-                    log("Aguardando carregamento pós-login (20s)...")
-                    time.sleep(20)
+                log("Aguardando carregamento pós-login (20s)...")
+                time.sleep(20)
             except Exception as e:
                 log(f"Aviso de login: não foi necessário ou algo falhou ({e})")
 
-            log("Aguardando carregamento (40s)...")
-            time.sleep(40)
+            log("Aguardando carregamento (20s)...")
+            time.sleep(20)
 
-            try:
-                page.get_by_role("tab", name="ELF Hora").click(timeout=15000)
-                time.sleep(5)
-            except Exception:
-                log("Aviso: Aba não encontrada")
+            page.get_by_role("tab", name="ELF Hora").click(timeout=15000)
+            time.sleep(5)
+
+            def clicar_radio(nome):
+                botao = page.get_by_role("radio", name=nome)
+                if not botao.is_visible():
+                    botao = page.frame_locator("iframe").first.get_by_role("radio", name=nome)
+                botao.wait_for(state="visible", timeout=20000)
+                botao.click()
 
             X1, Y1, X2, Y2 = 450, 110, 1743, 878
 
             # PAULISTA
             try:
                 log("Capturando PAULISTA...")
-                page.evaluate("""
-                    () => {
-                        const radios = document.querySelectorAll('input[type="radio"]');
-                        for (let radio of radios) {
-                            if (radio.getAttribute('aria-label') && radio.getAttribute('aria-label').includes('PAULISTA')) {
-                                radio.click(); break;
-                            }
-                        }
-                    }
-                """)
-                time.sleep(25)
+                clicar_radio("PAULISTA")
+                time.sleep(20)
+                
                 path_temp = os.path.join(TEMP_DIR, f"temp_pau_{agora}.png")
                 page.screenshot(path=path_temp, full_page=False)
                 final = recortar_imagem(path_temp, X1, Y1, X2, Y2, f"PRINT_PAULI_{agora}.png")
@@ -208,17 +214,9 @@ def capturar_powerbi():
             # PIRATININGA
             try:
                 log("Capturando PIRATININGA...")
-                page.evaluate("""
-                    () => {
-                        const radios = document.querySelectorAll('input[type="radio"]');
-                        for (let radio of radios) {
-                            if (radio.getAttribute('aria-label') && radio.getAttribute('aria-label').includes('PIRATININGA')) {
-                                radio.click(); break;
-                            }
-                        }
-                    }
-                """)
-                time.sleep(25)
+                clicar_radio("PIRATININGA")
+                time.sleep(20)
+                
                 path_temp = os.path.join(TEMP_DIR, f"temp_pira_{agora}.png")
                 page.screenshot(path=path_temp, full_page=False)
                 final = recortar_imagem(path_temp, X1, Y1, X2, Y2, f"PRINT_PIRAT_{agora}.png")
