@@ -37,6 +37,9 @@ jobs:
           EVOLUTION_INSTANCE: engelmig
           PB_USER: ${{ secrets.PB_USER }}
           PB_PASS: ${{ secrets.PB_PASS }}
+          GRUPO_PAULISTA_ID: ${{ secrets.GRUPO_PAULISTA_ID }}
+          GRUPO_PIRATININGA_ID: ${{ secrets.GRUPO_PIRATININGA_ID }}
+          GRUPO_SOROCABA_ID: ${{ secrets.GRUPO_SOROCABA_ID }}
         run: |
           python 00z_capturar_envia.py
 
@@ -45,5 +48,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: logs-automacao
-          path: /tmp/prints/log_automacao.txt
+          path: /tmp/relatorios/log_automacao.txt
           retention-days: 2

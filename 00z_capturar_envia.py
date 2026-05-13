@@ -6,8 +6,10 @@ Roda localmente ou no GitHub Actions
 """
 
 import os
+import sys
 import time
 import json
+import requests
 from datetime import datetime
 from pathlib import Path
 from playwright.sync_api import sync_playwright
@@ -23,10 +25,12 @@ if IS_GITHUB:
     TEMP_DIR = "/tmp/relatorios"
     USER_DATA_PBI = "/tmp/dados_pbi"
     USER_DATA_ZAP = "/tmp/dados_zap"
+    LOG_FILE = "/tmp/relatorios/log_automacao.txt"
 else:
     TEMP_DIR = r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\03 Repository\01_BI-LEC\relatorios"
     USER_DATA_PBI = r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\03 Repository\01_BI-LEC\dados_pbi"
     USER_DATA_ZAP = r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\03 Repository\01_BI-LEC\dados_zap"
+    LOG_FILE = os.path.join(TEMP_DIR, "log_automacao.txt")
 
 for d in [TEMP_DIR, USER_DATA_PBI, USER_DATA_ZAP]:
     Path(d).mkdir(parents=True, exist_ok=True)
@@ -34,14 +38,18 @@ for d in [TEMP_DIR, USER_DATA_PBI, USER_DATA_ZAP]:
 POWERBI_USER = os.getenv("PB_USER")
 POWERBI_PASS = os.getenv("PB_PASS")
 
+# Evolution API (WhatsApp) - usado no GitHub Actions
+EVOLUTION_URL = os.getenv("EVOLUTION_URL", "")
+EVOLUTION_API_KEY = os.getenv("EVOLUTION_API_KEY", "")
+EVOLUTION_INSTANCE = os.getenv("EVOLUTION_INSTANCE", "engelmig")
+
 URL_POWERBI = "https://app.powerbi.com/groups/33331c64-94a0-477c-b682-9f40a7ac809b/reports/50af2f89-ae57-4503-9423-3d55a9b40778/d2e4bc8486f2794906d4?experience=power-bi"
 
 def log(mensagem):
     data = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
     msg = f"[{data}] {mensagem}"
-    print(msg)
-    log_file = os.path.join(TEMP_DIR, "log.txt")
-    with open(log_file, "a", encoding="utf-8") as f:
+    print(msg, flush=True)
+    with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(msg + "\n")
 
 def recortar_imagem(caminho_img, x1, y1, x2, y2, nome_final):
@@ -164,17 +172,68 @@ def capturar_powerbi():
     
     return prints
 
+def enviar_via_evolution(arquivo, numero_ou_grupo, is_grupo=True):
+    """Envia imagem via Evolution API (usado no GitHub Actions)."""
+    try:
+        endpoint = f"{EVOLUTION_URL}/message/sendMedia/{EVOLUTION_INSTANCE}"
+        headers = {"apikey": EVOLUTION_API_KEY, "Content-Type": "application/json"}
+        
+        import base64
+        with open(arquivo, "rb") as f:
+            imagem_b64 = base64.b64encode(f.read()).decode("utf-8")
+        
+        payload = {
+            "number": numero_ou_grupo,
+            "mediatype": "image",
+            "mimetype": "image/png",
+            "caption": f"Relatório Power BI - {datetime.now().strftime('%d/%m/%Y %H:%M')}",
+            "media": imagem_b64,
+            "fileName": os.path.basename(arquivo)
+        }
+        resp = requests.post(endpoint, headers=headers, json=payload, timeout=30)
+        resp.raise_for_status()
+        return True
+    except Exception as e:
+        log(f"❌ Erro Evolution API: {e}")
+        return False
+
+
 def enviar_whatsapp(prints):
     log("\n=== ENVIANDO PARA WHATSAPP ===")
     regras = [
         {"arquivo": prints["PAULISTA"], "grupos": ["Gestão CPFL Paulista _ UEN 175"]},
         {"arquivo": prints["PIRATININGA"], "grupos": ["Gestão CPFL Piratininga", "Informativos Administrativo Sorocaba"]}
     ]
-    
+
+    if IS_GITHUB:
+        # No GitHub Actions: usa Evolution API (não há sessão do WhatsApp Web)
+        log("Modo GitHub Actions: usando Evolution API para envio...")
+        GRUPOS_EVOLUTION = {
+            "Gestão CPFL Paulista _ UEN 175":         os.getenv("GRUPO_PAULISTA_ID", ""),
+            "Gestão CPFL Piratininga":                os.getenv("GRUPO_PIRATININGA_ID", ""),
+            "Informativos Administrativo Sorocaba":   os.getenv("GRUPO_SOROCABA_ID", ""),
+        }
+        for regra in regras:
+            arquivo = regra["arquivo"]
+            if not arquivo or not os.path.exists(arquivo):
+                log(f"⚠️ Arquivo não encontrado, pulando: {arquivo}")
+                continue
+            for grupo_nome in regra["grupos"]:
+                grupo_id = GRUPOS_EVOLUTION.get(grupo_nome, "")
+                if not grupo_id:
+                    log(f"⚠️ ID do grupo não configurado: {grupo_nome}")
+                    continue
+                if enviar_via_evolution(arquivo, grupo_id):
+                    log(f"✅ Enviado para: {grupo_nome}")
+                else:
+                    log(f"❌ Falha ao enviar para: {grupo_nome}")
+        return
+
+    # Execução local: usa WhatsApp Web via Playwright
     with sync_playwright() as p:
         context = p.chromium.launch_persistent_context(
             USER_DATA_ZAP,
-            headless=True,
+            headless=False,
             args=["--start-maximized"],
             no_viewport=True,
             slow_mo=1000
@@ -186,7 +245,7 @@ def enviar_whatsapp(prints):
             page.goto("https://web.whatsapp.com", timeout=60000)
             log("Aguardando carregamento (20s)...")
             time.sleep(20)
-            page.wait_for_selector("#pane-side", timeout=30000)
+            page.wait_for_selector("#pane-side", timeout=60000)
             log("✅ WhatsApp carregado")
             
             for regra in regras:
