@@ -214,3 +214,20 @@ Call log:
 
 [13/05/2026 17:50:58] - === FIM DA OPERAÇÃO ===
 
+[13/05/2026 17:58:05] - === INÍCIO DA OPERAÇÃO ===
+[13/05/2026 17:58:06] - Iniciando acesso direto ao Power BI...
+[13/05/2026 17:58:08] - Aguardando carregamento (20s)...
+[13/05/2026 17:58:28] - ERRO POWER BI: Locator.click: Target page, context or browser has been closed
+Browser logs:
+
+<launching> C:\Users\paulo.janio\AppData\Local\ms-playwright\chromium-1217\chrome-win64\chrome.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --enable-automation --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --no-sandbox --start-maximized --user-data-dir=C:\Temp\dados_navegador_print --remote-debugging-pipe about:blank
+<launched> pid=38072
+Call log:
+  - waiting for get_by_role("tab", name="ELF Hora")
+
+[13/05/2026 17:58:32] - ERRO CRÍTICO NO WHATSAPP: Locator.wait_for: Target page, context or browser has been closed
+Call log:
+  - waiting for get_by_role("textbox", name="Pesquisar ou começar uma nova") to be visible
+
+[13/05/2026 17:58:32] - === FIM DA OPERAÇÃO ===
+

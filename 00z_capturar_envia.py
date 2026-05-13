@@ -141,13 +141,14 @@ def capturar_powerbi():
 
         try:
             log("Acessando Power BI...")
-            page.goto(URL_POWERBI, timeout=120000, wait_until="domcontentloaded")
+            page.goto(URL_POWERBI, timeout=120000)
 
             # Login (só se necessário)
             try:
+                time.sleep(10) # Aguarda redirects iniciais
                 # 1. Verifica se pediu o email (tela de login nova)
                 email_input = page.locator("input[type='email'], input[name='loginfmt']").first
-                if email_input.is_visible(timeout=8000):
+                if email_input.is_visible(timeout=10000):
                     log("Fazendo login no Power BI (inserindo email)...")
                     if POWERBI_USER:
                         email_input.fill(POWERBI_USER)
@@ -184,7 +185,7 @@ def capturar_powerbi():
             log("Aguardando carregamento (20s)...")
             time.sleep(20)
 
-            page.get_by_role("tab", name="ELF Hora").click(timeout=15000)
+            page.get_by_role("tab", name="ELF Hora").click(timeout=60000)
             time.sleep(5)
 
             def clicar_radio(nome):
