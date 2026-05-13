@@ -2,13 +2,12 @@ name: ♻️Relatórios Power BI para WhatsApp
 
 on:
   workflow_dispatch:  # Disparo manual via botão no GitHub
-  
 
 jobs:
   executar-relatorios:
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    
+
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v4
@@ -25,28 +24,35 @@ jobs:
 
       - name: Instalar Chromium para Playwright
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libatk1.0-0 libatk-bridge2.0-0 libxcomposite1 libxdamage1 libxext6 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libpangocairo-1.0-0 libxshmfence1 libxslt1.1
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            libatk1.0-0 libatk-bridge2.0-0 libxcomposite1 libxdamage1 \
+            libxext6 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 \
+            libpangocairo-1.0-0 libxshmfence1 libxslt1.1
           playwright install chromium
 
       - name: Executar script de automação
         env:
-          GITHUB_ACTIONS: true
-          EVOLUTION_URL: ${{ secrets.EVOLUTION_URL }}
-          EVOLUTION_API_KEY: ${{ secrets.EVOLUTION_API_KEY }}
-          EVOLUTION_INSTANCE: engelmig
+          GITHUB_ACTIONS: "true"
           PB_USER: ${{ secrets.PB_USER }}
           PB_PASS: ${{ secrets.PB_PASS }}
-          GRUPO_PAULISTA_ID: ${{ secrets.GRUPO_PAULISTA_ID }}
-          GRUPO_PIRATININGA_ID: ${{ secrets.GRUPO_PIRATININGA_ID }}
-          GRUPO_SOROCABA_ID: ${{ secrets.GRUPO_SOROCABA_ID }}
+          WHATSAPP_SESSION: ${{ secrets.WHATSAPP_SESSION }}
         run: |
           python 00z_capturar_envia.py
 
-      - name: Upload de logs em caso de erro
+      - name: Upload de logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: logs-automacao
           path: /tmp/relatorios/log_automacao.txt
-          retention-days: 2
+          retention-days: 7
+
+      - name: Upload dos prints capturados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prints-powerbi
+          path: /tmp/relatorios/PRINT_*.png
+          retention-days: 3
+          if-no-files-found: ignore
