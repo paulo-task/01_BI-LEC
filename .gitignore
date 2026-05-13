@@ -1,0 +1,27 @@
+# Sessao WhatsApp - SOMENTE a chave e arquivos temporarios (NAO commitar)
+whatsapp_key.txt
+sessao_base64.txt
+dados_zap_sessao.zip
+dados_zap/
+
+# Relatórios e prints gerados
+relatorios/
+
+# Dados Power BI locais
+dados_pbi/
+
+# Variáveis de ambiente
+.env
+.pass
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+*.egg-info/
+
+# VS Code
+.vscode/

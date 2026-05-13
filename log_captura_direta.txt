@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [13/05/2026 10:19:01] - === INÍCIO DA OPERAÇÃO ===
 [13/05/2026 10:19:03] - Iniciando acesso direto ao Power BI...
 [13/05/2026 10:19:09] - Aguardando carregamento (20s)...
@@ -190,3 +191,9 @@ Call log:
 
 [13/05/2026 17:35:30] - === FIM DA OPERAÇÃO ===
 
+=======
+[13/05/2026 17:30:20] - === INÍCIO DA OPERAÇÃO ===
+[13/05/2026 17:30:35] - === INÍCIO DA OPERAÇÃO ===
+[13/05/2026 17:30:42] - === INÍCIO DA OPERAÇÃO ===
+[13/05/2026 17:34:18] - === INÍCIO DA OPERAÇÃO ===
+>>>>>>> e957a22c5fb653e6ad6451beb5b1245ded0d2c52
