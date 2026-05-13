@@ -99,8 +99,9 @@ def recortar_imagem(caminho_img, x1, y1, x2, y2, nome_final):
         img_recortada = img.crop((x1, y1, x2, y2))
         caminho_final = os.path.join(TEMP_DIR, nome_final)
         img_recortada.save(caminho_final)
-        if os.path.exists(caminho_img):
-            os.remove(caminho_img)
+        # Mantido para debug: a imagem original ficará nos artefatos com o nome PRINT_FULL
+        # if os.path.exists(caminho_img):
+        #     os.remove(caminho_img)
         return caminho_final
     except Exception as e:
         log(f"Erro recorte: {e}")
@@ -238,8 +239,8 @@ def capturar_powerbi():
                 botao.wait_for(state="visible", timeout=20000)
                 botao.click()
 
-            # Ajuste de coordenadas para capturar quase toda a tela (ignorando apenas as barras de menu do Power BI nas bordas)
-            X1, Y1, X2, Y2 = 50, 50, 1900, 1020
+            # Ajuste de coordenadas provisórias. Salvaremos a tela inteira como PRINT_FULL para facilitar a medição.
+            X1, Y1, X2, Y2 = 160, 45, 1900, 1020
 
             # PAULISTA
             try:
@@ -247,7 +248,7 @@ def capturar_powerbi():
                 clicar_radio("PAULISTA")
                 time.sleep(20)
                 
-                path_temp = os.path.join(TEMP_DIR, f"temp_pau_{agora}.png")
+                path_temp = os.path.join(TEMP_DIR, f"PRINT_FULL_pau_{agora}.png")
                 page.screenshot(path=path_temp, full_page=False)
                 final = recortar_imagem(path_temp, X1, Y1, X2, Y2, f"PRINT_PAULI_{agora}.png")
                 if final:
@@ -262,7 +263,7 @@ def capturar_powerbi():
                 clicar_radio("PIRATININGA")
                 time.sleep(20)
                 
-                path_temp = os.path.join(TEMP_DIR, f"temp_pira_{agora}.png")
+                path_temp = os.path.join(TEMP_DIR, f"PRINT_FULL_pira_{agora}.png")
                 page.screenshot(path=path_temp, full_page=False)
                 final = recortar_imagem(path_temp, X1, Y1, X2, Y2, f"PRINT_PIRAT_{agora}.png")
                 if final:
