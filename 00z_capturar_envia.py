@@ -239,8 +239,8 @@ def capturar_powerbi():
                 botao.wait_for(state="visible", timeout=20000)
                 botao.click()
 
-            # Ajuste de coordenadas provisórias. Salvaremos a tela inteira como PRINT_FULL para facilitar a medição.
-            X1, Y1, X2, Y2 = 160, 45, 1900, 1020
+            # Coordenadas exatas medidas pelo usuário na imagem Full HD (1920x1080)
+            X1, Y1, X2, Y2 = 260, 85, 1880, 1055
 
             # PAULISTA
             try:
