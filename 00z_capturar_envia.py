@@ -306,9 +306,31 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
     try:
         log(f"Procurando grupo: {grupo_nome}")
         
-        # 1. Clica na caixa de pesquisa (o primeiro contenteditable visível é sempre a busca)
-        search_box = page.locator("div[contenteditable='true']:visible").first
-        search_box.wait_for(state="visible", timeout=15000)
+        # 1. Tenta várias formas de encontrar a caixa de pesquisa
+        search_box = None
+        locators = [
+            page.locator("div[title='Caixa de texto de pesquisa']").first,
+            page.locator("div[title='Search input textbox']").first,
+            page.locator("div[data-tab='3']").first,
+            page.locator("div[data-tab='2']").first,
+            page.get_by_role("textbox").first,
+            page.locator("div[contenteditable='true']").nth(0),
+            page.locator("div[contenteditable='true']").nth(1),
+            page.locator("div[contenteditable='true']").nth(2)
+        ]
+        
+        for loc in locators:
+            try:
+                if loc.is_visible(timeout=3000):
+                    search_box = loc
+                    log(f"🔎 Caixa de pesquisa encontrada usando: {loc}")
+                    break
+            except:
+                continue
+                
+        if not search_box:
+            raise Exception("Não foi possível encontrar a caixa de pesquisa!")
+            
         search_box.click()
         search_box.fill("")
         time.sleep(1)
