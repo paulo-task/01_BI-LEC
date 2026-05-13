@@ -260,6 +260,8 @@ def enviar_whatsapp(prints):
             viewport={"width": 1920, "height": 1080} if IS_HEADLESS else None,
             no_viewport=not IS_HEADLESS,
             slow_mo=1000,
+            locale="pt-BR",
+            timezone_id="America/Sao_Paulo",
         )
         page = context.pages[0]
 
@@ -300,7 +302,8 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
         log(f"Procurando grupo: {grupo_nome}")
         
         # Clica na caixa de pesquisa
-        search_box = page.locator("div[contenteditable='true']").first
+        search_box = page.locator("#side div[contenteditable='true']").first
+        search_box.wait_for(state="visible", timeout=15000)
         search_box.click()
         # Limpa e digita o nome
         search_box.fill("")
@@ -334,7 +337,16 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
         btn_enviar.click()
         return True
     except Exception as e:
+        import traceback
         log(f"Erro ao enviar para {grupo_nome}: {e}")
+        log(traceback.format_exc())
+        try:
+            safe_name = "".join([c for c in grupo_nome if c.isalnum() or c in (' ', '_')]).replace(' ', '_')
+            erro_path = os.path.join(TEMP_DIR, f"PRINT_ERRO_ZAP_{safe_name}.png")
+            page.screenshot(path=erro_path)
+            log(f"📸 Screenshot do erro salvo em: {erro_path}")
+        except:
+            pass
         return False
 
 
