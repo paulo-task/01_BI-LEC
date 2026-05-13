@@ -24,13 +24,11 @@ import shutil
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
-USER_DATA_ZAP = os.path.join(
-    r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace"
-    r"\03 Repository\01_BI-LEC",
-    "dados_zap"
-)
-ZIP_SAIDA   = "dados_zap_sessao.zip"
-TXT_SAIDA   = "sessao_base64.txt"
+# Pasta dados_zap dentro do próprio repositório (funciona em qualquer PC)
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+USER_DATA_ZAP = os.path.join(_SCRIPT_DIR, "dados_zap")
+ZIP_SAIDA     = os.path.join(_SCRIPT_DIR, "dados_zap_sessao.zip")
+TXT_SAIDA     = os.path.join(_SCRIPT_DIR, "sessao_base64.txt")
 
 
 def main():
@@ -41,8 +39,8 @@ def main():
 
     Path(USER_DATA_ZAP).mkdir(parents=True, exist_ok=True)
 
-    print("🌐 Abrindo WhatsApp Web — escaneie o QR Code...")
-    print("   Após escanear, aguarde a tela principal carregar.")
+    print("[>>] Abrindo WhatsApp Web -- escaneie o QR Code...")
+    print("   Apos escanear, aguarde a tela principal carregar.")
     print("   O script fecha o navegador automaticamente.\n")
 
     with sync_playwright() as p:
@@ -56,21 +54,21 @@ def main():
         page = context.pages[0]
         page.goto("https://web.whatsapp.com", timeout=60000)
 
-        print("⏳ Aguardando autenticação (até 120s)...")
+        print("[...] Aguardando autenticacao (ate 120s)...")
         try:
             page.wait_for_selector("#pane-side", timeout=120000)
-            print("✅ WhatsApp autenticado com sucesso!")
-            print("   Aguardando 5s para estabilizar a sessão...")
+            print("[OK] WhatsApp autenticado com sucesso!")
+            print("   Aguardando 5s para estabilizar a sessao...")
             time.sleep(5)
         except Exception:
-            print("❌ Timeout — QR Code não foi escaneado a tempo.")
+            print("[ERRO] Timeout -- QR Code nao foi escaneado a tempo.")
             context.close()
             sys.exit(1)
 
         context.close()
 
     # Compacta a pasta de sessão
-    print(f"\n📦 Compactando sessão em {ZIP_SAIDA}...")
+    print(f"\n[ZIP] Compactando sessao em {ZIP_SAIDA}...")
     if os.path.exists(ZIP_SAIDA):
         os.remove(ZIP_SAIDA)
 
@@ -89,7 +87,7 @@ def main():
     print(f"   Tamanho: {tamanho_mb:.1f} MB")
 
     # Codifica em base64
-    print(f"🔐 Codificando em base64 → {TXT_SAIDA}...")
+    print(f"[B64] Codificando em base64 -> {TXT_SAIDA}...")
     with open(ZIP_SAIDA, "rb") as f:
         conteudo_b64 = base64.b64encode(f.read()).decode("utf-8")
 
@@ -100,22 +98,22 @@ def main():
     print(f"   Tamanho base64: {tamanho_kb:.0f} KB")
 
     print("\n" + "=" * 60)
-    print("  ✅ CONCLUÍDO!")
+    print("  [OK] CONCLUIDO!")
     print("=" * 60)
     print(f"""
-PRÓXIMO PASSO — Adicione o Secret no GitHub:
+PROXIMO PASSO -- Adicione o Secret no GitHub:
 
-  1. Abra:  github.com → seu repositório
-  2. Vá em: Settings → Secrets and variables → Actions
+  1. Abra:  github.com -> seu repositorio
+  2. Va em: Settings -> Secrets and variables -> Actions
   3. Clique: New repository secret
   4. Nome:   WHATSAPP_SESSION
-  5. Valor:  cole o conteúdo do arquivo '{TXT_SAIDA}'
+  5. Valor:  cole o conteudo do arquivo '{TXT_SAIDA}'
 
-⚠️  O arquivo gerado pode ter vários KB — use Ctrl+A para
+ATENCAO: O arquivo gerado pode ter varios KB -- use Ctrl+A para
     selecionar tudo no bloco de notas antes de copiar.
 
-⚠️  Repita este processo se o WhatsApp deslogar (troca de cel,
-    inatividade longa, etc).
+ATENCAO: Repita este processo se o WhatsApp deslogar (troca de
+    celular, inatividade longa, etc).
 """)
 
 
