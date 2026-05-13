@@ -132,6 +132,8 @@ def capturar_powerbi():
             viewport={"width": 1920, "height": 1080} if IS_GITHUB else None,
             no_viewport=not IS_GITHUB,
             slow_mo=1000,
+            locale="pt-BR",
+            timezone_id="America/Sao_Paulo",
         )
 
         page = context.pages[0]
@@ -143,19 +145,22 @@ def capturar_powerbi():
 
             # Login (só se necessário)
             try:
-                email_input = page.locator("input[type='email']")
-                if email_input.is_visible(timeout=8000):
-                    log("Fazendo login...")
+                email_input = page.locator("input[type='email'], input[name='loginfmt']").first
+                if email_input.is_visible(timeout=15000):
+                    log("Fazendo login no Power BI...")
                     email_input.fill(POWERBI_USER)
-                    page.get_by_role("button", name="Próximo").click()
+                    # Pressiona Enter em vez de procurar botão "Submit" ou "Próximo"
+                    email_input.press("Enter")
                     
-                    page.locator("input[type='password']").wait_for(state="visible", timeout=15000)
-                    page.locator("input[type='password']").fill(POWERBI_PASS)
-                    page.get_by_role("button", name="Entrar").click()
+                    pass_input = page.locator("input[type='password'], input[name='passwd']").first
+                    pass_input.wait_for(state="visible", timeout=15000)
+                    pass_input.fill(POWERBI_PASS)
+                    pass_input.press("Enter")
                     
                     # Trata "Continuar conectado?" (Stay signed in?)
                     try:
-                        btn_sim = page.get_by_role("button", name="Sim")
+                        # Pega o botão principal (Sim/Yes)
+                        btn_sim = page.locator("input[type='submit'], button[type='submit'], #idSIButton9").first
                         if btn_sim.is_visible(timeout=10000):
                             btn_sim.click()
                     except:
@@ -164,7 +169,7 @@ def capturar_powerbi():
                     log("Aguardando carregamento pós-login (20s)...")
                     time.sleep(20)
             except Exception as e:
-                log(f"Aviso de login: {e} (Pode ser que já esteja logado)")
+                log(f"Aviso de login: não foi necessário ou algo falhou ({e})")
 
             log("Aguardando carregamento (40s)...")
             time.sleep(40)
@@ -301,35 +306,43 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
     try:
         log(f"Procurando grupo: {grupo_nome}")
         
-        # Clica na caixa de pesquisa
-        search_box = page.locator("#side div[contenteditable='true']").first
+        # 1. Clica na caixa de pesquisa (o primeiro contenteditable visível é sempre a busca)
+        search_box = page.locator("div[contenteditable='true']:visible").first
         search_box.wait_for(state="visible", timeout=15000)
         search_box.click()
-        # Limpa e digita o nome
         search_box.fill("")
+        time.sleep(1)
         search_box.fill(grupo_nome)
         time.sleep(3)
         
-        # Seleciona o resultado
-        grupo = page.locator("#pane-side").get_by_text(grupo_nome, exact=False).first
-        if not grupo.is_visible(timeout=8000):
-            log(f"Grupo não encontrado na busca: {grupo_nome}")
-            return False
-            
+        # 2. Seleciona o grupo nos resultados (usando o title do span que contém o nome)
+        grupo = page.locator(f"span[title='{grupo_nome}']").first
+        if not grupo.is_visible(timeout=10000):
+            # Fallback: tentar get_by_text se o title não funcionar
+            grupo = page.get_by_text(grupo_nome, exact=True).last
+            if not grupo.is_visible(timeout=5000):
+                log(f"Grupo não encontrado na busca: {grupo_nome}")
+                return False
+                
         grupo.click()
         time.sleep(3)
 
-        btn_anexar = page.get_by_role("button", name="Anexar")
+        # 3. Clica no botão Anexar (+ ou clipe)
+        btn_anexar = page.locator("span[data-icon='clip'], span[data-icon='plus'], div[title='Anexar'], button[aria-label='Anexar']").first
         btn_anexar.wait_for(state="visible", timeout=10000)
         btn_anexar.click()
         time.sleep(1)
 
+        # 4. Seleciona Fotos e Vídeos (pode chamar Fotos e vídeos, Galeria ou usar o ícone de imagem)
         with page.expect_file_chooser() as fc_info:
-            page.get_by_text("Fotos e vídeos").click()
+            opcao_img = page.locator("li:has-text('Fotos e vídeos'), li:has-text('Galeria'), span[data-icon='image']").first
+            opcao_img.click()
+            
         fc_info.value.set_files(arquivo)
         log(f"Arquivo selecionado: {arquivo}")
         time.sleep(3)
 
+        # 5. Clica em Enviar
         btn_enviar = page.locator(
             "span[data-icon='send'], span[data-icon='wds-ic-send-filled']"
         ).first
