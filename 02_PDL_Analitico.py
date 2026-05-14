@@ -29,7 +29,7 @@ def run(playwright: Playwright) -> None:
         return
 
     browser = playwright.chromium.launch(headless=is_headless, slow_mo=500)
-    context = browser.new_context()
+    context = browser.new_context(viewport={'width': 1920, 'height': 1080})
     page = context.new_page()
 
     try:
@@ -130,6 +130,11 @@ def run(playwright: Playwright) -> None:
 
     except Exception as e:
         print(f"❌ Erro durante a execução: {e}")
+        try:
+            page.screenshot(path="erro_pdl_analitico.png", full_page=True)
+            print("📸 Screenshot de erro salvo como erro_pdl_analitico.png")
+        except:
+            pass
         raise
 
     finally:

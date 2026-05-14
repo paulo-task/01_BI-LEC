@@ -51,3 +51,10 @@ jobs:
 
       - name: 🤖 10. Coletar e Enviar para SharePoint
         run: python3 -u 00a_Coletor.py "Leitura" "Visitadas" "Produtividade"
+
+      - name: 📸 11. Salvar Evidências de Erro
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-de-erro
+          path: "*.png"
