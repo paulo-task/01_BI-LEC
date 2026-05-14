@@ -81,11 +81,23 @@ def run(playwright: Playwright) -> None:
     dados_totais = []
 
     try:
-        page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login")
-        page.get_by_role("textbox", name="Usuário").fill(usuario)
+        page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login", timeout=60000)
+        
+        # Espera obrigatória de até 60s para a página estar pronta
+        usuario_input = page.get_by_role("textbox", name="Usuário")
+        usuario_input.wait_for(state="visible", timeout=60000)
+        usuario_input.fill(usuario)
+        
         page.get_by_role("textbox", name="Senha").fill(senha)
         page.get_by_role("button", name="Login").click()
-        page.get_by_text("Planejamento / Operação").nth(1).click()
+        
+        # Aguarda a tela pós-login carregar completamente
+        page.wait_for_load_state("networkidle", timeout=60000)
+        
+        menu_plan = page.get_by_text("Planejamento / Operação").nth(1)
+        menu_plan.wait_for(state="visible", timeout=60000)
+        menu_plan.click()
+        page.wait_for_timeout(2000)
 
         print("Abrindo menus da árvore...")
         page.locator(".rc-tree-switcher").first.click()

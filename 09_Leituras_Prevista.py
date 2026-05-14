@@ -27,13 +27,26 @@ def run(playwright: Playwright) -> None:
     context = browser.new_context()
     page = context.new_page()
     
-    page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login")
+    page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login", timeout=60000)
     
-    page.get_by_role("textbox", name="Usuário").fill(usuario)
+    # Espera obrigatória de até 60s para a página estar pronta
+    usuario_input = page.get_by_role("textbox", name="Usuário")
+    usuario_input.wait_for(state="visible", timeout=60000)
+    usuario_input.fill(usuario)
+    
     page.get_by_role("textbox", name="Senha").fill(senha)
     page.get_by_role("button", name="Login").click()
     
-    page.get_by_text("Relatórios").nth(1).click()
+    # Aguarda a tela pós-login carregar completamente
+    page.wait_for_load_state("networkidle", timeout=60000)
+    
+    menu_relatorios = page.get_by_text("Relatórios").nth(1)
+    menu_relatorios.wait_for(state="visible", timeout=60000)
+    menu_relatorios.click()
+    
+    # Atraso estratégico para aguardar a abertura visual do dropdown do menu
+    page.wait_for_timeout(2000)
+    
     page.get_by_role("link", name="LEC", exact=True).click()
     page.get_by_text("Quantidade de Leituras Previstas por UL").click()
 

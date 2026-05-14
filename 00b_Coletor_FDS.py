@@ -250,17 +250,23 @@ def run(playwright: Playwright) -> None:
     try:
         print("\n🌐 Fazendo login no portal CPFL...")
         page.goto("https://cwsilecprd.cpfl.com.br:8443/cwsilecportal/view/login", timeout=90000)
-        page.wait_for_load_state("networkidle")
 
-        if page.get_by_role("textbox", name="Usuário").is_visible(timeout=15000):
-            page.get_by_role("textbox", name="Usuário").fill(usuario)
-            page.get_by_role("textbox", name="Senha").fill(senha)
-            page.get_by_role("button", name="Login").click()
-            page.wait_for_load_state("networkidle")
+        # Espera obrigatória de até 60s para a página estar pronta
+        usuario_input = page.get_by_role("textbox", name="Usuário")
+        usuario_input.wait_for(state="visible", timeout=60000)
+        usuario_input.fill(usuario)
+        
+        page.get_by_role("textbox", name="Senha").fill(senha)
+        page.get_by_role("button", name="Login").click()
+        
+        # Aguarda a tela pós-login carregar completamente
+        page.wait_for_load_state("networkidle", timeout=60000)
         print("✅ Login realizado")
 
         print("\n📊 Navegando para Relatórios Background...")
-        page.get_by_text("Relatórios Background").click()
+        menu_bg = page.get_by_text("Relatórios Background")
+        menu_bg.wait_for(state="visible", timeout=60000)
+        menu_bg.click()
         page.wait_for_load_state("networkidle")
         time.sleep(5)
 
