@@ -39,7 +39,7 @@ def run(playwright: Playwright) -> None:
         return
 
     browser = playwright.chromium.launch(headless=is_headless, slow_mo=600)
-    context = browser.new_context()
+    context = browser.new_context(viewport={'width': 1920, 'height': 1080})
     page = context.new_page()
 
     try:
@@ -67,7 +67,7 @@ def run(playwright: Playwright) -> None:
         # Atraso estratégico para aguardar a abertura visual do dropdown do menu
         page.wait_for_timeout(2000)
         
-        page.get_by_role("link", name="LEC", exact=True).click()
+        page.get_by_text("LEC", exact=True).first.click()
         page.get_by_text("Inst. Não Liberadas").click()
 
         # 3. DATAS DINÂMICAS
