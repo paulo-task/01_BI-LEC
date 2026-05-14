@@ -34,7 +34,7 @@ timeout /t 480 /nobreak
 echo.
 echo [PASSO 3] Iniciando o Robo Coletor para Baixar e Organizar...
 :: Note que aqui nao passamos argumentos, entao ele baixa os 7 relatorios
-python 00_Coletor.py
+python 00a_Coletor.py
 
 echo.
 echo ======================================================

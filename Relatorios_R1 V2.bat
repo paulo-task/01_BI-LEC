@@ -33,7 +33,7 @@ echo.
 echo [PASSO 3] Iniciando o Robo Coletor...
 :: IMPORTANTE: Verifique se o nome do arquivo abaixo e exatamente como voce salvou
 :: Use aspas se houver espaços no nome do arquivo .py
-python 00_Coletor.py "Leitura" "Visitadas" "Produtividade" 
+python 00a_Coletor.py "Leitura" "Visitadas" "Produtividade" 
 
 echo.
 echo ======================================================
