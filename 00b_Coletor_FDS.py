@@ -306,6 +306,16 @@ def run(playwright: Playwright) -> None:
         print(f"✅ COLETOR FDS FINALIZADO - {baixados}/{len(RELATORIOS_FDS)} relatórios baixados")
         print(f"{'='*60}")
 
+        # Tentativa de Logout para liberar a sessão no servidor da CPFL
+        try:
+            print("\nDeslogando do sistema para liberar a sessão...")
+            import re
+            page.get_by_role("menuitem", name=re.compile("Logout", re.IGNORECASE)).click(force=True, timeout=5000)
+            page.wait_for_load_state("networkidle", timeout=5000)
+            print("Sessão encerrada com sucesso.")
+        except Exception as e:
+            print(f"Aviso: Não foi possível deslogar automaticamente. {e}")
+
     except Exception as e:
         print(f"\n❌ ERRO: {e}")
         import traceback

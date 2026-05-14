@@ -125,6 +125,17 @@ def run(playwright: Playwright) -> None:
 
     print("✅ Relatório solicitado com sucesso!")
     page.wait_for_timeout(3000)
+
+    # Tentativa de Logout para liberar a sessão no servidor da CPFL
+    try:
+        print("Deslogando do sistema para liberar a sessão...")
+        import re
+        page.get_by_role("menuitem", name=re.compile("Logout", re.IGNORECASE)).click(force=True, timeout=5000)
+        page.wait_for_load_state("networkidle", timeout=5000)
+        print("Sessão encerrada com sucesso.")
+    except Exception as e:
+        print(f"Aviso: Não foi possível deslogar automaticamente. {e}")
+
     context.close()
     browser.close()
 
