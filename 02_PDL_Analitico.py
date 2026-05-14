@@ -57,7 +57,7 @@ def run(playwright: Playwright) -> None:
         # Atraso estratégico para aguardar a abertura visual do dropdown do menu
         page.wait_for_timeout(2000)
         
-        page.get_by_role("link", name="LEC", exact=True).click()
+        page.get_by_text("LEC", exact=True).first.click()
         page.get_by_text("Produtividade Diária").click()
 
         # 3. DATAS DINÂMICAS
