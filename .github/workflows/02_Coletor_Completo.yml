@@ -34,32 +34,35 @@ jobs:
       - name: 🚀 4. [PASSO 1] Executar 02_PDL_Analitico
         run: python3 02_PDL_Analitico.py
 
-      - name: 🚀 5. [PASSO 2] Executar 04_Nao_Visitadas
+      - name: 🚀 5. [PASSO 2] Executar 08_Leituras_Correcao
+        run: python3 08_Leituras_Correcao.py
+
+      - name: 🚀 6. [PASSO 3] Executar 04_Nao_Visitadas
         run: python3 04_Nao_Visitadas.py
 
-      - name: ⏳ 6. Aguardar (60s)
+      - name: ⏳ 7. Aguardar (60s)
         run: sleep 60
 
-      - name: 🚀 7. [PASSO 3] Executar 05_Nao_Visitadas_Historico
+      - name: 🚀 8. [PASSO 4] Executar 05_Nao_Visitadas_Historico
         run: python3 05_Nao_Visitadas_Historico.py
 
-      - name: 🚀 8. [PASSO 4] Executar 06_Impedimentos
+      - name: 🚀 9. [PASSO 5] Executar 06_Impedimentos
         run: python3 06_Impedimentos.py
 
-      - name: 🚀 9. [PASSO 5] Executar 07_Entregas
+      - name: 🚀 10. [PASSO 6] Executar 07_Entregas
         run: python3 07_Entregas.py
 
-      - name: ⏳ 10. Aguardar (240s)
+      - name: ⏳ 11. Aguardar (240s)
         run: sleep 240
 
-      - name: 🚀 11. [PASSO 6] Executar 01_ELF_Hora
+      - name: 🚀 12. [PASSO 7] Executar 01_ELF_Hora
         run: python3 01_ELF_Hora.py
 
-      - name: 🚀 12. [PASSO 7] Executar 03_Nao_Lib_Fatura
+      - name: 🚀 13. [PASSO 8] Executar 03_Nao_Lib_Fatura
         run: python3 03_Nao_Lib_Fatura.py
 
-      - name: ⏳ 13. Aguardar (480s)
+      - name: ⏳ 14. Aguardar (480s)
         run: sleep 480
 
-      - name: 🤖 14. Rodar Coletor Final - MODO COMPLETO
+      - name: 🤖 15. Rodar Coletor Final - MODO COMPLETO
         run: python3 -u 00a_Coletor.py completo

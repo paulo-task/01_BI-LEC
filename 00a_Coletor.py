@@ -96,7 +96,7 @@ RELATORIOS_SIMPLES = {
     }
 }
 
-# Modo COMPLETO (7 relatórios)
+# Modo COMPLETO (8 relatórios)
 RELATORIOS_COMPLETOS = {
     "Efetividade de Leitura Faturamento": {
         "pasta_sp": "BI_LEC/01_ELF_Diario",
@@ -153,6 +153,16 @@ RELATORIOS_COMPLETOS = {
         "regra_nome": "ano_mes",  # <-- Nome_2026_04.csv
         "filtro_grupo_servico": None,
         "nome_exibicao": "Relatório de Efetividade de Entrega de Contas (Prev X Entr)"
+    },
+    "Leituras de Correção": {
+        "pasta_sp": "BI_LEC/08_Leituras_Correcao",
+        "pasta_local": "08_Leituras_Correcao",
+        "nome_base": "Leituras de Correção",
+        # Ex: Leituras de Correção_2026_05.csv — um arquivo por mês de vigência;
+        # cada execução do dia sobrescreve o arquivo do mês corrente.
+        "regra_nome": "ano_mes",
+        "filtro_grupo_servico": None,
+        "nome_exibicao": "Leituras de Correção"
     }
 }
 
@@ -164,7 +174,8 @@ PASTAS_LOCAIS = {
     "04_N_Visitado_Diario": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\04_N_Visitado_Diario",
     "05_N_Visitado_Historico": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\05_N_Visitado_Historico",
     "06_Impedimentos": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\06_Impedimentos",
-    "07_Entregas": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\07_Entregas"
+    "07_Entregas": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\07_Entregas",
+    "08_Leituras_Correcao": r"C:\Users\paulo.janio\ENGELMIG ENERGIA LTDA\LEC ENGELMIG - Workspace\BI_LEC\08_Leituras_Correcao"
 }
 
 # =================================================================
@@ -361,7 +372,7 @@ def baixar_relatorio(page, linha_alvo, nome_relatorio):
 # =================================================================
 def run(playwright: Playwright, modo="simples") -> None:
     """
-    modo: "simples" (3 relatórios) ou "completo" (7 relatórios)
+    modo: "simples" (3 relatórios) ou "completo" (8 relatórios)
     """
     print(f"\n{'='*60}")
     print(f"🚀 INICIANDO COLETOR - MODO: {modo.upper()}")
@@ -507,7 +518,7 @@ if __name__ == "__main__":
     modo = "simples"
     if len(sys.argv) > 1:
         arg = sys.argv[1].lower()
-        if arg in ["completo", "full", "7"]:
+        if arg in ["completo", "full", "7", "8"]:
             modo = "completo"
         elif arg in ["simples", "simple", "3"]:
             modo = "simples"
