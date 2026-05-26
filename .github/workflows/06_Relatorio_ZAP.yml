@@ -7,10 +7,14 @@ jobs:
   executar-relatorios:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Configurar Python 3.11
         uses: actions/setup-python@v4
@@ -47,6 +51,7 @@ jobs:
           name: logs-automacao
           path: /tmp/relatorios/log_automacao.txt
           retention-days: 7
+          if-no-files-found: ignore
 
       - name: Upload dos prints capturados
         if: always()
