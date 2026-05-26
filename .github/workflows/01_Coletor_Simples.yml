@@ -6,7 +6,9 @@ on:
 jobs:
   executar_rotina:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: read
+
     env:
       TZ: America/Sao_Paulo
       CPFL_USER: ${{ secrets.CPFL_USER }}
@@ -19,6 +21,8 @@ jobs:
     steps:
       - name: 📥 1. Sincronizar Repositório
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: 🐍 2. Preparar Ambiente Python
         uses: actions/setup-python@v5
@@ -50,7 +54,7 @@ jobs:
         run: sleep 300
 
       - name: 🤖 10. Coletar e Enviar para SharePoint
-        run: python3 -u 00a_Coletor.py "Leitura" "Visitadas" "Produtividade"
+        run: python3 -u 00a_Coletor.py simples
 
       - name: 📸 11. Salvar Evidências de Erro
         if: failure()
@@ -58,3 +62,4 @@ jobs:
         with:
           name: screenshots-de-erro
           path: "*.png"
+          if-no-files-found: ignore
