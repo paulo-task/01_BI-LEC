@@ -30,6 +30,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
+            xvfb \
             libatk1.0-0 libatk-bridge2.0-0 libxcomposite1 libxdamage1 \
             libxext6 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 \
             libpangocairo-1.0-0 libxshmfence1 libxslt1.1
@@ -42,7 +43,7 @@ jobs:
           PB_PASS: ${{ secrets.PB_PASS }}
           WHATSAPP_KEY: ${{ secrets.WHATSAPP_KEY }}
         run: |
-          python 00z_capturar_envia.py
+          xvfb-run -a --server-args="-screen 0 1920x1080x24" python 00z_capturar_envia.py
 
       - name: Upload de logs
         if: always()

@@ -72,7 +72,7 @@ def restaurar_sessao_zap():
         log(f"AVISO: Arquivo de sessão não encontrado: {SESSION_ENC}")
         return False
 
-    zip_tmp = "/tmp/dados_zap_dec.zip"
+    zip_tmp = os.path.join(TEMP_DIR, "dados_zap_dec.zip")
     try:
         f = Fernet(WHATSAPP_KEY.encode())
         with open(SESSION_ENC, "rb") as fp:
@@ -290,15 +290,51 @@ def capturar_powerbi():
 # ENVIO WHATSAPP
 # ─────────────────────────────────────────────
 
+def whatsapp_pediu_qr(page):
+    seletores = ["canvas[aria-label*='QR']", "[data-testid='qrcode']"]
+    for sel in seletores:
+        try:
+            if page.locator(sel).first.is_visible(timeout=1500):
+                return True
+        except Exception:
+            pass
+    return False
+
+
+def aguardar_whatsapp_pronto(page, timeout_ms=120000):
+    inicio = time.time()
+    while (time.time() - inicio) * 1000 < timeout_ms:
+        if whatsapp_pediu_qr(page):
+            raise RuntimeError(
+                "Sessão WhatsApp expirada — QR Code detectado. "
+                "No PC, rode: python 00z_gerar_sessao.py, escaneie o QR, "
+                "commite whatsapp_session.enc e atualize o Secret WHATSAPP_KEY."
+            )
+        try:
+            if page.locator("#pane-side").first.is_visible(timeout=2000):
+                return
+        except Exception:
+            pass
+        try:
+            busca = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
+            if busca.first.is_visible(timeout=2000):
+                return
+        except Exception:
+            pass
+        time.sleep(2)
+    raise TimeoutError(f"WhatsApp não carregou em {timeout_ms}ms")
+
+
 def enviar_whatsapp(prints):
     log("\n=== ENVIANDO PARA WHATSAPP ===")
 
-    # No GitHub Actions: restaura sessão antes de abrir o browser
     if IS_GITHUB:
         ok = restaurar_sessao_zap()
         if not ok:
             log("❌ Sem sessão WhatsApp — envio cancelado.")
-            log("   → Gere o Secret WHATSAPP_SESSION rodando: python 00z_gerar_sessao.py")
+            log("   → No PC: python 00z_gerar_sessao.py")
+            log("   → Commite whatsapp_session.enc no repositório")
+            log("   → Adicione whatsapp_key.txt como Secret WHATSAPP_KEY no GitHub")
             return
 
     regras = [
@@ -307,25 +343,32 @@ def enviar_whatsapp(prints):
     ]
 
     with sync_playwright() as p:
+        args_zap = [
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-blink-features=AutomationControlled",
+            "--disable-gpu",
+            "--window-size=1920,1080",
+        ]
+
         context = p.chromium.launch_persistent_context(
             USER_DATA_ZAP,
-            headless=IS_HEADLESS,
-            args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-blink-features=AutomationControlled"],
+            headless=False,
+            args=args_zap,
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-            viewport={"width": 1920, "height": 1080} if IS_HEADLESS else None,
-            no_viewport=not IS_HEADLESS,
-            slow_mo=1000,
+            viewport={"width": 1920, "height": 1080},
+            slow_mo=500,
             locale="pt-BR",
             timezone_id="America/Sao_Paulo",
         )
         page = context.pages[0]
+        page.set_default_timeout(120000)
 
         try:
             log("Abrindo WhatsApp Web...")
-            page.goto("https://web.whatsapp.com", timeout=60000)
-            log("Aguardando carregamento (30s)...")
-            time.sleep(30)
-            page.wait_for_selector("#pane-side", timeout=60000)
+            page.goto("https://web.whatsapp.com", timeout=120000, wait_until="domcontentloaded")
+            log("Aguardando carregamento da tela principal...")
+            aguardar_whatsapp_pronto(page, timeout_ms=120000)
             log("✅ WhatsApp carregado")
 
             for regra in regras:
