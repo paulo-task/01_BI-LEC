@@ -2,7 +2,7 @@
 """
 SCRIPT DE AUTOMAÇÃO COMPLETO
 Captura print do Power BI e envia para grupos WhatsApp
-Roda localmente ou no GitHub Actions (com sessão WhatsApp restaurada via Secret)
+Roda localmente ou no GitHub Actions (sessões restauradas via Secrets)
 """
 
 import os
@@ -30,6 +30,7 @@ if IS_GITHUB:
     USER_DATA_ZAP   = "/tmp/dados_zap"
     LOG_FILE        = "/tmp/relatorios/log_automacao.txt"
     SESSION_ENC     = os.path.join(_SCRIPT_DIR, "whatsapp_session.enc")
+    PBI_SESSION_ENC = os.path.join(_SCRIPT_DIR, "powerbi_session.enc")
 else:
     # Local - usa o diretório do script
     TEMP_DIR        = os.path.join(_SCRIPT_DIR, "relatorios")
@@ -37,13 +38,15 @@ else:
     USER_DATA_ZAP   = os.path.join(_SCRIPT_DIR, "dados_zap")
     LOG_FILE        = os.path.join(TEMP_DIR, "log_automacao.txt")
     SESSION_ENC     = os.path.join(_SCRIPT_DIR, "whatsapp_session.enc")
+    PBI_SESSION_ENC = os.path.join(_SCRIPT_DIR, "powerbi_session.enc")
 
 for d in [TEMP_DIR, USER_DATA_PBI, USER_DATA_ZAP]:
     Path(d).mkdir(parents=True, exist_ok=True)
 
-POWERBI_USER = os.getenv("PB_USER")
-POWERBI_PASS = os.getenv("PB_PASS")
-WHATSAPP_KEY = os.getenv("WHATSAPP_KEY", "")
+POWERBI_USER = (os.getenv("PB_USER") or "").strip()
+POWERBI_PASS = (os.getenv("PB_PASS") or "").strip()
+WHATSAPP_KEY = (os.getenv("WHATSAPP_KEY") or "").strip()
+POWERBI_KEY  = (os.getenv("POWERBI_KEY") or "").strip()
 
 URL_POWERBI = (
     "https://app.powerbi.com/groups/33331c64-94a0-477c-b682-9f40a7ac809b/reports/ff3f2d1f-9433-4060-b072-07b666de8da0/9592b20a8d6c05c3d407?experience=power-bi"
@@ -60,34 +63,57 @@ def log(mensagem):
         f.write(msg + "\n")
 
 
-def restaurar_sessao_zap():
-    """Descriptografa whatsapp_session.enc usando WHATSAPP_KEY e restaura em USER_DATA_ZAP."""
-    if not WHATSAPP_KEY:
-        log("AVISO: WHATSAPP_KEY não definida — WhatsApp sem sessão prévia.")
+def log_status_credenciais_github():
+    """Confirma no log se os secrets PB_USER/PB_PASS chegaram ao runner."""
+    if not IS_GITHUB:
+        return
+    if POWERBI_USER and "@" in POWERBI_USER:
+        local, dominio = POWERBI_USER.split("@", 1)
+        mask = f"{local[:2]}***@{dominio}"
+        log(f"PB_USER recebido: {mask}")
+    elif POWERBI_USER:
+        log("PB_USER recebido (sem @ no valor — confira se é um e-mail)")
+    else:
+        log("❌ PB_USER vazio! O secret deve se chamar exatamente PB_USER (maiúsculas)")
+    log(f"PB_PASS recebido: {'sim' if POWERBI_PASS else 'NÃO — secret PB_PASS vazio ou inexistente'}")
+
+
+def restaurar_sessao_enc(chave_env, arquivo_enc, pasta_destino, nome_servico):
+    """Descriptografa sessão Chromium e restaura em pasta_destino."""
+    if not chave_env:
+        log(f"AVISO: {nome_servico}_KEY não definida — sem sessão prévia.")
         return False
-    if not os.path.exists(SESSION_ENC):
-        log(f"AVISO: Arquivo de sessão não encontrado: {SESSION_ENC}")
+    if not os.path.exists(arquivo_enc):
+        log(f"AVISO: Arquivo de sessão não encontrado: {arquivo_enc}")
         return False
 
-    zip_tmp = os.path.join(TEMP_DIR, "dados_zap_dec.zip")
+    zip_tmp = os.path.join(TEMP_DIR, f"sessao_{nome_servico}_dec.zip")
     try:
-        f = Fernet(WHATSAPP_KEY.encode())
-        with open(SESSION_ENC, "rb") as fp:
+        f = Fernet(chave_env.encode())
+        with open(arquivo_enc, "rb") as fp:
             dados_enc = fp.read()
         dados_zip = f.decrypt(dados_enc)
         with open(zip_tmp, "wb") as fp:
             fp.write(dados_zip)
 
-        if os.path.exists(USER_DATA_ZAP):
-            shutil.rmtree(USER_DATA_ZAP)
+        if os.path.exists(pasta_destino):
+            shutil.rmtree(pasta_destino)
         with zipfile.ZipFile(zip_tmp, "r") as z:
-            z.extractall(USER_DATA_ZAP)
+            z.extractall(pasta_destino)
 
-        log("✅ Sessão WhatsApp restaurada com sucesso.")
+        log(f"✅ Sessão {nome_servico} restaurada com sucesso.")
         return True
     except Exception as e:
-        log(f"❌ Erro ao restaurar sessão: {e}")
+        log(f"❌ Erro ao restaurar sessão {nome_servico}: {e}")
         return False
+
+
+def restaurar_sessao_zap():
+    return restaurar_sessao_enc(WHATSAPP_KEY, SESSION_ENC, USER_DATA_ZAP, "WhatsApp")
+
+
+def restaurar_sessao_pbi():
+    return restaurar_sessao_enc(POWERBI_KEY, PBI_SESSION_ENC, USER_DATA_PBI, "Power BI")
 
 
 def recortar_imagem(caminho_img, x1, y1, x2, y2, nome_final):
@@ -119,6 +145,26 @@ def _url_eh_sso_powerbi(url):
 
 def _url_eh_relatorio_powerbi(url):
     return "app.powerbi.com/groups/" in url and not _url_eh_sso_powerbi(url)
+
+
+def _detectar_mfa(page):
+    textos_mfa = (
+        "Approve sign in request",
+        "Enter code",
+        "Verifique sua identidade",
+        "Microsoft Authenticator",
+        "número exibido",
+        "Help us protect your account",
+    )
+    for texto in textos_mfa:
+        try:
+            if page.get_by_text(texto, exact=False).first.is_visible(timeout=1500):
+                log(f"❌ MFA detectado ('{texto}') — PB_USER/PB_PASS não funciona no GitHub com MFA.")
+                log("   Solução: python 00z_gerar_sessao_pbi.py no PC e secret POWERBI_KEY.")
+                return True
+        except Exception:
+            pass
+    return False
 
 
 def tentar_login_microsoft(page):
@@ -177,6 +223,9 @@ def tentar_login_microsoft(page):
                 btn_sim.click()
         except Exception:
             pass
+
+        time.sleep(3)
+        _detectar_mfa(page)
         return True
     except Exception as e:
         log(f"Login Microsoft falhou: {e}")
@@ -184,27 +233,63 @@ def tentar_login_microsoft(page):
 
 
 def tentar_sso_powerbi(page):
-    """Na tela singleSignOn, clica em Entrar para abrir o OAuth da Microsoft."""
+    """Na tela singleSignOn, abre OAuth Microsoft e preenche PB_USER se necessário."""
     if not _url_eh_sso_powerbi(page.url):
         return False
 
-    log("Tela singleSignOn detectada — iniciando autenticação...")
-    for nome in ("Entrar", "Sign in", "Sign In", "Fazer login", "Log in"):
+    log("Tela singleSignOn — autenticando...")
+
+    try:
+        link_ms = page.locator("a[href*='login.microsoftonline.com']").first
+        if link_ms.is_visible(timeout=3000):
+            link_ms.click()
+            log("Clicou no link OAuth da Microsoft...")
+            time.sleep(5)
+            if _url_eh_login(page.url):
+                return True
+    except Exception:
+        pass
+
+    if POWERBI_USER:
+        try:
+            email_pbi = page.locator("input[type='email'], input[name='loginfmt']").first
+            if email_pbi.is_visible(timeout=5000):
+                log("Preenchendo email na tela SSO do Power BI...")
+                email_pbi.fill(POWERBI_USER)
+                for nome in ("Submit", "Enviar", "Sign in", "Entrar", "Next"):
+                    try:
+                        page.get_by_role("button", name=nome).first.click(timeout=2000)
+                        break
+                    except Exception:
+                        continue
+                else:
+                    email_pbi.press("Enter")
+                time.sleep(5)
+        except Exception:
+            pass
+
+    for nome in ("Entrar", "Sign in", "Sign In", "Fazer login", "Log in", "Submit"):
         try:
             btn = page.get_by_role("button", name=nome).first
-            if btn.is_visible(timeout=3000):
+            if btn.is_visible(timeout=2000):
                 btn.click()
                 log(f"Clicou em '{nome}', aguardando redirect...")
                 break
         except Exception:
             continue
     else:
-        try:
-            page.locator("a, button").filter(has_text="Sign in").first.click(timeout=5000)
-            log("Clicou em Sign in (fallback), aguardando redirect...")
-        except Exception as e:
-            log(f"Não encontrou botão Entrar no singleSignOn: {e}")
-            return False
+        for sel in (
+            "button:has-text('Sign in')",
+            "[data-testid='signin-button']",
+            ".sign-in-btn",
+            "#signIn",
+        ):
+            try:
+                page.locator(sel).first.click(timeout=3000)
+                log(f"Clicou via seletor CSS ({sel})...")
+                break
+            except Exception:
+                continue
 
     for _ in range(30):
         url = page.url
@@ -215,6 +300,8 @@ def tentar_sso_powerbi(page):
             log("Relatório carregou após SSO.")
             return True
         time.sleep(2)
+
+    log("SSO não redirecionou para Microsoft — verifique PRINT_ERRO_CRITICO.png")
     return False
 
 
@@ -331,9 +418,17 @@ def capturar_powerbi():
     log("=== INICIANDO CAPTURA POWER BI ===")
     prints = {"PAULISTA": None, "PIRATININGA": None}
 
-    if IS_GITHUB and (not POWERBI_USER or not POWERBI_PASS):
-        log("❌ ERRO: Secrets PB_USER e PB_PASS não configurados no GitHub Actions.")
-        return prints
+    if IS_GITHUB:
+        log_status_credenciais_github()
+        sessao_ok = restaurar_sessao_pbi()
+        tem_credenciais = bool(POWERBI_USER and POWERBI_PASS)
+        if not sessao_ok and not tem_credenciais:
+            log("❌ ERRO: Configure PB_USER + PB_PASS ou POWERBI_KEY + powerbi_session.enc")
+            return prints
+        if sessao_ok:
+            log("Usando sessão Power BI restaurada (mesmo login do PC).")
+        else:
+            log("Login automático com PB_USER/PB_PASS...")
 
     with sync_playwright() as p:
         args = [

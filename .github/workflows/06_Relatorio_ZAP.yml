@@ -41,6 +41,7 @@ jobs:
           GITHUB_ACTIONS: "true"
           PB_USER: ${{ secrets.PB_USER }}
           PB_PASS: ${{ secrets.PB_PASS }}
+          POWERBI_KEY: ${{ secrets.POWERBI_KEY }}
           WHATSAPP_KEY: ${{ secrets.WHATSAPP_KEY }}
         run: |
           xvfb-run -a --server-args="-screen 0 1920x1080x24" python 00z_capturar_envia.py
