@@ -401,19 +401,17 @@ def tirar_screenshot_seguro(page, path, tentativas=3):
 def capturar_powerbi():
     log("=== INICIANDO CAPTURA POWER BI ===")
     prints = {"PAULISTA": None, "PIRATININGA": None}
-    sessao_pbi_ok = False
 
     if IS_GITHUB:
-        log_status_credenciais_github()
-        sessao_pbi_ok = restaurar_sessao_pbi()
-        tem_credenciais = bool(POWERBI_USER and POWERBI_PASS)
-        if not sessao_pbi_ok and not tem_credenciais:
-            log("❌ ERRO: Configure PB_USER + PB_PASS ou POWERBI_KEY + powerbi_session.enc")
+        if not restaurar_sessao_pbi():
+            log("❌ GitHub precisa da sessão exportada do seu PC.")
+            log("   No PC, execute:  python 00z_gerar_sessao_pbi.py")
+            log("   GitHub Secret:    POWERBI_KEY = conteúdo de powerbi_key.txt")
+            log("   Depois:           git add powerbi_session.enc && git push")
+            log("")
+            log("   (PB_USER/PB_PASS não funcionam no GitHub — MFA e SSO bloqueiam.)")
             return prints
-        if sessao_pbi_ok:
-            log("Usando sessão Power BI restaurada (mesmo login do PC).")
-        else:
-            log("Login automático com PB_USER/PB_PASS...")
+        log("✅ Sessão do PC restaurada — mesmo login, sem pedir senha.")
 
     with sync_playwright() as p:
         args = [
@@ -440,19 +438,9 @@ def capturar_powerbi():
         agora = datetime.now().strftime("%Y_%m_%d_%H-%M")
 
         try:
-            if IS_GITHUB and not sessao_pbi_ok:
-                log("GitHub: login Microsoft direto (evita tela singleSignOn)...")
-                page.goto(url_oauth_microsoft(), timeout=120000, wait_until="domcontentloaded")
-                time.sleep(2)
-                log(f"URL login Microsoft: {page.url[:100]}")
-                if _url_eh_login(page.url):
-                    tentar_login_microsoft(page)
-                page.goto(url_acesso_powerbi(), timeout=120000, wait_until="domcontentloaded")
-                log(f"URL após autenticação: {page.url[:100]}")
-            else:
-                log("Acessando Power BI...")
-                page.goto(url_acesso_powerbi(), timeout=120000)
-                log(f"URL após goto: {page.url[:100]}")
+            log("Acessando Power BI...")
+            page.goto(url_acesso_powerbi(), timeout=120000)
+            log(f"URL após goto: {page.url[:100]}")
             time.sleep(5)
 
             aguardar_powerbi_pronto(page)

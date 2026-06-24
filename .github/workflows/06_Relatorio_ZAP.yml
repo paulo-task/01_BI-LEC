@@ -39,8 +39,6 @@ jobs:
       - name: Executar script de automação
         env:
           GITHUB_ACTIONS: "true"
-          PB_USER: ${{ secrets.PB_USER }}
-          PB_PASS: ${{ secrets.PB_PASS }}
           POWERBI_KEY: ${{ secrets.POWERBI_KEY }}
           WHATSAPP_KEY: ${{ secrets.WHATSAPP_KEY }}
         run: |
