@@ -7,11 +7,13 @@ Roda localmente ou no GitHub Actions (sessões restauradas via Secrets)
 
 import os
 import sys
+import re
 import time
 import zipfile
 import shutil
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import quote
 from playwright.sync_api import sync_playwright
 from PIL import Image
 from dotenv import load_dotenv
@@ -49,8 +51,33 @@ WHATSAPP_KEY = (os.getenv("WHATSAPP_KEY") or "").strip()
 POWERBI_KEY  = (os.getenv("POWERBI_KEY") or "").strip()
 
 URL_POWERBI = (
-    "https://app.powerbi.com/groups/33331c64-94a0-477c-b682-9f40a7ac809b/reports/ff3f2d1f-9433-4060-b072-07b666de8da0/9592b20a8d6c05c3d407?experience=power-bi"
+    "https://app.powerbi.com/groups/33331c64-94a0-477c-b682-9f40a7ac809b/reports/"
+    "ff3f2d1f-9433-4060-b072-07b666de8da0/9592b20a8d6c05c3d407?experience=power-bi"
 )
+PBI_CLIENT_ID = "871c010f-5e61-4fb1-83ac-98610a7e9110"
+PBI_REDIRECT_URI = "https://app.powerbi.com/signin"
+
+
+def url_acesso_powerbi():
+    """No GitHub usa clientSideAuth=0 para forçar redirect server-side."""
+    if not IS_GITHUB:
+        return URL_POWERBI
+    sep = "&" if "?" in URL_POWERBI else "?"
+    return f"{URL_POWERBI}{sep}clientSideAuth=0&noSignUpCheck=1"
+
+
+def url_oauth_microsoft():
+    """URL OAuth oficial do Power BI — bypass da tela singleSignOn (JS)."""
+    redirect = quote(PBI_REDIRECT_URI, safe="")
+    return (
+        "https://login.microsoftonline.com/common/oauth2/authorize"
+        f"?client_id={PBI_CLIENT_ID}"
+        "&response_type=code%20id_token"
+        "&scope=openid%20profile%20offline_access"
+        f"&redirect_uri={redirect}"
+        "&response_mode=form_post"
+        "&prompt=login"
+    )
 # ─────────────────────────────────────────────
 # UTILITÁRIOS
 # ─────────────────────────────────────────────
@@ -226,96 +253,53 @@ def tentar_login_microsoft(page):
 
         time.sleep(3)
         _detectar_mfa(page)
+
+        try:
+            page.wait_for_url(re.compile(r"app\.powerbi\.com"), timeout=90000)
+            log(f"Autenticado — URL: {page.url[:100]}")
+        except Exception:
+            pass
         return True
     except Exception as e:
         log(f"Login Microsoft falhou: {e}")
         return False
 
 
-def tentar_sso_powerbi(page):
-    """Na tela singleSignOn, abre OAuth Microsoft e preenche PB_USER se necessário."""
-    if not _url_eh_sso_powerbi(page.url):
+def _url_precisa_auth_powerbi(url):
+    return _url_eh_sso_powerbi(url) or "app.powerbi.com/signin" in url
+
+
+def ir_login_microsoft_direto(page):
+    """Bypass singleSignOn: vai direto para login.microsoftonline.com."""
+    log("Bypass singleSignOn — abrindo login Microsoft diretamente...")
+    try:
+        page.goto(url_oauth_microsoft(), timeout=90000, wait_until="domcontentloaded")
+        time.sleep(3)
+        log(f"URL após OAuth direto: {page.url[:100]}")
+        return True
+    except Exception as e:
+        log(f"Erro ao abrir login Microsoft: {e}")
         return False
 
-    log("Tela singleSignOn — autenticando...")
 
-    try:
-        link_ms = page.locator("a[href*='login.microsoftonline.com']").first
-        if link_ms.is_visible(timeout=3000):
-            link_ms.click()
-            log("Clicou no link OAuth da Microsoft...")
-            time.sleep(5)
-            if _url_eh_login(page.url):
-                return True
-    except Exception:
-        pass
-
-    if POWERBI_USER:
-        try:
-            email_pbi = page.locator("input[type='email'], input[name='loginfmt']").first
-            if email_pbi.is_visible(timeout=5000):
-                log("Preenchendo email na tela SSO do Power BI...")
-                email_pbi.fill(POWERBI_USER)
-                for nome in ("Submit", "Enviar", "Sign in", "Entrar", "Next"):
-                    try:
-                        page.get_by_role("button", name=nome).first.click(timeout=2000)
-                        break
-                    except Exception:
-                        continue
-                else:
-                    email_pbi.press("Enter")
-                time.sleep(5)
-        except Exception:
-            pass
-
-    for nome in ("Entrar", "Sign in", "Sign In", "Fazer login", "Log in", "Submit"):
-        try:
-            btn = page.get_by_role("button", name=nome).first
-            if btn.is_visible(timeout=2000):
-                btn.click()
-                log(f"Clicou em '{nome}', aguardando redirect...")
-                break
-        except Exception:
-            continue
-    else:
-        for sel in (
-            "button:has-text('Sign in')",
-            "[data-testid='signin-button']",
-            ".sign-in-btn",
-            "#signIn",
-        ):
-            try:
-                page.locator(sel).first.click(timeout=3000)
-                log(f"Clicou via seletor CSS ({sel})...")
-                break
-            except Exception:
-                continue
-
-    for _ in range(30):
-        url = page.url
-        if _url_eh_login(url):
-            log(f"Redirect para Microsoft: {url[:80]}")
-            return True
-        if _url_eh_relatorio_powerbi(url):
-            log("Relatório carregou após SSO.")
-            return True
-        time.sleep(2)
-
-    log("SSO não redirecionou para Microsoft — verifique PRINT_ERRO_CRITICO.png")
-    return False
+def abrir_relatorio_apos_login(page):
+    if _url_eh_relatorio_powerbi(page.url):
+        return
+    log("Abrindo relatório após autenticação...")
+    page.goto(url_acesso_powerbi(), timeout=120000, wait_until="domcontentloaded")
+    time.sleep(8)
 
 
 def iniciar_autenticacao(page):
-    """Orquestra SSO Power BI + login Microsoft."""
-    url = page.url
-    if _url_eh_sso_powerbi(url):
-        tentar_sso_powerbi(page)
+    """Bypass SSO + login Microsoft + abre relatório."""
+    if _url_precisa_auth_powerbi(page.url):
+        ir_login_microsoft_direto(page)
+
     if _url_eh_login(page.url):
         tentar_login_microsoft(page)
 
-
-# mantém compatibilidade interna
-tentar_login_powerbi = tentar_login_microsoft
+    if not _url_eh_login(page.url):
+        abrir_relatorio_apos_login(page)
 
 
 def limpar_campo_pesquisa(page):
@@ -350,8 +334,8 @@ def aguardar_powerbi_pronto(page, timeout_s=None):
             ultimo_log_url = url
             ultimo_log_tempo = time.time()
 
-        if _url_eh_login(url) or _url_eh_sso_powerbi(url):
-            if tentativas_auth < 6:
+        if _url_eh_login(url) or _url_precisa_auth_powerbi(url):
+            if tentativas_auth < 3:
                 iniciar_autenticacao(page)
                 tentativas_auth += 1
             else:
@@ -417,15 +401,16 @@ def tirar_screenshot_seguro(page, path, tentativas=3):
 def capturar_powerbi():
     log("=== INICIANDO CAPTURA POWER BI ===")
     prints = {"PAULISTA": None, "PIRATININGA": None}
+    sessao_pbi_ok = False
 
     if IS_GITHUB:
         log_status_credenciais_github()
-        sessao_ok = restaurar_sessao_pbi()
+        sessao_pbi_ok = restaurar_sessao_pbi()
         tem_credenciais = bool(POWERBI_USER and POWERBI_PASS)
-        if not sessao_ok and not tem_credenciais:
+        if not sessao_pbi_ok and not tem_credenciais:
             log("❌ ERRO: Configure PB_USER + PB_PASS ou POWERBI_KEY + powerbi_session.enc")
             return prints
-        if sessao_ok:
+        if sessao_pbi_ok:
             log("Usando sessão Power BI restaurada (mesmo login do PC).")
         else:
             log("Login automático com PB_USER/PB_PASS...")
@@ -455,9 +440,19 @@ def capturar_powerbi():
         agora = datetime.now().strftime("%Y_%m_%d_%H-%M")
 
         try:
-            log("Acessando Power BI...")
-            page.goto(URL_POWERBI, timeout=120000)
-            log(f"URL após goto: {page.url}")
+            if IS_GITHUB and not sessao_pbi_ok:
+                log("GitHub: login Microsoft direto (evita tela singleSignOn)...")
+                page.goto(url_oauth_microsoft(), timeout=120000, wait_until="domcontentloaded")
+                time.sleep(2)
+                log(f"URL login Microsoft: {page.url[:100]}")
+                if _url_eh_login(page.url):
+                    tentar_login_microsoft(page)
+                page.goto(url_acesso_powerbi(), timeout=120000, wait_until="domcontentloaded")
+                log(f"URL após autenticação: {page.url[:100]}")
+            else:
+                log("Acessando Power BI...")
+                page.goto(url_acesso_powerbi(), timeout=120000)
+                log(f"URL após goto: {page.url[:100]}")
             time.sleep(5)
 
             aguardar_powerbi_pronto(page)
