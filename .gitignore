@@ -1,6 +1,7 @@
 # Sessao WhatsApp - SOMENTE a chave e arquivos temporarios (NAO commitar)
 whatsapp_key.txt
 powerbi_key.txt
+powerbi_state_tmp.json
 sessao_base64.txt
 dados_zap_sessao.zip
 dados_zap/

@@ -8,6 +8,7 @@ Roda localmente ou no GitHub Actions (sessões restauradas via Secrets)
 import os
 import sys
 import re
+import json
 import time
 import zipfile
 import shutil
@@ -106,7 +107,7 @@ def log_status_credenciais_github():
 
 
 def restaurar_sessao_enc(chave_env, arquivo_enc, pasta_destino, nome_servico):
-    """Descriptografa sessão Chromium e restaura em pasta_destino."""
+    """Descriptografa sessão Chromium (zip) e restaura em pasta_destino — WhatsApp."""
     if not chave_env:
         log(f"AVISO: {nome_servico}_KEY não definida — sem sessão prévia.")
         return False
@@ -119,15 +120,16 @@ def restaurar_sessao_enc(chave_env, arquivo_enc, pasta_destino, nome_servico):
         f = Fernet(chave_env.encode())
         with open(arquivo_enc, "rb") as fp:
             dados_enc = fp.read()
-        dados_zip = f.decrypt(dados_enc)
+        dados = f.decrypt(dados_enc)
+        if dados[:1] == b"{":
+            log(f"❌ {arquivo_enc} é sessão Power BI — use restaurar_state_pbi().")
+            return False
         with open(zip_tmp, "wb") as fp:
-            fp.write(dados_zip)
-
+            fp.write(dados)
         if os.path.exists(pasta_destino):
             shutil.rmtree(pasta_destino)
         with zipfile.ZipFile(zip_tmp, "r") as z:
             z.extractall(pasta_destino)
-
         log(f"✅ Sessão {nome_servico} restaurada com sucesso.")
         return True
     except Exception as e:
@@ -135,12 +137,34 @@ def restaurar_sessao_enc(chave_env, arquivo_enc, pasta_destino, nome_servico):
         return False
 
 
+def restaurar_state_pbi(caminho_json):
+    """Descriptografa powerbi_session.enc -> JSON portável (cookies Linux/Windows)."""
+    if not POWERBI_KEY:
+        log("AVISO: POWERBI_KEY não definida.")
+        return False
+    if not os.path.exists(PBI_SESSION_ENC):
+        log(f"AVISO: Arquivo não encontrado: {PBI_SESSION_ENC}")
+        return False
+    try:
+        with open(PBI_SESSION_ENC, "rb") as fp:
+            dados = Fernet(POWERBI_KEY.encode()).decrypt(fp.read())
+        if dados[:1] != b"{":
+            log("❌ powerbi_session.enc no formato ANTIGO (perfil Windows).")
+            log("   Rode de novo: python 00z_gerar_sessao_pbi.py")
+            log("   Commit o novo .enc e atualize POWERBI_KEY se a chave mudou.")
+            return False
+        with open(caminho_json, "wb") as fp:
+            fp.write(dados)
+        n = len(json.loads(dados).get("cookies", []))
+        log(f"✅ Sessão Power BI restaurada ({n} cookies, formato portável).")
+        return True
+    except Exception as e:
+        log(f"❌ Erro ao restaurar sessão Power BI: {e}")
+        return False
+
+
 def restaurar_sessao_zap():
     return restaurar_sessao_enc(WHATSAPP_KEY, SESSION_ENC, USER_DATA_ZAP, "WhatsApp")
-
-
-def restaurar_sessao_pbi():
-    return restaurar_sessao_enc(POWERBI_KEY, PBI_SESSION_ENC, USER_DATA_PBI, "Power BI")
 
 
 def recortar_imagem(caminho_img, x1, y1, x2, y2, nome_final):
@@ -313,8 +337,8 @@ def limpar_campo_pesquisa(page):
         pass
 
 
-def aguardar_powerbi_pronto(page, timeout_s=None):
-    """Aguarda autenticação (SSO + Microsoft) e relatório ficar interativo."""
+def aguardar_powerbi_pronto(page, timeout_s=None, sessao_portatil=False):
+    """Aguarda relatório ficar interativo."""
     if timeout_s is None:
         timeout_s = 300 if IS_GITHUB else 180
 
@@ -335,6 +359,11 @@ def aguardar_powerbi_pronto(page, timeout_s=None):
             ultimo_log_tempo = time.time()
 
         if _url_eh_login(url) or _url_precisa_auth_powerbi(url):
+            if sessao_portatil:
+                raise RuntimeError(
+                    "Sessão expirada ou inválida no GitHub. "
+                    "No PC: python 00z_gerar_sessao_pbi.py → commit powerbi_session.enc → atualize POWERBI_KEY"
+                )
             if tentativas_auth < 3:
                 iniciar_autenticacao(page)
                 tentativas_auth += 1
@@ -401,17 +430,15 @@ def tirar_screenshot_seguro(page, path, tentativas=3):
 def capturar_powerbi():
     log("=== INICIANDO CAPTURA POWER BI ===")
     prints = {"PAULISTA": None, "PIRATININGA": None}
+    pbi_state_path = os.path.join(TEMP_DIR, "powerbi_state.json")
 
     if IS_GITHUB:
-        if not restaurar_sessao_pbi():
-            log("❌ GitHub precisa da sessão exportada do seu PC.")
-            log("   No PC, execute:  python 00z_gerar_sessao_pbi.py")
-            log("   GitHub Secret:    POWERBI_KEY = conteúdo de powerbi_key.txt")
-            log("   Depois:           git add powerbi_session.enc && git push")
-            log("")
-            log("   (PB_USER/PB_PASS não funcionam no GitHub — MFA e SSO bloqueiam.)")
+        if not restaurar_state_pbi(pbi_state_path):
+            log("❌ GitHub precisa da sessão exportada do PC (formato portável).")
+            log("   No PC: python 00z_gerar_sessao_pbi.py")
+            log("   Secret: POWERBI_KEY = conteúdo de powerbi_key.txt")
+            log("   Commit: powerbi_session.enc")
             return prints
-        log("✅ Sessão do PC restaurada — mesmo login, sem pedir senha.")
 
     with sync_playwright() as p:
         args = [
@@ -424,26 +451,37 @@ def capturar_powerbi():
         if not IS_GITHUB:
             args.append("--start-maximized")
 
-        context = p.chromium.launch_persistent_context(
-            USER_DATA_PBI,
-            headless=IS_HEADLESS,
-            args=args,
-            viewport={"width": 1920, "height": 1080},
-            slow_mo=500 if IS_GITHUB else 200,
-            locale="pt-BR",
-            timezone_id="America/Sao_Paulo",
-        )
+        browser = None
+        if IS_GITHUB:
+            browser = p.chromium.launch(headless=True, args=args)
+            context = browser.new_context(
+                storage_state=pbi_state_path,
+                viewport={"width": 1920, "height": 1080},
+                locale="pt-BR",
+                timezone_id="America/Sao_Paulo",
+            )
+            page = context.new_page()
+        else:
+            context = p.chromium.launch_persistent_context(
+                USER_DATA_PBI,
+                headless=False,
+                args=args,
+                viewport={"width": 1920, "height": 1080},
+                slow_mo=200,
+                locale="pt-BR",
+                timezone_id="America/Sao_Paulo",
+            )
+            page = context.pages[0]
 
-        page = context.pages[0]
         agora = datetime.now().strftime("%Y_%m_%d_%H-%M")
 
         try:
             log("Acessando Power BI...")
-            page.goto(url_acesso_powerbi(), timeout=120000)
+            page.goto(URL_POWERBI, timeout=120000)
             log(f"URL após goto: {page.url[:100]}")
             time.sleep(5)
 
-            aguardar_powerbi_pronto(page)
+            aguardar_powerbi_pronto(page, sessao_portatil=IS_GITHUB)
 
             page.get_by_role("tab", name="ELF Hora").click(timeout=60000)
             time.sleep(5)
@@ -485,15 +523,19 @@ def capturar_powerbi():
                 log(f"❌ Erro PIRATININGA: {e}")
 
             context.close()
+            if browser:
+                browser.close()
         except Exception as e:
             log(f"❌ ERRO CRÍTICO: {e}")
             try:
                 erro_path = os.path.join(TEMP_DIR, "PRINT_ERRO_CRITICO.png")
                 page.screenshot(path=erro_path)
                 log(f"📸 Screenshot do erro salvo em: {erro_path}")
-            except:
+            except Exception:
                 pass
             context.close()
+            if browser:
+                browser.close()
 
     return prints
 
