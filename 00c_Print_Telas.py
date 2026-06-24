@@ -27,7 +27,7 @@ def recortar_print(caminho_img, x1, y1, x2, y2, nome_final):
 # --- FUNÇÃO DE CAPTURA POWER BI ---
 def capturar_telas():
     prints_gerados = {"PAULISTA": None, "PIRATININGA": None}
-    URL_DIRETA = "https://app.powerbi.com/groups/33331c64-94a0-477c-b682-9f40a7ac809b/reports/50af2f89-ae57-4503-9423-3d55a9b40778/d2e4bc8486f2794906d4?experience=power-bi"
+    URL_DIRETA = "https://app.powerbi.com/groups/33331c64-94a0-477c-b682-9f40a7ac809b/reports/ff3f2d1f-9433-4060-b072-07b666de8da0/9592b20a8d6c05c3d407?language=pt-BR&experience=power-bi&clientSideAuth=0"
 
     with sync_playwright() as p:
         user_data_dir = r"C:\Temp\dados_navegador_print"
