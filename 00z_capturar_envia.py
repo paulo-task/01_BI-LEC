@@ -46,11 +46,8 @@ POWERBI_PASS = os.getenv("PB_PASS")
 WHATSAPP_KEY = os.getenv("WHATSAPP_KEY", "")
 
 URL_POWERBI = (
-    "https://app.powerbi.com/groups/33331c64-94a0-477c-b682-9f40a7ac809b"
-    "/reports/50af2f89-ae57-4503-9423-3d55a9b40778"
-    "/d2e4bc8486f2794906d4?experience=power-bi"
+    "https://app.powerbi.com/groups/33331c64-94a0-477c-b682-9f40a7ac809b/reports/ff3f2d1f-9433-4060-b072-07b666de8da0/9592b20a8d6c05c3d407?experience=power-bi"
 )
-
 # ─────────────────────────────────────────────
 # UTILITÁRIOS
 # ─────────────────────────────────────────────
@@ -112,6 +109,157 @@ def recortar_imagem(caminho_img, x1, y1, x2, y2, nome_final):
 # CAPTURA POWER BI
 # ─────────────────────────────────────────────
 
+def _url_eh_login(url):
+    return any(h in url for h in ("login.microsoftonline.com", "login.live.com", "login.windows.net"))
+
+
+def tentar_login_powerbi(page):
+    """Preenche credenciais Microsoft — só na tela de login OAuth."""
+    if not _url_eh_login(page.url):
+        return False
+    if not POWERBI_USER or not POWERBI_PASS:
+        log("AVISO: PB_USER/PB_PASS não definidos — login automático indisponível.")
+        return False
+
+    try:
+        # Seletores exclusivos da Microsoft — nunca usar textbox genérico (pega "Pesquisar" do Power BI)
+        email_input = page.locator("#i0116, input[name='loginfmt']").first
+        if not email_input.is_visible(timeout=8000):
+            btn_conta = page.locator("div[role='button'][data-test-id]").first
+            if btn_conta.is_visible(timeout=3000):
+                log("Clicando na conta salva...")
+                btn_conta.click()
+                try:
+                    page.get_by_role("button", name="Sim").click(timeout=5000)
+                except Exception:
+                    pass
+            return True
+
+        log("Fazendo login no Power BI (inserindo email)...")
+        email_input.fill(POWERBI_USER)
+        try:
+            page.locator("#idSIButton9, input[type='submit']").first.click(timeout=3000)
+        except Exception:
+            email_input.press("Enter")
+        time.sleep(5)
+
+        email_input_ms = page.locator("#i0116, input[name='loginfmt']").first
+        if email_input_ms.is_visible(timeout=5000):
+            log("Preenchendo email na tela da Microsoft...")
+            email_input_ms.fill(POWERBI_USER)
+            try:
+                page.locator("#idSIButton9, input[type='submit']").first.click(timeout=3000)
+            except Exception:
+                email_input_ms.press("Enter")
+            time.sleep(3)
+
+        pass_input = page.locator("#i0118, input[name='passwd'], input[type='password']").first
+        if pass_input.is_visible(timeout=15000):
+            log("Preenchendo senha...")
+            pass_input.fill(POWERBI_PASS)
+            time.sleep(1)
+            try:
+                page.locator("#idSIButton9, input[type='submit']").first.click(timeout=3000)
+            except Exception:
+                pass_input.press("Enter")
+
+        try:
+            btn_sim = page.locator("#idSIButton9, input[type='submit']").first
+            if btn_sim.is_visible(timeout=10000):
+                log("Clicando em Sim para manter conectado...")
+                btn_sim.click()
+        except Exception:
+            pass
+        return True
+    except Exception as e:
+        log(f"Login automático falhou: {e}")
+        return False
+
+
+def limpar_campo_pesquisa(page):
+    """Fecha barra de pesquisa do Power BI caso tenha foco ou texto residual."""
+    for _ in range(3):
+        page.keyboard.press("Escape")
+        time.sleep(0.3)
+    try:
+        page.get_by_role("tab", name="ELF Hora").click(timeout=3000)
+    except Exception:
+        pass
+
+
+def aguardar_powerbi_pronto(page, timeout_s=180):
+    """Aguarda sair do OAuth e o relatório ficar interativo."""
+    log("Aguardando relatório Power BI carregar...")
+    inicio = time.time()
+    tentativas_login = 0
+    while time.time() - inicio < timeout_s:
+        if page.is_closed():
+            raise RuntimeError("Navegador fechado durante o carregamento do Power BI")
+
+        url = page.url
+        if _url_eh_login(url):
+            if tentativas_login < 2:
+                log("Sessão expirada — tentando login automático...")
+                tentar_login_powerbi(page)
+                tentativas_login += 1
+            else:
+                log(f"Ainda em login: {url[:80]}...")
+            time.sleep(5)
+            continue
+
+        if "app.powerbi.com" in url:
+            try:
+                page.get_by_role("tab", name="ELF Hora").wait_for(state="visible", timeout=15000)
+                log("Relatório Power BI pronto.")
+                return
+            except Exception:
+                pass
+        time.sleep(3)
+
+    raise TimeoutError(f"Power BI não carregou em {timeout_s}s (URL: {page.url})")
+
+
+def clicar_radio(page, nome):
+    for tentativa in range(1, 4):
+        alvos = [page] + [f for f in page.frames if f != page.main_frame]
+        for alvo in alvos:
+            try:
+                botao = alvo.get_by_role("radio", name=nome)
+                if botao.is_visible(timeout=3000):
+                    botao.click()
+                    return
+            except Exception:
+                continue
+        log(f"Radio '{nome}' não encontrado (tentativa {tentativa}/3)...")
+        time.sleep(3)
+    raise TimeoutError(f"Radio '{nome}' não encontrado após 3 tentativas")
+
+
+def aguardar_visual_atualizado(page, segundos=20):
+    time.sleep(3)
+    try:
+        page.wait_for_load_state("networkidle", timeout=45000)
+    except Exception:
+        pass
+    time.sleep(segundos)
+
+
+def tirar_screenshot_seguro(page, path, tentativas=3):
+    for n in range(1, tentativas + 1):
+        try:
+            if page.is_closed():
+                raise RuntimeError("Navegador foi fechado antes do screenshot")
+            page.screenshot(path=path, full_page=False, timeout=60000)
+            if os.path.getsize(path) > 5000:
+                return
+            log(f"Screenshot muito pequeno (tentativa {n}/{tentativas}), repetindo...")
+        except Exception as e:
+            log(f"Screenshot tentativa {n}/{tentativas} falhou: {e}")
+            if n == tentativas:
+                raise
+        time.sleep(5)
+
+
 def capturar_powerbi():
     log("=== INICIANDO CAPTURA POWER BI ===")
     prints = {"PAULISTA": None, "PIRATININGA": None}
@@ -122,17 +270,17 @@ def capturar_powerbi():
             "--disable-gpu",
             "--disable-dev-shm-usage",
             "--no-sandbox",
+            "--window-size=1920,1080",
         ]
-        if IS_GITHUB:
-            args += ["--window-size=1920,1080"]
+        if not IS_GITHUB:
+            args.append("--start-maximized")
 
         context = p.chromium.launch_persistent_context(
             USER_DATA_PBI,
             headless=IS_HEADLESS,
             args=args,
-            viewport={"width": 1920, "height": 1080} if IS_GITHUB else None,
-            no_viewport=not IS_GITHUB,
-            slow_mo=1000,
+            viewport={"width": 1920, "height": 1080},
+            slow_mo=500 if IS_GITHUB else 200,
             locale="pt-BR",
             timezone_id="America/Sao_Paulo",
         )
@@ -144,100 +292,13 @@ def capturar_powerbi():
             log("Acessando Power BI...")
             page.goto(URL_POWERBI, timeout=120000)
             log(f"URL após goto: {page.url}")
+            time.sleep(5)
 
-            # Login (só se necessário)
-            try:
-                time.sleep(10) # Aguarda redirects iniciais
-                log(f"URL após 10s: {page.url}")
-                # 1. Verifica se pediu o email (tela de login nova ou tela de 'Enter email' do Power BI)
-                email_input = page.locator("input[type='email'], input[name='loginfmt'], input[placeholder='Enter email'], input[placeholder*='email']").first
-                
-                # Se não achar pelos seletores acima, tenta pegar o primeiro textbox na tela
-                if not email_input.is_visible(timeout=5000):
-                    fallback = page.get_by_role("textbox").first
-                    if fallback.is_visible(timeout=2000):
-                        email_input = fallback
-
-                if email_input.is_visible(timeout=5000):
-                    log("Fazendo login no Power BI (inserindo email)...")
-                    if POWERBI_USER:
-                        email_input.fill(POWERBI_USER)
-                    
-                    # Tenta clicar em "Enviar" / "Submit" ou aperta Enter
-                    try:
-                        btn_enviar = page.get_by_role("button", name="Enviar")
-                        if btn_enviar.is_visible(timeout=2000):
-                            btn_enviar.click()
-                        else:
-                            email_input.press("Enter")
-                    except:
-                        email_input.press("Enter")
-                    
-                    # Aguarda para ver se vai para a tela de senha ou se pede email novamente
-                    time.sleep(5)
-                    
-                    # Pode ser que ele tenha redirecionado para a tela oficial da Microsoft e peça o email de novo
-                    email_input_ms = page.locator("input[type='email'], input[name='loginfmt']").first
-                    if email_input_ms.is_visible(timeout=5000):
-                        log("Preenchendo email novamente na tela da Microsoft...")
-                        if POWERBI_USER:
-                            email_input_ms.fill(POWERBI_USER)
-                        email_input_ms.press("Enter")
-                        time.sleep(3)
-                    
-                    log("Aguardando campo de senha...")
-                    pass_input = page.locator("input[type='password'], input[name='passwd']").first
-                    pass_input.wait_for(state="visible", timeout=20000)
-                    
-                    if POWERBI_PASS:
-                        pass_input.fill(POWERBI_PASS)
-                    time.sleep(1)
-                    
-                    try:
-                        btn_entrar = page.get_by_role("button", name="Entrar")
-                        if btn_entrar.is_visible(timeout=2000):
-                            btn_entrar.click()
-                        else:
-                            pass_input.press("Enter")
-                    except:
-                        pass_input.press("Enter")
-                    
-                    # Clica no "Sim" (Continuar conectado)
-                    try:
-                        btn_sim = page.locator("input[type='submit'], button[type='submit'], #idSIButton9").first
-                        if btn_sim.is_visible(timeout=10000):
-                            log("Clicando em Sim para manter conectado...")
-                            btn_sim.click()
-                    except:
-                        pass
-                else:
-                    # 2. Verifica se apareceu a tela de escolher conta já salva
-                    btn_conta = page.locator("div[role='button'][data-test-id]").first
-                    if btn_conta.is_visible(timeout=3000):
-                        log("Clicando na conta salva...")
-                        btn_conta.click()
-                        try:
-                            page.get_by_role("button", name="Sim").click(timeout=5000)
-                        except:
-                            pass
-                    
-                log("Aguardando carregamento pós-login (20s)...")
-                time.sleep(20)
-            except Exception as e:
-                log(f"Aviso de login: não foi necessário ou algo falhou ({e})")
-
-            log("Aguardando carregamento (20s)...")
-            time.sleep(20)
+            aguardar_powerbi_pronto(page)
 
             page.get_by_role("tab", name="ELF Hora").click(timeout=60000)
             time.sleep(5)
-
-            def clicar_radio(nome):
-                botao = page.get_by_role("radio", name=nome)
-                if not botao.is_visible():
-                    botao = page.frame_locator("iframe").first.get_by_role("radio", name=nome)
-                botao.wait_for(state="visible", timeout=20000)
-                botao.click()
+            limpar_campo_pesquisa(page)
 
             # Coordenadas exatas medidas pelo usuário na imagem Full HD (1920x1080)
             X1, Y1, X2, Y2 = 260, 85, 1880, 1055
@@ -245,11 +306,12 @@ def capturar_powerbi():
             # PAULISTA
             try:
                 log("Capturando PAULISTA...")
-                clicar_radio("PAULISTA")
-                time.sleep(20)
+                limpar_campo_pesquisa(page)
+                clicar_radio(page, "PAULISTA")
+                aguardar_visual_atualizado(page)
                 
                 path_temp = os.path.join(TEMP_DIR, f"PRINT_FULL_pau_{agora}.png")
-                page.screenshot(path=path_temp, full_page=False)
+                tirar_screenshot_seguro(page, path_temp)
                 final = recortar_imagem(path_temp, X1, Y1, X2, Y2, f"PRINT_PAULI_{agora}.png")
                 if final:
                     prints["PAULISTA"] = final
@@ -260,11 +322,12 @@ def capturar_powerbi():
             # PIRATININGA
             try:
                 log("Capturando PIRATININGA...")
-                clicar_radio("PIRATININGA")
-                time.sleep(20)
+                limpar_campo_pesquisa(page)
+                clicar_radio(page, "PIRATININGA")
+                aguardar_visual_atualizado(page)
                 
                 path_temp = os.path.join(TEMP_DIR, f"PRINT_FULL_pira_{agora}.png")
-                page.screenshot(path=path_temp, full_page=False)
+                tirar_screenshot_seguro(page, path_temp)
                 final = recortar_imagem(path_temp, X1, Y1, X2, Y2, f"PRINT_PIRAT_{agora}.png")
                 if final:
                     prints["PIRATININGA"] = final
@@ -312,17 +375,76 @@ def aguardar_whatsapp_pronto(page, timeout_ms=120000):
             )
         try:
             if page.locator("#pane-side").first.is_visible(timeout=2000):
-                return
+                break
         except Exception:
             pass
         try:
             busca = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
             if busca.first.is_visible(timeout=2000):
-                return
+                break
         except Exception:
             pass
         time.sleep(2)
-    raise TimeoutError(f"WhatsApp não carregou em {timeout_ms}ms")
+    else:
+        raise TimeoutError(f"WhatsApp não carregou em {timeout_ms}ms")
+
+    aguardar_sincronizacao_criptografia(page)
+
+
+def aguardar_sincronizacao_criptografia(page):
+    """
+    Evita 'Aguardando mensagem' — ocorre quando a mídia é enviada
+    antes das chaves de criptografia terminarem de sincronizar.
+    """
+    log("Aguardando sincronização de criptografia do WhatsApp...")
+    try:
+        page.wait_for_load_state("networkidle", timeout=90000)
+    except Exception:
+        pass
+
+    segundos = 60 if IS_GITHUB else 25
+    log(f"Estabilizando sessão ({segundos}s)...")
+    time.sleep(segundos)
+
+
+def fechar_dialogos_whatsapp(page):
+    """Fecha avisos comuns que bloqueiam o envio."""
+    for texto in ("OK", "Continuar", "Entendi"):
+        try:
+            btn = page.get_by_role("button", name=texto)
+            if btn.first.is_visible(timeout=1000):
+                btn.first.click()
+                time.sleep(0.5)
+        except Exception:
+            pass
+
+
+def confirmar_envio_midia(page):
+    """Aguarda a pré-visualização carregar e clica em Enviar (mais confiável que Enter)."""
+    time.sleep(3)
+
+    seletores_enviar = [
+        "span[data-icon='send']",
+        "button[aria-label='Enviar']",
+        "button[aria-label='Send']",
+    ]
+    for sel in seletores_enviar:
+        try:
+            btn = page.locator(sel).last
+            if btn.is_visible(timeout=8000):
+                btn.click()
+                log("Botão Enviar clicado na pré-visualização.")
+                break
+        except Exception:
+            continue
+    else:
+        page.keyboard.press("Enter")
+        log("Enviado via Enter (fallback).")
+
+    # Tempo extra para upload e criptografia da mídia
+    espera = 20 if IS_GITHUB else 12
+    log(f"Aguardando confirmação de envio ({espera}s)...")
+    time.sleep(espera)
 
 
 def enviar_whatsapp(prints):
@@ -369,7 +491,8 @@ def enviar_whatsapp(prints):
             page.goto("https://web.whatsapp.com", timeout=120000, wait_until="domcontentloaded")
             log("Aguardando carregamento da tela principal...")
             aguardar_whatsapp_pronto(page, timeout_ms=120000)
-            log("✅ WhatsApp carregado")
+            fechar_dialogos_whatsapp(page)
+            log("✅ WhatsApp carregado e sincronizado")
 
             for regra in regras:
                 arquivo = regra["arquivo"]
@@ -381,7 +504,7 @@ def enviar_whatsapp(prints):
                         log(f"✅ Enviado para: {grupo_nome}")
                     else:
                         log(f"❌ Falha ao enviar para: {grupo_nome}")
-                    time.sleep(5)
+                    time.sleep(15 if IS_GITHUB else 8)
 
             context.close()
         except Exception as e:
@@ -436,22 +559,22 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
         # Tenta achar a caixa de texto de conversa para garantir que abriu
         try:
             page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=10000)
-        except:
-            pass # Ignora se não achar pelo test-id, pois o grupo pode ter aberto mesmo assim
-            
+        except Exception:
+            pass
+
+        time.sleep(2)
         log(f"✅ Chat carregado: {grupo_nome}")
         
         # Clique em Anexar
         btn_anexar = page.get_by_role("button", name="Anexar")
         if not btn_anexar.is_visible(timeout=5000):
-             # Fallback para ícone
              btn_anexar = page.locator("span[data-icon='clip'], span[data-icon='plus']").first
              
         btn_anexar.wait_for(state="visible", timeout=10000)
         btn_anexar.click()
         time.sleep(1)
 
-        # Seleção do arquivo via Fotos e vídeos
+        # Fotos e vídeos — aguarda pré-visualização antes de enviar
         with page.expect_file_chooser() as fc_info:
             opcao = page.get_by_role("menuitem", name="Fotos e vídeos")
             if not opcao.is_visible(timeout=3000):
@@ -460,12 +583,7 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
             
         fc_info.value.set_files(arquivo)
         log(f"Arquivo selecionado: {arquivo}")
-        time.sleep(2)
-
-        # Envia via tecla Enter (mais robusto que clicar na seta de enviar)
-        page.keyboard.press("Enter")
-        
-        time.sleep(8) 
+        confirmar_envio_midia(page)
         return True
         
     except Exception as e:
