@@ -63,7 +63,7 @@ def capturar_telas():
                 botao.wait_for(state="visible", timeout=20000)
                 botao.click()
 
-            X1, Y1, X2, Y2 = 450, 110, 1743, 878
+            X1, Y1, X2, Y2 = 450, 95, 1790, 890
 
             # Paulista
             salvar_log("Filtrando PAULISTA...")

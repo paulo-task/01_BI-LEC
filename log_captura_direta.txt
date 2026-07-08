@@ -338,3 +338,32 @@ Call log:
 
 [24/06/2026 10:50:05] - === FIM DA OPERAÇÃO ===
 
+[08/07/2026 17:41:45] - === INÍCIO DA OPERAÇÃO ===
+[08/07/2026 17:41:48] - Iniciando acesso direto ao Power BI...
+[08/07/2026 17:41:53] - Aguardando carregamento (20s)...
+[08/07/2026 17:42:19] - Filtrando PAULISTA...
+[08/07/2026 17:42:39] - ERRO POWER BI: Locator.wait_for: Timeout 20000ms exceeded.
+Call log:
+  - waiting for locator("iframe").first.content_frame.get_by_role("radio", name="PAULISTA") to be visible
+
+[08/07/2026 17:42:49] - ERRO CRÍTICO NO WHATSAPP: Locator.wait_for: Target page, context or browser has been closed
+Call log:
+  - waiting for get_by_role("textbox", name="Pesquisar ou começar uma nova") to be visible
+    - waiting for" https://web.whatsapp.com/?post_logout=1" navigation to finish...
+    - navigated to "https://web.whatsapp.com/?post_logout=1"
+
+[08/07/2026 17:42:49] - === FIM DA OPERAÇÃO ===
+
+[08/07/2026 17:43:23] - === INÍCIO DA OPERAÇÃO ===
+[08/07/2026 17:43:24] - Iniciando acesso direto ao Power BI...
+[08/07/2026 17:43:29] - Aguardando carregamento (20s)...
+[08/07/2026 17:43:56] - Filtrando PAULISTA...
+[08/07/2026 17:44:16] - Recorte concluído: PRINT_PAULI_2026_07_08_17-43.png
+[08/07/2026 17:44:16] - Filtrando PIRATININGA...
+[08/07/2026 17:44:37] - Recorte concluído: PRINT_PIRAT_2026_07_08_17-43.png
+[08/07/2026 17:44:47] - ERRO CRÍTICO NO WHATSAPP: Locator.wait_for: Target page, context or browser has been closed
+Call log:
+  - waiting for get_by_role("textbox", name="Pesquisar ou começar uma nova") to be visible
+
+[08/07/2026 17:44:47] - === FIM DA OPERAÇÃO ===
+
