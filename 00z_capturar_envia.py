@@ -489,7 +489,7 @@ def capturar_powerbi():
 
             # Coordenadas exatas medidas pelo usuário na imagem Full HD (1920x1080)
             # X1, Y1, X2, Y2 = 260, 85, 1880, 1055
-            X1, Y1, X2, Y2 = 260, 95, 1760, 1030
+            X1, Y1, X2, Y2 = 260, 105, 1740, 1020
 
             # PAULISTA
             try:
