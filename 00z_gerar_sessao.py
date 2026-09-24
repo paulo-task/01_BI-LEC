@@ -99,8 +99,12 @@ def main():
         try:
             page.wait_for_selector("#pane-side", timeout=120000)
             print("[OK] WhatsApp autenticado com sucesso!")
-            print("   Aguardando 5s para estabilizar a sessao...")
-            time.sleep(5)
+            print("   Aguardando 20s para descarregar o IndexedDB e estabilizar as chaves da sessao...")
+            try:
+                page.wait_for_load_state("networkidle", timeout=15000)
+            except Exception:
+                pass
+            time.sleep(20)
         except Exception:
             print("[ERRO] Timeout -- QR Code nao foi escaneado a tempo.")
             context.close()

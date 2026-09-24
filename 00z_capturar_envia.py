@@ -558,24 +558,39 @@ def whatsapp_pediu_qr(page):
 
 def aguardar_whatsapp_pronto(page, timeout_ms=120000):
     inicio = time.time()
+    qr_detectado_desde = None
+
     while (time.time() - inicio) * 1000 < timeout_ms:
-        if whatsapp_pediu_qr(page):
-            raise RuntimeError(
-                "Sessão WhatsApp expirada — QR Code detectado. "
-                "No PC, rode: python 00z_gerar_sessao.py, escaneie o QR, "
-                "commite whatsapp_session.enc e atualize o Secret WHATSAPP_KEY."
-            )
+        # Verifica se os elementos da interface logada já apareceram
         try:
-            if page.locator("#pane-side").first.is_visible(timeout=2000):
+            if page.locator("#pane-side").first.is_visible(timeout=1500):
+                log("Painel de conversas (#pane-side) detectado!")
                 break
         except Exception:
             pass
+
         try:
             busca = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
-            if busca.first.is_visible(timeout=2000):
+            if busca.first.is_visible(timeout=1500):
+                log("Barra de pesquisa do WhatsApp detectada!")
                 break
         except Exception:
             pass
+
+        # Verifica QR Code com tolerância de 25 segundos (evita falso positivo durante carregamento do cache/IndexedDB)
+        if whatsapp_pediu_qr(page):
+            if qr_detectado_desde is None:
+                qr_detectado_desde = time.time()
+                log("Elemento de QR Code visível, aguardando restauração da sessão...")
+            elif time.time() - qr_detectado_desde > 25:
+                raise RuntimeError(
+                    "Sessão WhatsApp expirada — QR Code persistiu por mais de 25s. "
+                    "No PC, rode: python 00z_gerar_sessao.py, escaneie o QR, "
+                    "commite whatsapp_session.enc e atualize o Secret WHATSAPP_KEY."
+                )
+        else:
+            qr_detectado_desde = None
+
         time.sleep(2)
     else:
         raise TimeoutError(f"WhatsApp não carregou em {timeout_ms}ms")
