@@ -29,7 +29,7 @@ STATE_TMP = os.path.join(_SCRIPT_DIR, "powerbi_state_tmp.json")
 
 URL_POWERBI = (
     "https://app.powerbi.com/groups/33331c64-94a0-477c-b682-9f40a7ac809b/reports/"
-    "ff3f2d1f-9433-4060-b072-07b666de8da0/9592b20a8d6c05c3d407?experience=power-bi"
+    "e9716e76-44e0-4a32-a12d-7140a1c8f6a8/9592b20a8d6c05c3d407?experience=power-bi"
 )
 
 

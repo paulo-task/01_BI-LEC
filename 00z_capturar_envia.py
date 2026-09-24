@@ -53,7 +53,7 @@ POWERBI_KEY  = (os.getenv("POWERBI_KEY") or "").strip()
 
 URL_POWERBI = (
     "https://app.powerbi.com/groups/33331c64-94a0-477c-b682-9f40a7ac809b/reports/"
-    "ff3f2d1f-9433-4060-b072-07b666de8da0/9592b20a8d6c05c3d407?experience=power-bi"
+    "e9716e76-44e0-4a32-a12d-7140a1c8f6a8/9592b20a8d6c05c3d407?experience=power-bi"
 )
 PBI_CLIENT_ID = "871c010f-5e61-4fb1-83ac-98610a7e9110"
 PBI_REDIRECT_URI = "https://app.powerbi.com/signin"
