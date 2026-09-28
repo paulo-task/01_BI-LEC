@@ -577,14 +577,14 @@ def aguardar_whatsapp_pronto(page, timeout_ms=120000):
         except Exception:
             pass
 
-        # Verifica QR Code com tolerância de 25 segundos (evita falso positivo durante carregamento do cache/IndexedDB)
+        # Verifica QR Code com tolerância de 80 segundos (tempo necessário para o runner restaurar o IndexedDB/chaves)
         if whatsapp_pediu_qr(page):
             if qr_detectado_desde is None:
                 qr_detectado_desde = time.time()
-                log("Elemento de QR Code visível, aguardando restauração da sessão...")
-            elif time.time() - qr_detectado_desde > 25:
+                log("Elemento de QR Code visível, aguardando restauração e sincronização da sessão...")
+            elif time.time() - qr_detectado_desde > 80:
                 raise RuntimeError(
-                    "Sessão WhatsApp expirada — QR Code persistiu por mais de 25s. "
+                    "Sessão WhatsApp expirada — QR Code persistiu por mais de 80s. "
                     "No PC, rode: python 00z_gerar_sessao.py, escaneie o QR, "
                     "commite whatsapp_session.enc e atualize o Secret WHATSAPP_KEY."
                 )

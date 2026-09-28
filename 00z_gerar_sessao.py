@@ -78,6 +78,13 @@ def main():
     print("=" * 60)
     print(f"\nDiretorio de sessao: {USER_DATA_ZAP}\n")
 
+    # Limpa pasta anterior se desejar gerar uma sessao 100% limpa
+    if os.path.exists(USER_DATA_ZAP):
+        try:
+            shutil.rmtree(USER_DATA_ZAP)
+        except Exception:
+            pass
+
     Path(USER_DATA_ZAP).mkdir(parents=True, exist_ok=True)
 
     print("[>>] Abrindo WhatsApp Web -- escaneie o QR Code...")
@@ -85,26 +92,36 @@ def main():
     print("   O script fecha o navegador automaticamente.\n")
 
     with sync_playwright() as p:
+        args_zap = [
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-blink-features=AutomationControlled",
+            "--disable-gpu",
+            "--window-size=1920,1080",
+        ]
         context = p.chromium.launch_persistent_context(
             USER_DATA_ZAP,
             headless=False,
-            args=["--start-maximized"],
-            no_viewport=True,
-            slow_mo=500,
+            args=args_zap,
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            viewport={"width": 1920, "height": 1080},
+            slow_mo=300,
+            locale="pt-BR",
+            timezone_id="America/Sao_Paulo",
         )
         page = context.pages[0]
-        page.goto("https://web.whatsapp.com", timeout=60000)
+        page.goto("https://web.whatsapp.com", timeout=90000)
 
-        print("[...] Aguardando autenticacao (ate 120s)...")
+        print("[...] Aguardando autenticacao (ate 180s)...")
         try:
-            page.wait_for_selector("#pane-side", timeout=120000)
-            print("[OK] WhatsApp autenticado com sucesso!")
-            print("   Aguardando 20s para descarregar o IndexedDB e estabilizar as chaves da sessao...")
+            page.wait_for_selector("#pane-side", timeout=180000)
+            print("\n[OK] WhatsApp autenticado com sucesso!")
+            print("   Aguardando 30s para sincronizar e gravar todas as chaves no IndexedDB...")
             try:
-                page.wait_for_load_state("networkidle", timeout=15000)
+                page.wait_for_load_state("networkidle", timeout=20000)
             except Exception:
                 pass
-            time.sleep(20)
+            time.sleep(30)
         except Exception:
             print("[ERRO] Timeout -- QR Code nao foi escaneado a tempo.")
             context.close()
