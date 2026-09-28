@@ -133,7 +133,10 @@ def restaurar_sessao_enc(chave_env, arquivo_enc, pasta_destino, nome_servico):
         log(f"✅ Sessão {nome_servico} restaurada com sucesso.")
         return True
     except Exception as e:
-        log(f"❌ Erro ao restaurar sessão {nome_servico}: {e}")
+        erro_msg = str(e) or type(e).__name__
+        log(f"❌ Erro ao restaurar sessão {nome_servico}: {erro_msg}")
+        if "InvalidToken" in erro_msg or not str(e):
+            log("   Possível causa: A chave Secret no GitHub não corresponde ao arquivo .enc commitado.")
         return False
 
 
