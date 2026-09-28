@@ -697,11 +697,19 @@ def enviar_whatsapp(prints):
             "--window-size=1920,1080",
         ]
 
+        # Determina o User-Agent dinâmico da versão instalada do Chromium (sem marcação headless)
+        b_temp = p.chromium.launch(args=["--no-sandbox"])
+        raw_ua = b_temp.new_page().evaluate("navigator.userAgent")
+        b_temp.close()
+        ua_clean = re.sub(r"HeadlessChrome/(\d+[\.\d]*)", r"Chrome/\1", raw_ua)
+        ua_clean = re.sub(r"\(.*?\)", "(Windows NT 10.0; Win64; x64)", ua_clean, count=1)
+        log(f"User-Agent utilizado no WhatsApp: {ua_clean}")
+
         context = p.chromium.launch_persistent_context(
             USER_DATA_ZAP,
             headless=False,
             args=args_zap,
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            user_agent=ua_clean,
             viewport={"width": 1920, "height": 1080},
             slow_mo=500,
             locale="pt-BR",

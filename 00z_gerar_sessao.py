@@ -92,6 +92,15 @@ def main():
     print("   O script fecha o navegador automaticamente.\n")
 
     with sync_playwright() as p:
+        # Determina o User-Agent dinâmico da versão instalada do Chromium (sem marcação headless)
+        b_temp = p.chromium.launch(args=["--no-sandbox"])
+        raw_ua = b_temp.new_page().evaluate("navigator.userAgent")
+        b_temp.close()
+        import re
+        ua_clean = re.sub(r"HeadlessChrome/(\d+[\.\d]*)", r"Chrome/\1", raw_ua)
+        ua_clean = re.sub(r"\(.*?\)", "(Windows NT 10.0; Win64; x64)", ua_clean, count=1)
+        print(f"[UA] User-Agent: {ua_clean}\n")
+
         args_zap = [
             "--no-sandbox",
             "--disable-dev-shm-usage",
@@ -103,7 +112,7 @@ def main():
             USER_DATA_ZAP,
             headless=False,
             args=args_zap,
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            user_agent=ua_clean,
             viewport={"width": 1920, "height": 1080},
             slow_mo=300,
             locale="pt-BR",
