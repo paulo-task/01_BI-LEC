@@ -628,23 +628,37 @@ def fechar_dialogos_whatsapp(page):
 
 def confirmar_envio_midia(page):
     """Aguarda a pré-visualização carregar e clica em Enviar (mais confiável que Enter)."""
-    time.sleep(3)
+    time.sleep(2)
+
+    # Aguarda o modal de pré-visualização da imagem estar visível
+    try:
+        page.locator("div[role='dialog'], [data-testid='media-preview'], img[src*='blob:']").first.wait_for(state="visible", timeout=15000)
+        time.sleep(2)
+    except Exception:
+        pass
 
     seletores_enviar = [
+        "[data-testid='send']",
         "span[data-icon='send']",
+        "div[aria-label='Enviar'][role='button']",
         "button[aria-label='Enviar']",
         "button[aria-label='Send']",
+        "div[role='button']:has(span[data-icon='send'])",
+        "span[data-icon='send-refreshed']",
     ]
+    enviado = False
     for sel in seletores_enviar:
         try:
             btn = page.locator(sel).last
-            if btn.is_visible(timeout=8000):
+            if btn.is_visible(timeout=4000):
                 btn.click()
-                log("Botão Enviar clicado na pré-visualização.")
+                log(f"Botão Enviar clicado na pré-visualização ({sel}).")
+                enviado = True
                 break
         except Exception:
             continue
-    else:
+
+    if not enviado:
         page.keyboard.press("Enter")
         log("Enviado via Enter (fallback).")
 
@@ -667,7 +681,7 @@ def enviar_whatsapp(prints):
             return
 
     regras = [
-        {"arquivo": prints["PAULISTA"],    "grupos": ["Gestão CPFL Paulista _ UEN 175"]},
+        {"arquivo": prints["PAULISTA"],    "grupos": ["Gestão CPFL Paulista _ UEN 175", "Gestão CPFL Paulista"]},
         {"arquivo": prints["PIRATININGA"], "grupos": ["Gestão CPFL Piratininga", "Informativos Administrativo Sorocaba"]},
     ]
 
@@ -706,12 +720,22 @@ def enviar_whatsapp(prints):
                 if not arquivo or not os.path.exists(arquivo):
                     log(f"⚠️  Arquivo não encontrado, pulando")
                     continue
-                for grupo_nome in regra["grupos"]:
+                grupos_alvo = regra["grupos"]
+                # Se for lista de alternativas para o mesmo relatório, tenta até um dar certo ou percorre todos
+                enviado_para = set()
+                for grupo_nome in grupos_alvo:
+                    if grupo_nome in enviado_para:
+                        continue
                     if enviar_para_grupo(page, arquivo, grupo_nome):
                         log(f"✅ Enviado para: {grupo_nome}")
+                        enviado_para.add(grupo_nome)
+                        time.sleep(15 if IS_GITHUB else 8)
+                        # Se era o grupo alternativo da Paulista, não precisa enviar repetido
+                        if "Paulista" in grupo_nome:
+                            break
                     else:
                         log(f"❌ Falha ao enviar para: {grupo_nome}")
-                    time.sleep(15 if IS_GITHUB else 8)
+                        time.sleep(3)
 
             context.close()
         except Exception as e:
@@ -733,7 +757,6 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
             page.keyboard.press("Escape")
             time.sleep(0.3)
         
-        # Usa atalho Ctrl+F para garantir foco na barra de busca
         time.sleep(1)
         
         # Tenta localizar a barra de pesquisa
@@ -744,7 +767,6 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
             time.sleep(1)
             search_box = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
             
-        # Se ainda não achar, usa um seletor genérico
         if not search_box.is_visible(timeout=2000):
             search_box = page.locator("div[contenteditable='true'], [role='textbox']").first
         
@@ -757,39 +779,66 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
         page.keyboard.press("Backspace")
         time.sleep(0.3)
         search_box.fill(grupo_nome)
-        time.sleep(3)
+        time.sleep(2)
         
-        # Clica no grupo encontrado nos resultados
-        page.get_by_text(grupo_nome, exact=False).first.click()
-        time.sleep(3)
-        
-        # Tenta achar a caixa de texto de conversa para garantir que abriu
+        # Clica no grupo encontrado no painel de conversas (#pane-side) para evitar clicar na própria barra de busca
+        chat_aberto = False
         try:
-            page.get_by_test_id("conversation-compose-box-input").wait_for(state="visible", timeout=10000)
+            # Procura item de lista ou título no #pane-side correspondente
+            item_chat = page.locator(f"#pane-side span[title*='{grupo_nome}'], #pane-side div[role='listitem']:has-text('{grupo_nome}')").first
+            if item_chat.is_visible(timeout=3000):
+                item_chat.click()
+                chat_aberto = True
         except Exception:
             pass
 
-        time.sleep(2)
+        if not chat_aberto:
+            # Pressiona Enter para abrir o primeiro resultado da busca
+            page.keyboard.press("Enter")
+            time.sleep(2)
+
+        # Confirma se o chat abriu verificando o campo de mensagem
+        try:
+            page.locator("[data-testid='conversation-compose-box-input'], footer div[contenteditable='true'], footer [role='textbox']").first.wait_for(state="visible", timeout=10000)
+        except Exception:
+            pass
+
+        time.sleep(1)
         log(f"✅ Chat carregado: {grupo_nome}")
         
-        # Clique em Anexar
-        btn_anexar = page.get_by_role("button", name="Anexar")
-        if not btn_anexar.is_visible(timeout=5000):
-             btn_anexar = page.locator("span[data-icon='clip'], span[data-icon='plus']").first
-             
-        btn_anexar.wait_for(state="visible", timeout=10000)
-        btn_anexar.click()
-        time.sleep(1)
+        # Upload do arquivo
+        # 1. Tenta envio direto pelo input file se já estiver no DOM
+        input_file = page.locator("input[type='file'][accept*='image'], input[type='file']").first
+        arquivo_anexado = False
+        try:
+            if input_file.count() > 0:
+                input_file.set_input_files(arquivo)
+                arquivo_anexado = True
+                log("Arquivo anexado diretamente via input[type='file'].")
+        except Exception:
+            arquivo_anexado = False
 
-        # Fotos e vídeos — aguarda pré-visualização antes de enviar
-        with page.expect_file_chooser() as fc_info:
-            opcao = page.get_by_role("menuitem", name="Fotos e vídeos")
-            if not opcao.is_visible(timeout=3000):
-                 opcao = page.locator("li:has-text('Fotos e vídeos'), li:has-text('Galeria')").first
-            opcao.click()
-            
-        fc_info.value.set_files(arquivo)
-        log(f"Arquivo selecionado: {arquivo}")
+        if not arquivo_anexado:
+            # 2. Abre o menu Anexar
+            btn_anexar = page.locator("button[aria-label='Anexar'], button[title='Anexar'], span[data-icon='plus'], span[data-icon='attach-menu-plus'], span[data-icon='clip'], div[role='button'][title='Anexar']").first
+            btn_anexar.wait_for(state="visible", timeout=10000)
+            btn_anexar.click()
+            time.sleep(1)
+
+            # Tenta set_input_files após abrir o menu
+            try:
+                input_file = page.locator("input[type='file'][accept*='image'], input[type='file']").first
+                input_file.set_input_files(arquivo)
+                arquivo_anexado = True
+                log("Arquivo anexado após abrir menu de anexo.")
+            except Exception:
+                # Fallback: expect_file_chooser
+                with page.expect_file_chooser(timeout=10000) as fc_info:
+                    opcao = page.locator("li:has-text('Fotos e vídeos'), li:has-text('Galeria'), [data-icon='image-gallery']").first
+                    opcao.click()
+                fc_info.value.set_files(arquivo)
+                log("Arquivo anexado via file chooser.")
+
         confirmar_envio_midia(page)
         return True
         
@@ -808,8 +857,6 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
         # Tenta limpar a tela caso falhe
         for _ in range(5):
             page.keyboard.press("Escape")
-            time.sleep(0.5)
-            
         return False
 
 
