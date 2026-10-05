@@ -580,14 +580,14 @@ def aguardar_whatsapp_pronto(page, timeout_ms=120000):
         except Exception:
             pass
 
-        # Verifica QR Code com tolerância de 80 segundos (tempo necessário para o runner restaurar o IndexedDB/chaves)
+        # Verifica QR Code com tolerância de 150 segundos (tempo necessário para o runner restaurar o IndexedDB/chaves)
         if whatsapp_pediu_qr(page):
             if qr_detectado_desde is None:
                 qr_detectado_desde = time.time()
                 log("Elemento de QR Code visível, aguardando restauração e sincronização da sessão...")
-            elif time.time() - qr_detectado_desde > 80:
+            elif time.time() - qr_detectado_desde > 150:
                 raise RuntimeError(
-                    "Sessão WhatsApp expirada — QR Code persistiu por mais de 80s. "
+                    "Sessão WhatsApp expirada — QR Code persistiu por mais de 150s. "
                     "No PC, rode: python 00z_gerar_sessao.py, escaneie o QR, "
                     "commite whatsapp_session.enc e atualize o Secret WHATSAPP_KEY."
                 )
@@ -695,6 +695,9 @@ def enviar_whatsapp(prints):
             "--disable-blink-features=AutomationControlled",
             "--disable-gpu",
             "--window-size=1920,1080",
+            "--disable-features=IsolateOrigins,site-per-process",
+            "--disable-setuid-sandbox",
+            "--disable-software-rasterizer",
         ]
 
         # Determina o User-Agent dinâmico da versão instalada do Chromium (sem marcação headless)

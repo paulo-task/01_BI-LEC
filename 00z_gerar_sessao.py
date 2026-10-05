@@ -125,12 +125,35 @@ def main():
         try:
             page.wait_for_selector("#pane-side", timeout=180000)
             print("\n[OK] WhatsApp autenticado com sucesso!")
-            print("   Aguardando 30s para sincronizar e gravar todas as chaves no IndexedDB...")
+            print("   Aguardando sincronizacao inicial (30s)...")
             try:
-                page.wait_for_load_state("networkidle", timeout=20000)
+                page.wait_for_load_state("networkidle", timeout=30000)
             except Exception:
                 pass
             time.sleep(30)
+
+            # Verifica se o localStorage do WhatsApp já tem as chaves de sessão
+            print("   Verificando persistencia da sessao no localStorage...")
+            for tentativa in range(6):  # até 60s extras de espera
+                try:
+                    tem_sessao = page.evaluate("""() => {
+                        try {
+                            const keys = Object.keys(localStorage);
+                            return keys.some(k => k.startsWith('WANoiseInfo') || (k.startsWith('W') && localStorage[k] && localStorage[k].length > 10));
+                        } catch(e) { return false; }
+                    }""")
+                    if tem_sessao:
+                        print(f"   [OK] Sessao confirmada no localStorage (tentativa {tentativa+1})")
+                        break
+                    else:
+                        print(f"   [...] Aguardando chaves de sessao... ({tentativa+1}/6)")
+                        time.sleep(10)
+                except Exception:
+                    time.sleep(10)
+
+            # Garante 15s extras para flush do IndexedDB no disco
+            print("   Aguardando flush final do IndexedDB no disco (15s)...")
+            time.sleep(15)
         except Exception:
             print("[ERRO] Timeout -- QR Code nao foi escaneado a tempo.")
             context.close()
