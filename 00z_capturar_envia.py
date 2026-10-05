@@ -559,35 +559,49 @@ def whatsapp_pediu_qr(page):
     return False
 
 
-def aguardar_whatsapp_pronto(page, timeout_ms=120000):
+def aguardar_whatsapp_pronto(page, timeout_ms=240000):
     inicio = time.time()
     qr_detectado_desde = None
 
     while (time.time() - inicio) * 1000 < timeout_ms:
         # Verifica se os elementos da interface logada já apareceram
-        try:
-            if page.locator("#pane-side").first.is_visible(timeout=1500):
-                log("Painel de conversas (#pane-side) detectado!")
-                break
-        except Exception:
-            pass
+        seletores_logado = [
+            "#pane-side",
+            "div[aria-label*='Conversas']",
+            "div[aria-label*='Chats']",
+            "[data-testid='chat-list']",
+            "div[role='grid']",
+            "header [data-testid='chat']",
+            "header [data-testid='menu-bar']",
+        ]
+        logado = False
+        for sel in seletores_logado:
+            try:
+                if page.locator(sel).first.is_visible(timeout=1000):
+                    log(f"Interface logada detectada via seletor: {sel}!")
+                    logado = True
+                    break
+            except Exception:
+                pass
+        if logado:
+            break
 
         try:
-            busca = page.get_by_role("textbox", name="Pesquisar ou começar uma nova")
-            if busca.first.is_visible(timeout=1500):
+            busca = page.locator("div[contenteditable='true'][role='textbox'], [data-testid='chat-list-search']").first
+            if busca.is_visible(timeout=1000):
                 log("Barra de pesquisa do WhatsApp detectada!")
                 break
         except Exception:
             pass
 
-        # Verifica QR Code com tolerância de 150 segundos (tempo necessário para o runner restaurar o IndexedDB/chaves)
+        # Verifica QR Code com tolerância de 180 segundos (tempo necessário para o runner restaurar o IndexedDB/chaves)
         if whatsapp_pediu_qr(page):
             if qr_detectado_desde is None:
                 qr_detectado_desde = time.time()
                 log("Elemento de QR Code visível, aguardando restauração e sincronização da sessão...")
-            elif time.time() - qr_detectado_desde > 150:
+            elif time.time() - qr_detectado_desde > 180:
                 raise RuntimeError(
-                    "Sessão WhatsApp expirada — QR Code persistiu por mais de 150s. "
+                    "Sessão WhatsApp expirada — QR Code persistiu por mais de 180s. "
                     "No PC, rode: python 00z_gerar_sessao.py, escaneie o QR, "
                     "commite whatsapp_session.enc e atualize o Secret WHATSAPP_KEY."
                 )
@@ -725,7 +739,7 @@ def enviar_whatsapp(prints):
             log("Abrindo WhatsApp Web...")
             page.goto("https://web.whatsapp.com", timeout=120000, wait_until="domcontentloaded")
             log("Aguardando carregamento da tela principal...")
-            aguardar_whatsapp_pronto(page, timeout_ms=120000)
+            aguardar_whatsapp_pronto(page, timeout_ms=240000)
             fechar_dialogos_whatsapp(page)
             log("✅ WhatsApp carregado e sincronizado")
 
