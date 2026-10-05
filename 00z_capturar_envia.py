@@ -490,9 +490,9 @@ def capturar_powerbi():
             time.sleep(5)
             limpar_campo_pesquisa(page)
 
-            # Coordenadas exatas medidas pelo usuário na imagem Full HD (1920x1080)
-            # X1, Y1, X2, Y2 = 260, 85, 1880, 1055
-            X1, Y1, X2, Y2 = 260, 85, 1880, 1055
+            # Coordenadas exatas do painel Power BI (1920x1080)
+            # Elimina menu lateral esquerdo, barra superior, painel de Filtros a direita e rodape vazio
+            X1, Y1, X2, Y2 = 260, 105, 1715, 1000
 
             # PAULISTA
             try:
@@ -841,36 +841,40 @@ def enviar_para_grupo(page, arquivo, grupo_nome):
         # Upload do arquivo como imagem/foto (evita enviar como miniatura de documento)
         arquivo_anexado = False
         try:
-            # 1. Abre o menu Anexar para instanciar o input específico de imagens
+            # 1. Abre o menu Anexar
             btn_anexar = page.locator("button[aria-label='Anexar'], button[title='Anexar'], span[data-icon='plus'], span[data-icon='attach-menu-plus'], span[data-icon='clip'], div[role='button'][title='Anexar']").first
             btn_anexar.wait_for(state="visible", timeout=10000)
             btn_anexar.click()
             time.sleep(1)
 
-            # 2. Localiza o input file de imagem (accept="image/*" criado pelo menu de anexo)
-            input_imagem = page.locator("input[type='file'][accept*='image']").first
-            if input_imagem.count() > 0:
-                input_imagem.set_input_files(arquivo)
+            # 2. Seleção nativa via Fotos e vídeos (método comprovado do script original)
+            try:
+                with page.expect_file_chooser(timeout=6000) as fc_info:
+                    opcao = page.locator("li:has-text('Fotos e vídeos'), [role='menuitem']:has-text('Fotos e vídeos'), span:has-text('Fotos e vídeos'), li:has-text('Galeria'), [data-icon='image-gallery']").first
+                    opcao.click()
+                fc_info.value.set_files(arquivo)
                 arquivo_anexado = True
-                log("Arquivo anexado como foto/vídeo via input[accept*='image'].")
+                log("Arquivo anexado via Fotos e vídeos (file chooser).")
+            except Exception as e_fc:
+                log(f"File chooser via menuitem não acionado ({e_fc}), tentando input accept*='image'...")
+                input_imagem = page.locator("input[type='file'][accept*='image']").first
+                if input_imagem.count() > 0:
+                    input_imagem.set_input_files(arquivo)
+                    arquivo_anexado = True
+                    log("Arquivo anexado via input[accept*='image'].")
         except Exception as e:
             log(f"Tentativa de anexo via menu falhou: {e}")
             arquivo_anexado = False
 
         if not arquivo_anexado:
-            # Fallback 1: seletor de input direto qualquer
+            # Fallback: seletor genérico de input file
             try:
                 input_gen = page.locator("input[type='file']").last
                 input_gen.set_input_files(arquivo)
                 arquivo_anexado = True
                 log("Arquivo anexado via input[type='file'] fallback.")
-            except Exception:
-                # Fallback 2: expect_file_chooser
-                with page.expect_file_chooser(timeout=10000) as fc_info:
-                    opcao = page.locator("li:has-text('Fotos e vídeos'), li:has-text('Galeria'), [data-icon='image-gallery']").first
-                    opcao.click()
-                fc_info.value.set_files(arquivo)
-                log("Arquivo anexado via file chooser.")
+            except Exception as e_gen:
+                log(f"Falha ao anexar arquivo: {e_gen}")
 
         confirmar_envio_midia(page)
         return True
