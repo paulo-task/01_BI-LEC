@@ -714,12 +714,16 @@ def enviar_whatsapp(prints):
             "--disable-software-rasterizer",
         ]
 
-        # Determina o User-Agent dinâmico da versão instalada do Chromium (sem marcação headless)
+        # Determina o User-Agent moderno para evitar bloqueio por 'navegador desatualizado'
         b_temp = p.chromium.launch(args=["--no-sandbox"])
         raw_ua = b_temp.new_page().evaluate("navigator.userAgent")
         b_temp.close()
         ua_clean = re.sub(r"HeadlessChrome/(\d+[\.\d]*)", r"Chrome/\1", raw_ua)
         ua_clean = re.sub(r"\(.*?\)", "(Windows NT 10.0; Win64; x64)", ua_clean, count=1)
+        # Se a versão do Chrome detectada for antiga (ex: < 128), força uma versão moderna aceita pela Meta
+        match_v = re.search(r"Chrome/(\d+)", ua_clean)
+        if not match_v or int(match_v.group(1)) < 128:
+            ua_clean = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
         log(f"User-Agent utilizado no WhatsApp: {ua_clean}")
 
         context = p.chromium.launch_persistent_context(

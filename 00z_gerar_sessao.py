@@ -99,6 +99,9 @@ def main():
         import re
         ua_clean = re.sub(r"HeadlessChrome/(\d+[\.\d]*)", r"Chrome/\1", raw_ua)
         ua_clean = re.sub(r"\(.*?\)", "(Windows NT 10.0; Win64; x64)", ua_clean, count=1)
+        match_v = re.search(r"Chrome/(\d+)", ua_clean)
+        if not match_v or int(match_v.group(1)) < 128:
+            ua_clean = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
         print(f"[UA] User-Agent: {ua_clean}\n")
 
         args_zap = [
