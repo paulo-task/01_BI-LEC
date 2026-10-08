@@ -43,8 +43,8 @@ def run(playwright: Playwright) -> None:
     data_inicio_filtro = dt_inicio.strftime("%d/%m/%Y") # Data 1
     data_fim_filtro = hoje.replace(day=15).strftime("%d/%m/%Y") # Data 2
     
-    # --- NOVO AJUSTE DE NOME: Planejamento_Base_AAAA_MM_DD.csv ---
-    data_nome_arq = hoje.strftime("%Y_%m_%d")
+    # --- NOME MENSAL: Planejamento_Base_AAAA_MM.csv ---
+    data_nome_arq = hoje.strftime("%Y_%m")
     nome_csv = f"Planejamento_Base_{data_nome_arq}.csv"
     caminho_final = os.path.join(diretorio_destino, nome_csv)
 
