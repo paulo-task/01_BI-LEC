@@ -6,7 +6,10 @@ on:
 jobs:
   executar_planejamento:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      issues: write
 
     env:
       TZ: America/Sao_Paulo
@@ -42,24 +45,46 @@ jobs:
       - name: 📦 3. Instalar Bibliotecas
         run: |
           pip install --upgrade pip
-          pip install playwright pandas requests
+          pip install playwright pandas requests python-dotenv
           playwright install chromium --with-deps
 
-      - name: 🚀 4. Executar Planejamento Q1
-        run: python3 -u 15_Planeja_Bases_Q1.py
-
-      - name: ⏳ 5. Aguardar (10s)
-        if: steps.check_day.outputs.rodar_q2 == 'true'
-        run: sleep 10
-
-      - name: 🚀 6. Executar Planejamento Q2 + Upload SharePoint
-        if: steps.check_day.outputs.rodar_q2 == 'true'
-        run: python3 -u 15_Planeja_Bases_Q2.py
-
-      - name: ☁️ 7. Upload Q1 para SharePoint (dias 1-15)
-        if: steps.check_day.outputs.rodar_q2 == 'false'
+      - name: 🚀 4. Executar Planejamento (Q1/Q2) + Malote com Persistência (3 Tentativas)
+        id: execucao_persistente
+        env:
+          RODAR_Q2: ${{ steps.check_day.outputs.rodar_q2 }}
         run: |
-          python3 -c "
+          MAX_TENTATIVAS=3
+          DELAY_SEGUNDOS=300
+          SUCESSO=false
+          ULTIMO_ERRO=""
+
+          for TENTATIVA in $(seq 1 $MAX_TENTATIVAS); do
+            echo ""
+            echo "=========================================================="
+            echo "🔄 INICIANDO TENTATIVA $TENTATIVA DE $MAX_TENTATIVAS"
+            echo "=========================================================="
+            ERRO_ETAPA=false
+
+            # Etapa 1: Executar Q1
+            echo "▶️ [Tentativa $TENTATIVA] Executando 15_Planeja_Bases_Q1.py..."
+            if ! python3 -u 15_Planeja_Bases_Q1.py; then
+              ERRO_ETAPA=true
+              ULTIMO_ERRO="Falha no script 15_Planeja_Bases_Q1.py (Tentativa $TENTATIVA)"
+            fi
+
+            # Etapa 2: Executar Q2 ou Upload Q1 (conforme dia)
+            if [ "$ERRO_ETAPA" = false ]; then
+              if [ "$RODAR_Q2" = "true" ]; then
+                echo "⏳ Aguardando 10s antes do Q2..."
+                sleep 10
+                echo "▶️ [Tentativa $TENTATIVA] Executando 15_Planeja_Bases_Q2.py..."
+                if ! python3 -u 15_Planeja_Bases_Q2.py; then
+                  ERRO_ETAPA=true
+                  ULTIMO_ERRO="Falha no script 15_Planeja_Bases_Q2.py (Tentativa $TENTATIVA)"
+                fi
+              else
+                echo "☁️ [Tentativa $TENTATIVA] Upload Q1 para SharePoint..."
+                python3 -c "
           import os, glob, requests
           from urllib.parse import urlparse
 
@@ -103,4 +128,118 @@ jobs:
               )
           r.raise_for_status()
           print(f'☁️ Upload SharePoint: {nome}')
+          " || {
+                  ERRO_ETAPA=true
+                  ULTIMO_ERRO="Falha no upload do Q1 para SharePoint (Tentativa $TENTATIVA)"
+                }
+              fi
+            fi
+
+            # Etapa 3: Executar Validação Malote logo após Q1/Q2
+            if [ "$ERRO_ETAPA" = false ]; then
+              echo "⏳ Aguardando 10s antes do Malote..."
+              sleep 10
+              echo "▶️ [Tentativa $TENTATIVA] Executando 12_Validacao_Malote.py..."
+              if ! python3 -u 12_Validacao_Malote.py; then
+                ERRO_ETAPA=true
+                ULTIMO_ERRO="Falha no script 12_Validacao_Malote.py (Tentativa $TENTATIVA)"
+              fi
+            fi
+
+            # Avaliação da tentativa
+            if [ "$ERRO_ETAPA" = false ]; then
+              echo ""
+              echo "=========================================================="
+              echo "✅ SUCESSO: Processo completo concluído na tentativa $TENTATIVA!"
+              echo "=========================================================="
+              SUCESSO=true
+              break
+            else
+              echo "⚠️ Tentativa $TENTATIVA falhou: $ULTIMO_ERRO"
+              if [ $TENTATIVA -lt $MAX_TENTATIVAS ]; then
+                echo "⏳ Aguardando 5 minutos ($DELAY_SEGUNDOS segundos) antes da próxima tentativa..."
+                sleep $DELAY_SEGUNDOS
+              fi
+            fi
+          done
+
+          if [ "$SUCESSO" = false ]; then
+            echo ""
+            echo "❌ ERRO CRÍTICO: Todas as $MAX_TENTATIVAS tentativas falharam!"
+            echo "detalhe_erro=$ULTIMO_ERRO" >> $GITHUB_ENV
+            exit 1
+          fi
+
+      - name: 🚨 5. Enviar Alerta de Falha (Após 3 tentativas)
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          DATA_HORA=$(TZ=America/Sao_Paulo date '+%d/%m/%Y %H:%M:%S')
+          URL_EXECUCAO="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          DETALHE="${detalhe_erro:-Falha na execução do processo de Planejamento de Bases / Malote.}"
+
+          echo "=========================================================="
+          echo "🚨 DISPARANDO ALERTAS DE FALHA (3 TENTATIVAS ESGOTADAS)"
+          echo "=========================================================="
+
+          # 1. Alerta no GitHub Step Summary
+          echo "### 🚨 Alerta de Falha Crítica - 05 Planejamento Bases" >> $GITHUB_STEP_SUMMARY
+          echo "**Data/Hora:** $DATA_HORA (Horário de Brasília)" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Todas as 3 tentativas falharam com intervalo de 5 minutos." >> $GITHUB_STEP_SUMMARY
+          echo "**Última falha registrada:** $DETALHE" >> $GITHUB_STEP_SUMMARY
+          echo "**Link da execução:** [Visualizar Log no GitHub Actions]($URL_EXECUCAO)" >> $GITHUB_STEP_SUMMARY
+
+          # 2. Notificação via GitHub Issue (Gera e-mail e push notification automático ao responsável)
+          gh issue create \
+            --title "🚨 [ALERTA] Falha Crítica: 05 Planejamento Bases (Q1 + Q2 + Malote)" \
+            --body "O workflow **05 Planejamento Bases** falhou após **3 tentativas consecutivas** espaçadas por 5 minutos cada.
+
+          - **Data:** $DATA_HORA
+          - **Detalhe do erro:** $DETALHE
+          - **Execução:** $URL_EXECUCAO
+
+          Por favor, verifique a conectividade com o portal CPFL ou eventuais bloqueios." \
+            --label "bug" || echo "⚠️ Não foi possível abrir issue automática."
+
+          # 3. Registro de log de falha no SharePoint
+          python3 -c "
+          import os, requests
+          from urllib.parse import urlparse
+
+          cid = os.getenv('SP_CLIENT_ID', '').strip()
+          sec = os.getenv('SP_CLIENT_SECRET', '').strip()
+          tid = os.getenv('SP_TENANT_ID', '').strip()
+          if not cid or not sec or not tid:
+              exit(0)
+
+          try:
+              r = requests.post(
+                  f'https://login.microsoftonline.com/{tid}/oauth2/v2.0/token',
+                  data={'grant_type':'client_credentials','client_id':cid,'client_secret':sec,'scope':'https://graph.microsoft.com/.default'}
+              )
+              token = r.json()['access_token']
+              headers = {'Authorization': f'Bearer {token}'}
+              parsed = urlparse('https://engelmigproject.sharepoint.com/sites/LEC_ENGELMIG')
+              site_id = requests.get(f'https://graph.microsoft.com/v1.0/sites/{parsed.netloc}:/{parsed.path.strip(\"/\")}', headers=headers).json()['id']
+              drive_id = next(d['id'] for d in requests.get(f'https://graph.microsoft.com/v1.0/sites/{site_id}/drives', headers=headers).json()['value'] if d['name']=='Workspace')
+
+              conteudo_alerta = f'ALERTA DE FALHA NA ROTINA\nData: {os.environ.get(\"DATA_HORA\", \"\")}\nDetalhe: {os.environ.get(\"DETALHE\", \"\")}\nLink: {os.environ.get(\"URL_EXECUCAO\", \"\")}\n'
+              requests.put(
+                  f'https://graph.microsoft.com/v1.0/sites/{site_id}/drives/{drive_id}/root:/BI_LEC/15_Planeja_Bases/_ALERTA_FALHA_ULTIMA_EXECUCAO.txt:/content',
+                  headers={**headers, 'Content-Type': 'text/plain'},
+                  data=conteudo_alerta.encode('utf-8')
+              )
+              print('✅ Log de alerta registrado no SharePoint.')
+          except Exception as e:
+              print(f'⚠️ Erro ao registrar log no SharePoint: {e}')
           "
+
+      - name: 📸 6. Salvar Evidências de Erro
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-de-erro
+          path: "*.png"
+          if-no-files-found: ignore
+
