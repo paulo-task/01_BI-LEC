@@ -1,0 +1,329 @@
+[22/10/2026 17:24:13,99] Execucao automatica finalizada (Codigo: 0
+============================================================ 
+ 
+============================================================
+[22/10/2026 17:24:55,79] Execucao automatica iniciada
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 22/10/2026 17:24:55
+Modo: IGNORAR ARQUIVOS JA EXISTENTES
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 33 | Erro(s): 0
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 11 | Erro(s): 0
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 18 | Erro(s): 0
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 24 | Erro(s): 0
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 10 | Erro(s): 0
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 30 | Erro(s): 0
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 10 | Erro(s): 0
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 3 | Erro(s): 0
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 2 | Erro(s): 0
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.03 segundos
+Total de arquivos copiados:           0
+Total de arquivos ignorados (exist.): 145
+================================================================================
+[22/10/2026 17:24:55,79] Execucao automatica finalizada
+============================================================
+
+============================================================
+[22/10/2026 17:25:58,66] Execucao automatica iniciada
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 22/10/2026 17:25:58
+Modo: IGNORAR ARQUIVOS JA EXISTENTES
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 33 | Erro(s): 0
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 11 | Erro(s): 0
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 18 | Erro(s): 0
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 24 | Erro(s): 0
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 10 | Erro(s): 0
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 30 | Erro(s): 0
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 10 | Erro(s): 0
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 3 | Erro(s): 0
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 2 | Erro(s): 0
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.02 segundos
+Total de arquivos copiados:           0
+Total de arquivos ignorados (exist.): 145
+================================================================================
+[22/10/2026 17:25:58,66] Execucao automatica finalizada
+============================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 22/10/2026 17:33:47
+Modo: IGNORAR ARQUIVOS JA EXISTENTES
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 33 | Erro(s): 0
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 11 | Erro(s): 0
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 18 | Erro(s): 0
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 24 | Erro(s): 0
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 10 | Erro(s): 0
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 30 | Erro(s): 0
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 10 | Erro(s): 0
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 3 | Erro(s): 0
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 2 | Erro(s): 0
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.05 segundos
+Total de arquivos copiados:           0
+Total de arquivos ignorados (exist.): 145
+================================================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 22/10/2026 17:37:07
+Modo: IGNORAR ARQUIVOS JA EXISTENTES
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 33 | Erro(s): 0
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 11 | Erro(s): 0
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 18 | Erro(s): 0
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 24 | Erro(s): 0
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 10 | Erro(s): 0
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 30 | Erro(s): 0
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 10 | Erro(s): 0
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 1 | Erro(s): 0
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 3 | Erro(s): 0
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   -> Copiado(s): 0 | Ignorado(s) (ja existiam): 2 | Erro(s): 0
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.06 segundos
+Total de arquivos copiados:           0
+Total de arquivos ignorados (exist.): 145
+================================================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 22/10/2026 17:44:11
+Regra: Ignorar dias anteriores ja existentes | Atualizar arquivos do dia
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> [SUBSTITUIDO] EFL - 2026_10_22.csv (atualizado hoje (Origem: 16:54:26 vs Destino: 14:54:25))
+   Resumo: 0 novo(s) | 1 atualizado(s) do dia | 32 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   -> [SUBSTITUIDO] Produtividade Diária Leiturista - Analítico_2026_10_22.csv (atualizado hoje (Origem: 16:54:37 vs Destino: 12:54:38))
+   Resumo: 0 novo(s) | 1 atualizado(s) do dia | 10 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> [SUBSTITUIDO] Instalações Não Visitadas_2026_10_22.csv (atualizado hoje (Origem: 16:54:55 vs Destino: 14:55:05))
+   Resumo: 0 novo(s) | 1 atualizado(s) do dia | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 24 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 10 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 30 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 10 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   -> [SUBSTITUIDO] Malote_2026_10.xlsx (atualizado hoje (Origem: 09:24:06 vs Destino: 12:27:56))
+   Resumo: 0 novo(s) | 1 atualizado(s) do dia | 0 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 3 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.23 segundos
+Novos arquivos copiados:              0
+Arquivos do dia atualizados:          4
+Arquivos ignorados (dias ant./iguais):141
+================================================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 22/10/2026 17:44:32
+Regra: Ignorar dias anteriores ja existentes | Atualizar arquivos do dia
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 33 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 18 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 24 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 10 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 30 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 10 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 3 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) do dia | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.02 segundos
+Novos arquivos copiados:              0
+Arquivos do dia atualizados:          0
+Arquivos ignorados (dias ant./iguais):145
+================================================================================
+
