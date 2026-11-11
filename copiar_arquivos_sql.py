@@ -124,11 +124,11 @@ def copiar_pastas(sobrescrever_tudo: bool = False) -> None:
         print("=" * 80)
         print("INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)")
         print(f"Data/Hora de Inicio: {data_inicio}")
-        print("Regra: Ignorar dias anteriores ja existentes | Atualizar arquivos do dia")
+        print("Regra: Novos sempre copiados | Existentes atualizados se origem for mais recente/diferente")
         print("=" * 80)
 
         total_copiados_novos = 0
-        total_atualizados_hoje = 0
+        total_atualizados = 0
         total_ignorados_geral = 0
         total_erros_geral = 0
 
@@ -166,14 +166,12 @@ def copiar_pastas(sobrescrever_tudo: bool = False) -> None:
                 mtime_origem = stat_origem.st_mtime
                 dt_origem = datetime.fromtimestamp(mtime_origem)
 
-                # Verifica se é um arquivo do dia atual (por data de modificação ou nome do arquivo)
-                eh_dia_atual = (hoje_str in item.name) or (dt_origem.date() == hoje)
-
                 # Caso 1: Arquivo não existe no destino -> Sempre copia
                 if not destino_arquivo.exists():
                     try:
                         shutil.copy2(item, destino_arquivo)
                         novos_pasta += 1
+                        print(f"   -> [NOVO] {item.name}")
                     except Exception as e:
                         erros_pasta += 1
                         print(f"   [ERRO] Ao copiar novo '{item.name}': {e}")
@@ -182,23 +180,24 @@ def copiar_pastas(sobrescrever_tudo: bool = False) -> None:
                 # Caso 2: Arquivo já existe no destino
                 if sobrescrever_tudo:
                     deve_copiar = True
-                    motivo = "forçado"
-                elif eh_dia_atual:
-                    # No dia atual: verifica se a origem é mais recente que o destino
+                    motivo = "forcado"
+                else:
                     stat_destino = destino_arquivo.stat()
                     mtime_destino = stat_destino.st_mtime
                     size_origem = stat_origem.st_size
                     size_destino = stat_destino.st_size
+                    dt_destino = datetime.fromtimestamp(mtime_destino)
 
-                    # Copia se a origem foi modificada depois do destino ou se o tamanho mudou
+                    # Atualiza se origem for mais recente OU tiver tamanho diferente
                     if (mtime_origem > mtime_destino + 1) or (size_origem != size_destino):
                         deve_copiar = True
-                        motivo = f"atualizado hoje (Origem: {dt_origem.strftime('%H:%M:%S')} vs Destino: {datetime.fromtimestamp(mtime_destino).strftime('%H:%M:%S')})"
+                        motivo = (
+                            f"origem mais recente/diferente "
+                            f"(Origem: {dt_origem.strftime('%d/%m %H:%M:%S')} {size_origem:,}b "
+                            f"vs Destino: {dt_destino.strftime('%d/%m %H:%M:%S')} {size_destino:,}b)"
+                        )
                     else:
                         deve_copiar = False
-                else:
-                    # Dias anteriores já existentes: ignora
-                    deve_copiar = False
 
                 if deve_copiar:
                     try:
@@ -212,13 +211,13 @@ def copiar_pastas(sobrescrever_tudo: bool = False) -> None:
                     ignorados_pasta += 1
 
             total_copiados_novos += novos_pasta
-            total_atualizados_hoje += atualizados_pasta
+            total_atualizados += atualizados_pasta
             total_ignorados_geral += ignorados_pasta
             total_erros_geral += erros_pasta
 
             print(
                 f"   Resumo: {novos_pasta} novo(s) | "
-                f"{atualizados_pasta} atualizado(s) do dia | "
+                f"{atualizados_pasta} atualizado(s) | "
                 f"{ignorados_pasta} ignorado(s) | "
                 f"{erros_pasta} erro(s)"
             )
@@ -228,8 +227,8 @@ def copiar_pastas(sobrescrever_tudo: bool = False) -> None:
         print("SINCRONIZACAO CONCLUIDA")
         print(f"Tempo total: {tempo_total:.2f} segundos")
         print(f"Novos arquivos copiados:              {total_copiados_novos}")
-        print(f"Arquivos do dia atualizados:          {total_atualizados_hoje}")
-        print(f"Arquivos ignorados (dias ant./iguais):{total_ignorados_geral}")
+        print(f"Arquivos atualizados (mais recentes): {total_atualizados}")
+        print(f"Arquivos ignorados (sem alteracoes):  {total_ignorados_geral}")
         if total_erros_geral > 0:
             print(f"Total de erros:                       {total_erros_geral}")
         print("=" * 80 + "\n")
