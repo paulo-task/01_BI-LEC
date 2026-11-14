@@ -491,8 +491,8 @@ def capturar_powerbi():
             limpar_campo_pesquisa(page)
 
             # Coordenadas exatas do painel Power BI (1920x1080)
-            # Elimina menu lateral esquerdo, barra superior, painel de Filtros a direita e rodape vazio
-            X1, Y1, X2, Y2 = 260, 105, 1715, 1000
+            # Enquadramento completo: inclui topo (logo e título), rodapé dos cartões e largura total
+            X1, Y1, X2, Y2 = 260, 85, 1880, 1055
 
             # PAULISTA
             try:
