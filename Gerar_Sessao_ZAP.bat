@@ -4,5 +4,5 @@ cd /d "%~dp0"
 echo ======================================================
 echo  AUTENTICAR SESSAO WHATSAPP PARA O GITHUB ACTIONS
 echo ======================================================
-python 00z_gerar_sessao.py
+python 00z_gerar_sessao_zap.py
 pause
