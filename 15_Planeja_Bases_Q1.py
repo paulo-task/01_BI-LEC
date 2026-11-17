@@ -131,15 +131,20 @@ def run(playwright: Playwright) -> None:
             tempo_espera = 45000 if i == 0 else 15000
             page.wait_for_timeout(tempo_espera) 
 
-            linhas = page.locator("tbody tr").all()
-            for linha in linhas:
-                colunas = linha.locator("td").all_text_contents()
+            # Extração instantânea de toda a tabela via JavaScript (muito mais rápido e leve que múltiplos locators)
+            linhas_matriz = page.evaluate("""() => {
+                const trs = Array.from(document.querySelectorAll('tbody tr'));
+                return trs.map(tr => 
+                    Array.from(tr.querySelectorAll('td')).map(td => (td.innerText || td.textContent || '').trim())
+                );
+            }""")
+
+            for colunas in linhas_matriz:
                 if len(colunas) >= 21:
-                    info = [txt.strip() for txt in colunas[2:21]]
+                    info = [txt for txt in colunas[2:21]]
                     if any(info[:3]):
                         info.append(nome_da_base)
-                        # ADICIONADO: Preenchimento da data atual na nova coluna
-                        info.append(data_atual_str) 
+                        info.append(data_atual_str)
                         dados_totais.append(info)
 
             page.locator(".rc-tree-checkbox.rc-tree-checkbox-checked").click(force=True)

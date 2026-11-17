@@ -91,7 +91,18 @@ def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
         return False
 
 def executar_q1_antes_do_q2(playwright: Playwright, caminho_final: str):
-    """Executa o Q1 para garantir que o período 1-15 do mês também exista no arquivo final."""
+    """Garante que os dados do Q1 (dias 1-15) estejam disponíveis para consolidação."""
+    # Se o arquivo do mês já existe (por exemplo, gerado pelo Q1 no mesmo dia), apenas lê
+    if os.path.exists(caminho_final):
+        try:
+            df = pd.read_csv(caminho_final, sep=';', encoding='latin1')
+            if not df.empty:
+                print(f"Dados do Q1 já encontrados no arquivo existente ({len(df)} linhas).")
+                return df
+        except Exception as e:
+            print(f"[AVISO] Erro ao ler arquivo existente do Q1: {e}")
+
+    # Se ainda não existe, executa o Q1 para gerar
     script_q1 = os.path.join(os.path.dirname(__file__), "15_Planeja_Bases_Q1.py")
     if not os.path.exists(script_q1):
         print("[AVISO] Arquivo do Q1 não encontrado. Continuando apenas com Q2.")
@@ -225,11 +236,17 @@ def run(playwright: Playwright) -> None:
             tempo_espera = 45000 if i == 0 else 15000
             page.wait_for_timeout(tempo_espera)
 
-            linhas = page.locator("tbody tr").all()
-            for linha in linhas:
-                colunas = linha.locator("td").all_text_contents()
+            # Extração instantânea de toda a tabela via JavaScript (muito mais rápido e leve que múltiplos locators)
+            linhas_matriz = page.evaluate("""() => {
+                const trs = Array.from(document.querySelectorAll('tbody tr'));
+                return trs.map(tr => 
+                    Array.from(tr.querySelectorAll('td')).map(td => (td.innerText || td.textContent || '').trim())
+                );
+            }""")
+
+            for colunas in linhas_matriz:
                 if len(colunas) >= 21:
-                    info = [txt.strip() for txt in colunas[2:21]]
+                    info = [txt for txt in colunas[2:21]]
                     if any(info[:3]):
                         info.append(nome_da_base)
                         info.append(data_atual_str) # Adiciona DT_RELATORIO identico ao script 1
