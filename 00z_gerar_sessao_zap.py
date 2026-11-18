@@ -24,15 +24,16 @@ Passos:
 import os
 import sys
 import time
+import tempfile
 import zipfile
-import shutil
-from pathlib import Path
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import (
+    TimeoutError as PlaywrightTimeoutError,
+    sync_playwright,
+)
 from cryptography.fernet import Fernet
 
-# Pasta dados_zap dentro do repositorio
+# Perfil novo do Chromium e criado em uma pasta temporaria por execucao.
 _SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
-USER_DATA_ZAP = os.path.join(_SCRIPT_DIR, "dados_zap")
 ENC_SAIDA     = os.path.join(_SCRIPT_DIR, "whatsapp_session.enc")
 KEY_SAIDA     = os.path.join(_SCRIPT_DIR, "whatsapp_key.txt")
 ZIP_TMP       = os.path.join(_SCRIPT_DIR, "dados_zap_tmp.zip")
@@ -72,20 +73,11 @@ def compactar_sessao(pasta_origem, zip_destino):
     return contagem, total_bytes
 
 
-def main():
+def _gerar_sessao(user_data_zap):
     print("=" * 60)
     print("  GERADOR DE SESSAO WHATSAPP PARA GITHUB ACTIONS")
     print("=" * 60)
-    print(f"\nDiretorio de sessao: {USER_DATA_ZAP}\n")
-
-    # Limpa pasta anterior se desejar gerar uma sessao 100% limpa
-    if os.path.exists(USER_DATA_ZAP):
-        try:
-            shutil.rmtree(USER_DATA_ZAP)
-        except Exception:
-            pass
-
-    Path(USER_DATA_ZAP).mkdir(parents=True, exist_ok=True)
+    print(f"\nDiretorio de sessao temporario: {user_data_zap}\n")
 
     print("[>>] Abrindo WhatsApp Web -- escaneie o QR Code...")
     print("   Apos escanear, aguarde a tela principal carregar.")
@@ -112,7 +104,7 @@ def main():
             "--window-size=1920,1080",
         ]
         context = p.chromium.launch_persistent_context(
-            USER_DATA_ZAP,
+            user_data_zap,
             headless=False,
             args=args_zap,
             user_agent=ua_clean,
@@ -123,6 +115,21 @@ def main():
         )
         page = context.pages[0]
         page.goto("https://web.whatsapp.com", timeout=90000)
+
+        try:
+            page.locator("canvas[aria-label*='QR'], [data-testid='qrcode']").first.wait_for(
+                state="visible", timeout=30000
+            )
+            print("[OK] QR Code exibido.")
+        except PlaywrightTimeoutError as e:
+            if page.locator("#pane-side").is_visible():
+                raise RuntimeError(
+                    "O WhatsApp abriu conectado, sem exibir o QR Code. "
+                    "O perfil do navegador nao foi iniciado como uma sessao nova."
+                ) from e
+            raise RuntimeError(
+                "O QR Code nao apareceu em 30 segundos. Verifique a conexao e tente novamente."
+            ) from e
 
         print("[...] Aguardando autenticacao (ate 180s)...")
         try:
@@ -169,7 +176,7 @@ def main():
     if os.path.exists(ZIP_TMP):
         os.remove(ZIP_TMP)
 
-    qtd, total = compactar_sessao(USER_DATA_ZAP, ZIP_TMP)
+    qtd, total = compactar_sessao(user_data_zap, ZIP_TMP)
     tamanho_mb = os.path.getsize(ZIP_TMP) / (1024 * 1024)
     print(f"   {qtd} arquivos | {tamanho_mb:.1f} MB compactado")
 
@@ -218,6 +225,11 @@ PROXIMOS PASSOS:
 
 3. NAO commite o whatsapp_key.txt !
 """)
+
+
+def main():
+    with tempfile.TemporaryDirectory(prefix="whatsapp_sessao_zap_") as user_data_zap:
+        _gerar_sessao(user_data_zap)
 
 
 if __name__ == "__main__":
