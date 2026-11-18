@@ -1,8 +1,13 @@
 import os
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 from zoneinfo import ZoneInfo
 from playwright.sync_api import Playwright, sync_playwright
+from planeja_bases_utils import (
+    caminhos_arquivos_quinzenais,
+    normalizar_colunas_inteiras,
+    remover_arquivos_quinzenais,
+)
 
 # --- DETECÇÃO DE AMBIENTE ---
 IS_GITHUB = os.getenv('GITHUB_ACTIONS') == 'true'
@@ -35,10 +40,8 @@ def run(playwright: Playwright) -> None:
     hoje = datetime.now(FUSO_SP)
     data_atual_str = hoje.strftime("%d/%m/%Y %H:%M") # Para a coluna DT_RELATORIO
     
-    # Cálculo do primeiro dia útil do mês
+    # O filtro da primeira quinzena sempre começa no dia 1.
     dt_inicio = hoje.replace(day=1)
-    while dt_inicio.weekday() > 4: # Se for Sábado(5) ou Domingo(6), pula
-        dt_inicio += timedelta(days=1)
     
     data_inicio_filtro = dt_inicio.strftime("%d/%m/%Y") # Data 1
     data_fim_filtro = hoje.replace(day=15).strftime("%d/%m/%Y") # Data 2
@@ -47,16 +50,20 @@ def run(playwright: Playwright) -> None:
     data_nome_arq = hoje.strftime("%Y_%m")
     nome_csv = f"Planejamento_Base_{data_nome_arq}.csv"
     caminho_final = os.path.join(diretorio_destino, nome_csv)
+    caminho_q1, caminho_q2 = caminhos_arquivos_quinzenais(
+        diretorio_destino, nome_csv
+    )
 
-    # --- REMOVIDA A LÓGICA DE EXCLUSÃO (os.remove) ---
-    # Apenas verificamos se o arquivo está aberto caso queiramos sobrescrever o do mesmo dia
+    # Verifica se o arquivo final pode ser sobrescrito.
     if os.path.exists(caminho_final):
         try:
             # Testamos abertura para evitar PermissionError se o arquivo do dia estiver aberto
             with open(caminho_final, 'a') as f: pass 
-        except PermissionError:
+        except PermissionError as e:
             print(f"\n[ERRO CRÍTICO] O arquivo {nome_csv} já existe e está aberto!")
-            return
+            raise PermissionError(f"Feche o arquivo {nome_csv} antes de executar Q1.") from e
+
+    remover_arquivos_quinzenais(caminho_q1, caminho_q2)
 
     browser = playwright.chromium.launch(headless=IS_GITHUB)
     context = browser.new_context(viewport={'width': 1920, 'height': 1080})
@@ -147,14 +154,18 @@ def run(playwright: Playwright) -> None:
                         info.append(data_atual_str)
                         dados_totais.append(info)
 
-            page.locator(".rc-tree-checkbox.rc-tree-checkbox-checked").click(force=True)
+            page.locator(SELETORES[i]).first.click(force=True)
             page.wait_for_timeout(500)
 
+        df_final = pd.DataFrame(dados_totais, columns=CABECALHOS)
+        df_final = normalizar_colunas_inteiras(df_final)
+        os.makedirs(os.path.dirname(caminho_q1), exist_ok=True)
+        df_final.to_csv(caminho_q1, sep=';', index=False, encoding='latin1')
+        df_final.to_csv(caminho_final, sep=';', index=False, encoding='latin1')
         if dados_totais:
-            pd.DataFrame(dados_totais, columns=CABECALHOS).to_csv(caminho_final, sep=';', index=False, encoding='latin1')
             print(f"\n[SUCESSO] Relatório {nome_csv} gerado.")
         else:
-            print("Nenhum dado extraído.")
+            print("Nenhum dado extraído; arquivo Q1 atualizado sem linhas.")
 
         # Tentativa de Logout para liberar a sessão no servidor da CPFL
         try:

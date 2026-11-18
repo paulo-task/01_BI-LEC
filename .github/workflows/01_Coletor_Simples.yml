@@ -36,12 +36,16 @@ jobs:
           playwright install chromium --with-deps
 
       - name: 🚀 4. Executar PDL Analitico
+        id: pdl_analitico
+        continue-on-error: true
         run: python3 02_PDL_Analitico.py
 
       - name: ⏳ 5. Aguardar (180s)
         run: sleep 180
 
       - name: 🚀 6. Executar Nao Visitadas
+        id: nao_visitadas
+        continue-on-error: true
         run: python3 04_Nao_Visitadas.py
 
       - name: ⏳ 7. Aguardar (180s)
@@ -56,7 +60,15 @@ jobs:
       - name: 🤖 10. Coletar e Enviar para SharePoint
         run: python3 -u 00a_Coletor.py simples
 
-      - name: 📸 11. Salvar Evidências de Erro
+      - name: ⚠️ 11. Registrar falhas dos relatórios secundários
+        if: always() && (steps.pdl_analitico.outcome == 'failure' || steps.nao_visitadas.outcome == 'failure')
+        run: |
+          echo "Um ou mais relatórios secundários falharam; os passos seguintes foram executados mesmo assim." >> "$GITHUB_STEP_SUMMARY"
+          echo "- PDL Analítico: ${{ steps.pdl_analitico.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Não Visitadas: ${{ steps.nao_visitadas.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+
+      - name: 📸 12. Salvar Evidências de Erro
         if: failure()
         uses: actions/upload-artifact@v4
         with:

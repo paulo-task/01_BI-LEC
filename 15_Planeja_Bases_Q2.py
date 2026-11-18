@@ -2,10 +2,15 @@ import os
 import pandas as pd
 import calendar
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime
 from zoneinfo import ZoneInfo
 from urllib.parse import urlparse
 from playwright.sync_api import Playwright, sync_playwright
+from planeja_bases_utils import (
+    caminhos_arquivos_quinzenais,
+    normalizar_colunas_inteiras,
+    remover_arquivos_quinzenais,
+)
 
 # --- DETECÇÃO DE AMBIENTE ---
 IS_GITHUB = os.getenv('GITHUB_ACTIONS') == 'true'
@@ -90,43 +95,30 @@ def upload_to_sharepoint(conteudo_bytes, nome_arquivo, pasta_sharepoint):
         print(f"   ⚠️ Erro upload SharePoint: {e}")
         return False
 
-def executar_q1_antes_do_q2(playwright: Playwright, caminho_final: str):
+def executar_q1_antes_do_q2(playwright: Playwright, caminho_q1: str):
     """Garante que os dados do Q1 (dias 1-15) estejam disponíveis para consolidação."""
-    # Se o arquivo do mês já existe (por exemplo, gerado pelo Q1 no mesmo dia), apenas lê
-    if os.path.exists(caminho_final):
-        try:
-            df = pd.read_csv(caminho_final, sep=';', encoding='latin1')
-            if not df.empty:
-                print(f"Dados do Q1 já encontrados no arquivo existente ({len(df)} linhas).")
-                return df
-        except Exception as e:
-            print(f"[AVISO] Erro ao ler arquivo existente do Q1: {e}")
-
-    # Se ainda não existe, executa o Q1 para gerar
-    script_q1 = os.path.join(os.path.dirname(__file__), "15_Planeja_Bases_Q1.py")
-    if not os.path.exists(script_q1):
-        print("[AVISO] Arquivo do Q1 não encontrado. Continuando apenas com Q2.")
-        return None
-
-    try:
+    if not os.path.exists(caminho_q1):
         import importlib.util
+
+        script_q1 = os.path.join(os.path.dirname(__file__), "15_Planeja_Bases_Q1.py")
+        if not os.path.exists(script_q1):
+            raise FileNotFoundError(f"Script do Q1 não encontrado: {script_q1}")
+
         spec = importlib.util.spec_from_file_location("planeja_q1", script_q1)
+        if spec is None or spec.loader is None:
+            raise ImportError(f"Não foi possível carregar o script do Q1: {script_q1}")
+
         modulo = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(modulo)
         print("Executando Q1 para consolidar o período 1-15 do mês...")
         modulo.run(playwright)
-    except Exception as e:
-        print(f"[AVISO] Não foi possível executar o Q1 automaticamente: {e}")
-        return None
 
-    if not os.path.exists(caminho_final):
-        return None
+    if not os.path.exists(caminho_q1):
+        raise RuntimeError("O Q1 não gerou seu arquivo temporário; consolidação cancelada.")
 
-    try:
-        return pd.read_csv(caminho_final, sep=';', encoding='latin1')
-    except Exception as e:
-        print(f"[AVISO] Não foi possível ler o arquivo do Q1 após execução: {e}")
-        return None
+    df = pd.read_csv(caminho_q1, sep=';', encoding='latin1')
+    print(f"Dados atuais do Q1 carregados ({len(df)} linhas).")
+    return df
 
 
 def run(playwright: Playwright) -> None:
@@ -140,30 +132,29 @@ def run(playwright: Playwright) -> None:
     # Data 1: Dia 16 do mês corrente
     data_inicio_filtro = hoje.replace(day=16).strftime("%d/%m/%Y")
     
-    # Data 2: Cálculo do último dia útil do mês corrente
+    # Data 2: último dia do mês corrente
     ultimo_dia_mes = calendar.monthrange(hoje.year, hoje.month)[1]
-    dt_fim = hoje.replace(day=ultimo_dia_mes)
-    
-    # Se o último dia for Sábado(5) ou Domingo(6), volta para Sexta
-    while dt_fim.weekday() > 4:
-        dt_fim -= timedelta(days=1)
-    
-    data_fim_filtro = dt_fim.strftime("%d/%m/%Y")
+    data_fim_filtro = hoje.replace(day=ultimo_dia_mes).strftime("%d/%m/%Y")
     
     # --- NOME MENSAL: Planejamento_Base_AAAA_MM.csv ---
     data_nome_arq = hoje.strftime("%Y_%m")
     nome_csv = f"Planejamento_Base_{data_nome_arq}.csv"
     caminho_final = os.path.join(diretorio_destino, nome_csv)
+    caminho_q1, caminho_q2 = caminhos_arquivos_quinzenais(
+        diretorio_destino, nome_csv
+    )
 
     # --- VERIFICAÇÃO DE PERMISSÃO ---
     if os.path.exists(caminho_final):
         try:
             with open(caminho_final, 'a') as f: pass 
-        except PermissionError:
+        except PermissionError as e:
             print(f"\n[ERRO CRÍTICO] O arquivo {nome_csv} está aberto! Feche o Excel.")
-            return
+            raise PermissionError(f"Feche o arquivo {nome_csv} antes de executar Q2.") from e
 
-    df_q1 = executar_q1_antes_do_q2(playwright, caminho_final)
+    df_q1 = executar_q1_antes_do_q2(playwright, caminho_q1)
+    if os.path.exists(caminho_q2):
+        os.remove(caminho_q2)
 
     browser = playwright.chromium.launch(headless=IS_GITHUB)
     context = browser.new_context(viewport={'width': 1920, 'height': 1080})
@@ -255,21 +246,26 @@ def run(playwright: Playwright) -> None:
             page.locator(".rc-tree-checkbox.rc-tree-checkbox-checked").click(force=True)
             page.wait_for_timeout(500)
 
-        # --- SOBRESCREVER O ARQUIVO DO MÊS ATUAL COM Q1 + Q2 ---
-        if dados_totais:
-            df_novo = pd.DataFrame(dados_totais, columns=CABECALHOS)
-            df_final = pd.concat([df_q1, df_novo], ignore_index=True) if df_q1 is not None else df_novo
-            df_final = df_final.drop_duplicates(ignore_index=True)
-            df_final.to_csv(caminho_final, sep=';', index=False, encoding='latin1')
-            print(f"Arquivo mensal atualizado com Q1 + Q2: {nome_csv}")
+        df_novo = normalizar_colunas_inteiras(
+            pd.DataFrame(dados_totais, columns=CABECALHOS)
+        )
+        os.makedirs(os.path.dirname(caminho_q2), exist_ok=True)
+        df_novo.to_csv(caminho_q2, sep=';', index=False, encoding='latin1')
 
-            # Upload para SharePoint (apenas no GitHub Actions)
-            if IS_GITHUB and os.path.exists(caminho_final):
-                with open(caminho_final, 'rb') as f:
-                    conteudo = f.read()
-                upload_to_sharepoint(conteudo, nome_csv, "BI_LEC/15_Planeja_Bases")
-        else:
-            print("Nenhum dado extraído.")
+        df_final = pd.concat([df_q1, df_novo], ignore_index=True)
+        df_final = normalizar_colunas_inteiras(df_final)
+        df_final.to_csv(caminho_final, sep=';', index=False, encoding='latin1')
+        remover_arquivos_quinzenais(caminho_q1, caminho_q2)
+        print(f"Arquivo mensal atualizado com Q1 + Q2: {nome_csv}")
+
+        if not dados_totais:
+            print("Nenhum dado extraído para Q2; o arquivo final mantém as linhas do Q1.")
+
+        # Upload para SharePoint (apenas no GitHub Actions)
+        if IS_GITHUB and os.path.exists(caminho_final):
+            with open(caminho_final, 'rb') as f:
+                conteudo = f.read()
+            upload_to_sharepoint(conteudo, nome_csv, "BI_LEC/15_Planeja_Bases")
 
         # Tentativa de Logout para liberar a sessão no servidor da CPFL
         try:
