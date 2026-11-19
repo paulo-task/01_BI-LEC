@@ -71,7 +71,7 @@ def get_nome_arquivo(conf, ext):
         # Ex: Nome_2026_04_04.csv
         return f"{conf['nome_base']}_{ano_mes_dia}{ext}"
 
-# Modo SIMPLES (3 relatórios)
+# Modo SIMPLES (1 relatório)
 RELATORIOS_SIMPLES = {
     "Efetividade de Leitura Faturamento": {
         "pasta_sp": "BI_LEC/01_ELF_Diario",
@@ -79,20 +79,6 @@ RELATORIOS_SIMPLES = {
         "nome_base": "EFL",
         "regra_nome": "data_dia_unico",
         "filtro_grupo_servico": None
-    },
-    "Produtividade Diária Leiturista - Analítico": {
-        "pasta_sp": "BI_LEC/02_PDL_Analitico",
-        "pasta_local": "02_PDL_Analitico",
-        "nome_base": "Produtividade Diária Leiturista - Analítico",
-        "regra_nome": "data_dia",
-        "filtro_grupo_servico": None
-    },
-    "Instalações Não Visitadas": {
-        "pasta_sp": "BI_LEC/04_N_Visitado_Diario",
-        "pasta_local": "04_N_Visitado_Diario",
-        "nome_base": "Instalações Não Visitadas",
-        "regra_nome": "data_dia",
-        "filtro_grupo_servico": "vazio"
     }
 }
 
@@ -372,7 +358,7 @@ def baixar_relatorio(page, linha_alvo, nome_relatorio):
 # =================================================================
 def run(playwright: Playwright, modo="simples") -> None:
     """
-    modo: "simples" (3 relatórios) ou "completo" (8 relatórios)
+    modo: "simples" (1 relatório) ou "completo" (8 relatórios)
     """
     print(f"\n{'='*60}")
     print(f"🚀 INICIANDO COLETOR - MODO: {modo.upper()}")
@@ -520,7 +506,7 @@ if __name__ == "__main__":
         arg = sys.argv[1].lower()
         if arg in ["completo", "full", "7", "8"]:
             modo = "completo"
-        elif arg in ["simples", "simple", "3"]:
+        elif arg in ["simples", "simple", "1"]:
             modo = "simples"
     
     print(f"\n🚀 Iniciando Coletor - Modo: {modo.upper()}")
