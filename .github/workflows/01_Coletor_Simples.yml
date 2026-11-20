@@ -35,16 +35,24 @@ jobs:
           pip install playwright requests python-dotenv
           playwright install chromium --with-deps
 
-      - name: 🚀 4. Executar ELF Hora
+      - name: 🚀 4. Executar Nao Visitadas
+        id: nao_visitadas
+        continue-on-error: true
+        run: python3 04_Nao_Visitadas.py
+
+      - name: ⏳ 5. Aguardar (180s)
+        run: sleep 180
+
+      - name: 🚀 6. Executar ELF Hora
         run: python3 01_ELF_Hora.py
 
-      - name: ⏳ 5. Aguardar (300s)
+      - name: ⏳ 7. Aguardar (300s)
         run: sleep 300
 
-      - name: 🤖 6. Coletar e Enviar para SharePoint
+      - name: 🤖 8. Coletar e Enviar para SharePoint
         run: python3 -u 00a_Coletor.py simples
 
-      - name: 📸 7. Salvar Evidências de Erro
+      - name: 📸 9. Salvar Evidências de Erro
         if: failure()
         uses: actions/upload-artifact@v4
         with:

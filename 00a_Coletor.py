@@ -71,7 +71,7 @@ def get_nome_arquivo(conf, ext):
         # Ex: Nome_2026_04_04.csv
         return f"{conf['nome_base']}_{ano_mes_dia}{ext}"
 
-# Modo SIMPLES (1 relatório)
+# Modo SIMPLES (2 relatórios)
 RELATORIOS_SIMPLES = {
     "Efetividade de Leitura Faturamento": {
         "pasta_sp": "BI_LEC/01_ELF_Diario",
@@ -79,26 +79,6 @@ RELATORIOS_SIMPLES = {
         "nome_base": "EFL",
         "regra_nome": "data_dia_unico",
         "filtro_grupo_servico": None
-    }
-}
-
-# Modo COMPLETO (8 relatórios)
-RELATORIOS_COMPLETOS = {
-    "Efetividade de Leitura Faturamento": {
-        "pasta_sp": "BI_LEC/01_ELF_Diario",
-        "pasta_local": "01_ELF_Diario",
-        "nome_base": "EFL",
-        "regra_nome": "data_dia_unico",
-        "filtro_grupo_servico": None,
-        "nome_exibicao": "Efetividade de Leitura Faturamento"
-    },
-    "Produtividade Diária Leiturista - Analítico": {
-        "pasta_sp": "BI_LEC/02_PDL_Analitico",
-        "pasta_local": "02_PDL_Analitico",
-        "nome_base": "Produtividade Diária Leiturista - Analítico",
-        "regra_nome": "data_dia",
-        "filtro_grupo_servico": None,
-        "nome_exibicao": "Produtividade Diária Leiturista - Analítico"
     },
     "Instalações Não Visitadas (Diário)": {
         "pasta_sp": "BI_LEC/04_N_Visitado_Diario",
@@ -107,6 +87,18 @@ RELATORIOS_COMPLETOS = {
         "regra_nome": "data_dia",
         "filtro_grupo_servico": "vazio",
         "nome_exibicao": "Instalações Não Visitadas"
+    }
+}
+
+# Modo COMPLETO (6 relatórios)
+RELATORIOS_COMPLETOS = {
+    "Produtividade Diária Leiturista - Analítico": {
+        "pasta_sp": "BI_LEC/02_PDL_Analitico",
+        "pasta_local": "02_PDL_Analitico",
+        "nome_base": "Produtividade Diária Leiturista - Analítico",
+        "regra_nome": "data_dia",
+        "filtro_grupo_servico": None,
+        "nome_exibicao": "Produtividade Diária Leiturista - Analítico"
     },
     "Instalações Não Visitadas (Histórico)": {
         "pasta_sp": "BI_LEC/05_N_Visitado_Historico",
@@ -358,7 +350,7 @@ def baixar_relatorio(page, linha_alvo, nome_relatorio):
 # =================================================================
 def run(playwright: Playwright, modo="simples") -> None:
     """
-    modo: "simples" (1 relatório) ou "completo" (8 relatórios)
+    modo: "simples" (2 relatórios) ou "completo" (6 relatórios)
     """
     print(f"\n{'='*60}")
     print(f"🚀 INICIANDO COLETOR - MODO: {modo.upper()}")
