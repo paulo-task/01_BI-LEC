@@ -8932,3 +8932,58 @@ Arquivos atualizados (mais recentes): 2
 Arquivos ignorados (sem alteracoes):  146
 ================================================================================
 
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 23/11/2026 15:05:00
+Regra: Novos sempre copiados | Existentes atualizados se origem for mais recente/diferente
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> [SUBSTITUIDO] EFL - 2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 14:54:23 37,660b vs Destino: 23/11 12:54:50 37,611b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 52 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> [SUBSTITUIDO] Instalações Não Visitadas_2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 14:54:29 27,242,304b vs Destino: 23/11 12:54:57 30,784,550b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 16 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   Resumo: 0 novo(s) | 0 atualizado(s) | 4 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.15 segundos
+Novos arquivos copiados:              0
+Arquivos atualizados (mais recentes): 2
+Arquivos ignorados (sem alteracoes):  146
+================================================================================
+
