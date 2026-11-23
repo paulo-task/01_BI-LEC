@@ -29,11 +29,10 @@ IS_HEADLESS = IS_GITHUB
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 if IS_GITHUB:
-    RUNNER_TEMP     = os.getenv("RUNNER_TEMP") or tempfile.gettempdir()
-    TEMP_DIR        = os.path.join(RUNNER_TEMP, "relatorios")
-    USER_DATA_PBI   = os.path.join(RUNNER_TEMP, "dados_pbi")
-    USER_DATA_ZAP   = os.path.join(RUNNER_TEMP, "dados_zap")
-    LOG_FILE        = os.path.join(TEMP_DIR, "log_automacao.txt")
+    TEMP_DIR        = "/tmp/relatorios"
+    USER_DATA_PBI   = "/tmp/dados_pbi"
+    USER_DATA_ZAP   = "/tmp/dados_zap"
+    LOG_FILE        = "/tmp/relatorios/log_automacao.txt"
     SESSION_ENC     = os.path.join(_SCRIPT_DIR, "whatsapp_session.enc")
     PBI_SESSION_ENC = os.path.join(_SCRIPT_DIR, "powerbi_session.enc")
 else:
@@ -742,7 +741,7 @@ def enviar_whatsapp(prints):
 
         context = p.chromium.launch_persistent_context(
             USER_DATA_ZAP,
-            headless=IS_HEADLESS,
+            headless=False,
             args=args_zap,
             user_agent=ua_clean,
             viewport={"width": 1920, "height": 1080},
