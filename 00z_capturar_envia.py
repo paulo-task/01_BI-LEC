@@ -16,6 +16,7 @@ import tempfile
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import quote
+import requests
 from playwright.sync_api import sync_playwright
 from PIL import Image
 from dotenv import load_dotenv
@@ -131,6 +132,13 @@ def restaurar_sessao_enc(chave_env, arquivo_enc, pasta_destino, nome_servico):
             shutil.rmtree(pasta_destino)
         with zipfile.ZipFile(zip_tmp, "r") as z:
             z.extractall(pasta_destino)
+
+        # Remove Service Worker e caches do perfil para evitar deadlock entre arquiteturas (Windows -> Linux)
+        def_p = os.path.join(pasta_destino, "Default")
+        for pasta_cache in ["Service Worker", "Cache", "Code Cache", "GPUCache", "ShaderCache", "Network"]:
+            c_path = os.path.join(def_p, pasta_cache)
+            if os.path.exists(c_path):
+                shutil.rmtree(c_path, ignore_errors=True)
         log(f"✅ Sessão {nome_servico} restaurada com sucesso.")
         return True
     except Exception as e:
@@ -818,7 +826,7 @@ def enviar_whatsapp(prints):
             log(f"❌ ERRO WhatsApp: {e}")
             try:
                 erro_path = os.path.join(TEMP_DIR, "PRINT_ERRO_WHATSAPP.png")
-                page.screenshot(path=erro_path, timeout=5000)
+                page.screenshot(path=erro_path, timeout=5000, animations="disabled")
                 log(f"📸 Screenshot do erro salvo em: {erro_path}")
             except Exception as e_ss:
                 log(f"Aviso: não foi possível salvar print de erro: {e_ss}")

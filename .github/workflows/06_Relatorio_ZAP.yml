@@ -36,6 +36,13 @@ jobs:
             libpangocairo-1.0-0 libxshmfence1 libxslt1.1
           playwright install chromium
 
+      - name: Otimizar rede do runner (forçar IPv4 estável)
+        run: |
+          sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
+          sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+          sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=1
+          curl -I -s --max-time 10 https://web.whatsapp.com || echo "Aviso: curl de teste finalizado"
+
       - name: Executar script de automação
         env:
           GITHUB_ACTIONS: "true"
