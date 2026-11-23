@@ -32,6 +32,7 @@ jobs:
       - name: Executar script de automação
         env:
           GITHUB_ACTIONS: "true"
+          PYTHONIOENCODING: utf-8
           POWERBI_KEY: ${{ secrets.POWERBI_KEY }}
           WHATSAPP_KEY: ${{ secrets.WHATSAPP_KEY }}
         run: python 00z_capturar_envia.py
