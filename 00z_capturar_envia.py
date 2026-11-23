@@ -716,19 +716,28 @@ def enviar_whatsapp(prints):
     ]
 
     with sync_playwright() as p:
+        # Teste prévio de conectividade HTTP com web.whatsapp.com
+        try:
+            r = requests.get("https://web.whatsapp.com", timeout=15)
+            log(f"Teste de conectividade web.whatsapp.com: HTTP {r.status_code}")
+        except Exception as e_conn:
+            log(f"⚠️ Alerta: Teste direto de conectividade a web.whatsapp.com falhou: {e_conn}")
+
         args_zap = [
             "--no-sandbox",
+            "--disable-setuid-sandbox",
             "--disable-dev-shm-usage",
             "--disable-blink-features=AutomationControlled",
             "--disable-gpu",
             "--window-size=1920,1080",
-            "--disable-features=IsolateOrigins,site-per-process",
-            "--disable-setuid-sandbox",
-            "--disable-software-rasterizer",
         ]
 
-        # User-Agent moderno e padronizado do Chrome 131 Desktop
-        ua_clean = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+        # Determina o User-Agent dinâmico real da versão instalada do Chromium (sem marcação headless)
+        b_temp = p.chromium.launch(args=["--no-sandbox"])
+        raw_ua = b_temp.new_page().evaluate("navigator.userAgent")
+        b_temp.close()
+        ua_clean = re.sub(r"HeadlessChrome/(\d+[\.\d]*)", r"Chrome/\1", raw_ua)
+        ua_clean = re.sub(r"\(.*?\)", "(Windows NT 10.0; Win64; x64)", ua_clean, count=1)
         log(f"User-Agent utilizado no WhatsApp: {ua_clean}")
 
         # Diagnóstico dos arquivos restaurados da sessão
@@ -761,7 +770,9 @@ def enviar_whatsapp(prints):
 
         try:
             log("Abrindo WhatsApp Web...")
-            page.goto("https://web.whatsapp.com", timeout=120000, wait_until="domcontentloaded")
+            # wait_until='commit' aguarda os headers HTTP e evita travar em conexões de fundo/WebSockets
+            page.goto("https://web.whatsapp.com", timeout=60000, wait_until="commit")
+            log("Conexão inicial com web.whatsapp.com estabelecida, aguardando carregamento da interface...")
             time.sleep(3)
             try:
                 diag = page.evaluate("""() => {
@@ -807,10 +818,10 @@ def enviar_whatsapp(prints):
             log(f"❌ ERRO WhatsApp: {e}")
             try:
                 erro_path = os.path.join(TEMP_DIR, "PRINT_ERRO_WHATSAPP.png")
-                page.screenshot(path=erro_path)
+                page.screenshot(path=erro_path, timeout=5000)
                 log(f"📸 Screenshot do erro salvo em: {erro_path}")
-            except:
-                pass
+            except Exception as e_ss:
+                log(f"Aviso: não foi possível salvar print de erro: {e_ss}")
             context.close()
 
 
