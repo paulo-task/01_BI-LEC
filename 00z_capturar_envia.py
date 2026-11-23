@@ -603,7 +603,7 @@ def aguardar_whatsapp_pronto(page, timeout_ms=240000):
             elif time.time() - qr_detectado_desde > 180:
                 raise RuntimeError(
                     "Sessão WhatsApp expirada — QR Code persistiu por mais de 180s. "
-                    "No PC, rode: python 00z_gerar_sessao.py, escaneie o QR, "
+                    "No PC, rode: python 00z_gerar_sessao_zap.py, escaneie o QR, "
                     "commite whatsapp_session.enc e atualize o Secret WHATSAPP_KEY."
                 )
         else:
@@ -693,7 +693,7 @@ def enviar_whatsapp(prints):
         ok = restaurar_sessao_zap()
         if not ok:
             log("❌ Sem sessão WhatsApp — envio cancelado.")
-            log("   → No PC: python 00z_gerar_sessao.py")
+            log("   → No PC: python 00z_gerar_sessao_zap.py")
             log("   → Commite whatsapp_session.enc no repositório")
             log("   → Adicione whatsapp_key.txt como Secret WHATSAPP_KEY no GitHub")
             return

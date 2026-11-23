@@ -6,7 +6,7 @@ Execute UMA VEZ no seu PC para autenticar o WhatsApp Web e
 gerar o arquivo criptografado whatsapp_session.enc.
 
 Passos:
-  1. python 00z_gerar_sessao.py
+  1. python 00z_gerar_sessao_zap.py
   2. Escaneie o QR Code no navegador
   3. O script gera:
        - whatsapp_session.enc  (commitar no repositorio)
