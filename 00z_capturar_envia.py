@@ -727,17 +727,20 @@ def enviar_whatsapp(prints):
             "--disable-software-rasterizer",
         ]
 
-        # Determina o User-Agent moderno para evitar bloqueio por 'navegador desatualizado'
-        b_temp = p.chromium.launch(args=["--no-sandbox"])
-        raw_ua = b_temp.new_page().evaluate("navigator.userAgent")
-        b_temp.close()
-        ua_clean = re.sub(r"HeadlessChrome/(\d+[\.\d]*)", r"Chrome/\1", raw_ua)
-        ua_clean = re.sub(r"\(.*?\)", "(Windows NT 10.0; Win64; x64)", ua_clean, count=1)
-        # Se a versão do Chrome detectada for antiga (ex: < 128), força uma versão moderna aceita pela Meta
-        match_v = re.search(r"Chrome/(\d+)", ua_clean)
-        if not match_v or int(match_v.group(1)) < 128:
-            ua_clean = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+        # User-Agent moderno e padronizado do Chrome 131 Desktop
+        ua_clean = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
         log(f"User-Agent utilizado no WhatsApp: {ua_clean}")
+
+        # Diagnóstico dos arquivos restaurados da sessão
+        try:
+            itens_zap = os.listdir(USER_DATA_ZAP) if os.path.exists(USER_DATA_ZAP) else []
+            default_dir = os.path.join(USER_DATA_ZAP, "Default")
+            itens_def = os.listdir(default_dir) if os.path.exists(default_dir) else []
+            idb_dir = os.path.join(default_dir, "IndexedDB")
+            itens_idb = os.listdir(idb_dir) if os.path.exists(idb_dir) else []
+            log(f"Perfil ZAP restaurado: {len(itens_zap)} itens raiz, {len(itens_def)} em Default, {len(itens_idb)} em IndexedDB.")
+        except Exception as e_diag:
+            log(f"Aviso diagnóstico perfil: {e_diag}")
 
         context = p.chromium.launch_persistent_context(
             USER_DATA_ZAP,
@@ -752,9 +755,26 @@ def enviar_whatsapp(prints):
         page = context.pages[0]
         page.set_default_timeout(120000)
 
+        # Captura mensagens de erro do console do navegador para diagnóstico
+        page.on("console", lambda msg: log(f"[CONSOLE {msg.type}] {msg.text}") if msg.type in ("error", "warning") else None)
+        page.on("pageerror", lambda err: log(f"[PAGE ERROR] {err}"))
+
         try:
             log("Abrindo WhatsApp Web...")
             page.goto("https://web.whatsapp.com", timeout=120000, wait_until="domcontentloaded")
+            time.sleep(3)
+            try:
+                diag = page.evaluate("""() => {
+                    const keys = Object.keys(localStorage);
+                    return {
+                        totalKeys: keys.length,
+                        waKeys: keys.filter(k => k.startsWith('W')).length,
+                        url: window.location.href
+                    };
+                }""")
+                log(f"Diagnóstico inicial localStorage: {diag}")
+            except Exception as e:
+                log(f"Aviso diagnóstico inicial: {e}")
             log("Aguardando carregamento da tela principal...")
             aguardar_whatsapp_pronto(page, timeout_ms=240000)
             fechar_dialogos_whatsapp(page)
