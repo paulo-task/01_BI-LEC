@@ -552,10 +552,21 @@ def capturar_powerbi():
 # ─────────────────────────────────────────────
 
 def whatsapp_pediu_qr(page):
-    seletores = ["canvas[aria-label*='QR']", "[data-testid='qrcode']"]
+    # Se a lista de conversas já estiver presente, nunca é tela de QR
+    try:
+        if page.locator("#pane-side, [data-testid='chat-list']").first.is_visible(timeout=500):
+            return False
+    except Exception:
+        pass
+
+    seletores = ["canvas[aria-label*='QR']", "canvas[aria-label*='Scan']", "[data-testid='qrcode']", "div[data-ref] canvas"]
     for sel in seletores:
         try:
-            if page.locator(sel).first.is_visible(timeout=1500):
+            el = page.locator(sel).first
+            if el.is_visible(timeout=1000):
+                # Dupla checagem: se conversas carregaram, ignora
+                if page.locator("#pane-side").count() > 0:
+                    return False
                 return True
         except Exception:
             pass
