@@ -5,7 +5,7 @@ on:
 
 jobs:
   executar-relatorios:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     timeout-minutes: 45
     permissions:
       contents: read
@@ -27,29 +27,21 @@ jobs:
           pip install -r requirements.txt
 
       - name: Instalar Chromium para Playwright
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq \
-            xvfb \
-            libatk1.0-0 libatk-bridge2.0-0 libxcomposite1 libxdamage1 \
-            libxext6 libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 \
-            libpangocairo-1.0-0 libxshmfence1 libxslt1.1
-          playwright install chromium
+        run: playwright install chromium
 
       - name: Executar script de automação
         env:
           GITHUB_ACTIONS: "true"
           POWERBI_KEY: ${{ secrets.POWERBI_KEY }}
           WHATSAPP_KEY: ${{ secrets.WHATSAPP_KEY }}
-        run: |
-          xvfb-run -a --server-args="-screen 0 1920x1080x24" python 00z_capturar_envia.py
+        run: python 00z_capturar_envia.py
 
       - name: Upload de logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: logs-automacao
-          path: /tmp/relatorios/log_automacao.txt
+          path: ${{ runner.temp }}/relatorios/log_automacao.txt
           retention-days: 7
           if-no-files-found: ignore
 
@@ -58,6 +50,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: prints-powerbi
-          path: /tmp/relatorios/PRINT_*.png
+          path: ${{ runner.temp }}/relatorios/PRINT_*.png
           retention-days: 3
           if-no-files-found: ignore
