@@ -50,13 +50,17 @@ TAREFAS_DEFAULT = {
 }
 
 
+CREATE_NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000)
+
+
 def vpn_esta_conectada():
     try:
         res = subprocess.run(
             ["powershell", "-NoProfile", "-Command", "Get-NetAdapter | Where-Object { $_.InterfaceDescription -like '*Fortinet*' -and $_.Status -eq 'Up' }"],
             capture_output=True,
             text=True,
-            timeout=5
+            timeout=5,
+            creationflags=CREATE_NO_WINDOW
         )
         return bool(res.stdout.strip())
     except Exception:
@@ -70,7 +74,8 @@ def conectar_vpn_automatica():
             ["powershell", "-ExecutionPolicy", "Bypass", "-NoProfile", "-File", ps1_path],
             cwd=r"C:\Program Files\Fortinet\FortiClient",
             capture_output=True,
-            timeout=35
+            timeout=35,
+            creationflags=CREATE_NO_WINDOW
         )
 
 
@@ -477,7 +482,8 @@ class CentralAutomacoesApp:
                 stderr=subprocess.STDOUT,
                 text=True,
                 encoding="utf-8",
-                errors="replace"
+                errors="replace",
+                creationflags=CREATE_NO_WINDOW
             )
 
             linhas_log = []

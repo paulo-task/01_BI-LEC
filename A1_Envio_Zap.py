@@ -471,11 +471,7 @@ def capturar_powerbi():
         ]
         if not IS_GITHUB:
             # Executa a janela fora da tela visível para não sobrepor janelas nem interromper o usuário
-            args.extend([
-                "--window-position=-32000,-32000",
-                "--no-focus-on-init",
-                "--silent-launch",
-            ])
+            args.append("--window-position=-32000,-32000")
 
         browser = None
         if IS_GITHUB:
@@ -764,11 +760,7 @@ def enviar_whatsapp(prints):
         ]
         if not IS_GITHUB:
             # Executa a janela fora da tela visível para não sobrepor janelas nem interromper o usuário
-            args_zap.extend([
-                "--window-position=-32000,-32000",
-                "--no-focus-on-init",
-                "--silent-launch",
-            ])
+            args_zap.append("--window-position=-32000,-32000")
 
         browser = None
         if payload_zap:
