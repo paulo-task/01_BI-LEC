@@ -470,7 +470,12 @@ def capturar_powerbi():
             "--disable-features=WebAuthentication,WebAuthenticationConditionalUI",
         ]
         if not IS_GITHUB:
-            args.append("--start-maximized")
+            # Executa a janela fora da tela visível para não sobrepor janelas nem interromper o usuário
+            args.extend([
+                "--window-position=-32000,-32000",
+                "--no-focus-on-init",
+                "--silent-launch",
+            ])
 
         browser = None
         if IS_GITHUB:
@@ -757,6 +762,13 @@ def enviar_whatsapp(prints):
             "--disable-gpu",
             "--window-size=1920,1080",
         ]
+        if not IS_GITHUB:
+            # Executa a janela fora da tela visível para não sobrepor janelas nem interromper o usuário
+            args_zap.extend([
+                "--window-position=-32000,-32000",
+                "--no-focus-on-init",
+                "--silent-launch",
+            ])
 
         browser = None
         if payload_zap:
