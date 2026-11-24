@@ -1,0 +1,45 @@
+{
+    "tarefas": {
+        "whatsapp": {
+            "id": "whatsapp",
+            "nome": "Relatório WhatsApp (Power BI)",
+            "icone": "📱",
+            "script": "A1_Envio_Zap.py",
+            "horarios": [
+                "09:03",
+                "11:03",
+                "13:03",
+                "15:03",
+                "16:03",
+                "17:03",
+                "18:03",
+                "19:03"
+            ],
+            "apenas_dias_uteis": true,
+            "ativo": true,
+            "ultimo_status": "Sucesso ✅",
+            "ultimo_horario": "15:32:26"
+        },
+        "sql": {
+            "id": "sql",
+            "nome": "Copiar Arquivos SQL",
+            "icone": "🗄️",
+            "script": "A2_Envio_SQL.py",
+            "horarios": [
+                "09:05",
+                "11:05",
+                "13:05",
+                "15:05",
+                "16:05",
+                "17:05",
+                "18:05",
+                "19:05",
+                "20:05"
+            ],
+            "apenas_dias_uteis": true,
+            "ativo": true,
+            "ultimo_status": "Sucesso ✅",
+            "ultimo_horario": "14:28:59"
+        }
+    }
+}

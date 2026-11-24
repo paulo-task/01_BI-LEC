@@ -46,8 +46,8 @@ jobs:
       - name: 🚀 6. Executar ELF Hora
         run: python3 01_ELF_Hora.py
 
-      - name: ⏳ 7. Aguardar (240s)
-        run: sleep 240
+      - name: ⏳ 7. Aguardar (300s)
+        run: sleep 300
 
       - name: 🤖 8. Coletar e Enviar para SharePoint
         run: python3 -u 00a_Coletor.py simples

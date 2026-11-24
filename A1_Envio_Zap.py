@@ -10,9 +10,6 @@ import sys
 import re
 import json
 import time
-import zipfile
-import shutil
-import tempfile
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import quote
@@ -21,6 +18,18 @@ from playwright.sync_api import sync_playwright
 from PIL import Image
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
+try:
+    from zap_web_sessao import (
+        descriptografar_sessao,
+        eh_portavel,
+        restaurar_indexeddb,
+        script_stealth_e_localstorage,
+    )
+except ImportError:
+    descriptografar_sessao = None
+    eh_portavel = None
+    restaurar_indexeddb = None
+    script_stealth_e_localstorage = None
 
 load_dotenv()
 
@@ -72,6 +81,7 @@ def url_acesso_powerbi():
 def url_oauth_microsoft():
     """URL OAuth oficial do Power BI — bypass da tela singleSignOn (JS)."""
     redirect = quote(PBI_REDIRECT_URI, safe="")
+    prompt_param = "&prompt=login" if IS_GITHUB else ""
     return (
         "https://login.microsoftonline.com/common/oauth2/authorize"
         f"?client_id={PBI_CLIENT_ID}"
@@ -79,7 +89,7 @@ def url_oauth_microsoft():
         "&scope=openid%20profile%20offline_access"
         f"&redirect_uri={redirect}"
         "&response_mode=form_post"
-        "&prompt=login"
+        f"{prompt_param}"
     )
 # ─────────────────────────────────────────────
 # UTILITÁRIOS
@@ -88,9 +98,15 @@ def url_oauth_microsoft():
 def log(mensagem):
     data = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     msg = f"[{data}] {mensagem}"
-    print(msg, flush=True)
-    with open(LOG_FILE, "a", encoding="utf-8") as f:
-        f.write(msg + "\n")
+    try:
+        print(msg, flush=True)
+    except Exception:
+        pass
+    try:
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(msg + "\n")
+    except Exception:
+        pass
 
 
 def log_status_credenciais_github():
@@ -106,47 +122,6 @@ def log_status_credenciais_github():
     else:
         log("❌ PB_USER vazio! O secret deve se chamar exatamente PB_USER (maiúsculas)")
     log(f"PB_PASS recebido: {'sim' if POWERBI_PASS else 'NÃO — secret PB_PASS vazio ou inexistente'}")
-
-
-def restaurar_sessao_enc(chave_env, arquivo_enc, pasta_destino, nome_servico):
-    """Descriptografa sessão Chromium (zip) e restaura em pasta_destino — WhatsApp."""
-    if not chave_env:
-        log(f"AVISO: {nome_servico}_KEY não definida — sem sessão prévia.")
-        return False
-    if not os.path.exists(arquivo_enc):
-        log(f"AVISO: Arquivo de sessão não encontrado: {arquivo_enc}")
-        return False
-
-    zip_tmp = os.path.join(TEMP_DIR, f"sessao_{nome_servico}_dec.zip")
-    try:
-        f = Fernet(chave_env.encode())
-        with open(arquivo_enc, "rb") as fp:
-            dados_enc = fp.read()
-        dados = f.decrypt(dados_enc)
-        if dados[:1] == b"{":
-            log(f"❌ {arquivo_enc} é sessão Power BI — use restaurar_state_pbi().")
-            return False
-        with open(zip_tmp, "wb") as fp:
-            fp.write(dados)
-        if os.path.exists(pasta_destino):
-            shutil.rmtree(pasta_destino)
-        with zipfile.ZipFile(zip_tmp, "r") as z:
-            z.extractall(pasta_destino)
-
-        # Remove Service Worker e caches do perfil para evitar deadlock entre arquiteturas (Windows -> Linux)
-        def_p = os.path.join(pasta_destino, "Default")
-        for pasta_cache in ["Service Worker", "Cache", "Code Cache", "GPUCache", "ShaderCache", "Network"]:
-            c_path = os.path.join(def_p, pasta_cache)
-            if os.path.exists(c_path):
-                shutil.rmtree(c_path, ignore_errors=True)
-        log(f"✅ Sessão {nome_servico} restaurada com sucesso.")
-        return True
-    except Exception as e:
-        erro_msg = str(e) or type(e).__name__
-        log(f"❌ Erro ao restaurar sessão {nome_servico}: {erro_msg}")
-        if "InvalidToken" in erro_msg or not str(e):
-            log("   Possível causa: A chave Secret no GitHub não corresponde ao arquivo .enc commitado.")
-        return False
 
 
 def restaurar_state_pbi(caminho_json):
@@ -175,8 +150,35 @@ def restaurar_state_pbi(caminho_json):
         return False
 
 
-def restaurar_sessao_zap():
-    return restaurar_sessao_enc(WHATSAPP_KEY, SESSION_ENC, USER_DATA_ZAP, "WhatsApp")
+def carregar_sessao_zap_portavel():
+    """Descriptografa whatsapp_session.enc no formato portável (cookies + LS + IndexedDB)."""
+    if not WHATSAPP_KEY:
+        log("AVISO: WHATSAPP_KEY não definida — sem sessão prévia.")
+        return None
+    if not os.path.exists(SESSION_ENC):
+        log(f"AVISO: Arquivo de sessão não encontrado: {SESSION_ENC}")
+        return None
+    try:
+        payload = descriptografar_sessao(SESSION_ENC, WHATSAPP_KEY)
+    except Exception as e:
+        erro_msg = str(e) or type(e).__name__
+        log(f"❌ Erro ao restaurar sessão WhatsApp: {erro_msg}")
+        if "InvalidToken" in erro_msg or not str(e):
+            log("   Possível causa: o Secret WHATSAPP_KEY não corresponde ao whatsapp_session.enc commitado.")
+        return None
+
+    if not eh_portavel(payload):
+        log("❌ whatsapp_session.enc está no formato ANTIGO (perfil Chromium do Windows).")
+        log("   Esse formato não autentica no GitHub Linux: cookies DPAPI e IndexedDB não portam.")
+        log("   No PC rode: python 00z_gerar_sessao_zap.py  (escaneie o QR)")
+        log("   Commite whatsapp_session.enc. Só atualize WHATSAPP_KEY se o gerador criar chave nova.")
+        return None
+
+    n_ls = len(payload.get("localStorage") or {})
+    n_idb = len(payload.get("indexedDB") or [])
+    n_ck = len((payload.get("storage_state") or {}).get("cookies") or [])
+    log(f"✅ Sessão WhatsApp portável restaurada ({n_ck} cookies, {n_ls} localStorage, {n_idb} bancos IndexedDB).")
+    return payload
 
 
 def recortar_imagem(caminho_img, x1, y1, x2, y2, nome_final):
@@ -268,6 +270,16 @@ def tentar_login_microsoft(page):
             except Exception:
                 email_input_ms.press("Enter")
             time.sleep(3)
+
+        # Se a Microsoft sugerir chave de acesso/FIDO, seleciona 'Use sua senha em vez disso'
+        try:
+            btn_senha = page.locator("#idA_PWD_SwitchToPassword, a:has-text('senha'), a:has-text('password'), a:has-text('Use sua senha'), button:has-text('senha')").first
+            if btn_senha.is_visible(timeout=3000):
+                log("Selecionando opção 'Use sua senha' na Microsoft...")
+                btn_senha.click()
+                time.sleep(2)
+        except Exception:
+            pass
 
         pass_input = page.locator("#i0118, input[name='passwd'], input[type='password']").first
         if pass_input.is_visible(timeout=15000):
@@ -414,12 +426,8 @@ def clicar_radio(page, nome):
     raise TimeoutError(f"Radio '{nome}' não encontrado após 3 tentativas")
 
 
-def aguardar_visual_atualizado(page, segundos=20):
-    time.sleep(3)
-    try:
-        page.wait_for_load_state("networkidle", timeout=45000)
-    except Exception:
-        pass
+def aguardar_visual_atualizado(page, segundos=30):
+    log(f"Aguardando atualização e renderização dos visuais ({segundos}s)...")
     time.sleep(segundos)
 
 
@@ -459,6 +467,7 @@ def capturar_powerbi():
             "--disable-dev-shm-usage",
             "--no-sandbox",
             "--window-size=1920,1080",
+            "--disable-features=WebAuthentication,WebAuthenticationConditionalUI",
         ]
         if not IS_GITHUB:
             args.append("--start-maximized")
@@ -615,17 +624,25 @@ def aguardar_whatsapp_pronto(page, timeout_ms=240000):
         except Exception:
             pass
 
-        # Verifica QR Code com tolerância de 180 segundos (tempo necessário para o runner restaurar o IndexedDB/chaves)
+        # Verifica QR Code com tolerância de 180 segundos no GitHub ou 300s no Local
         if whatsapp_pediu_qr(page):
             if qr_detectado_desde is None:
                 qr_detectado_desde = time.time()
-                log("Elemento de QR Code visível, aguardando restauração e sincronização da sessão...")
-            elif time.time() - qr_detectado_desde > 180:
-                raise RuntimeError(
-                    "Sessão WhatsApp expirada — QR Code persistiu por mais de 180s. "
-                    "No PC, rode: python 00z_gerar_sessao_zap.py, escaneie o QR, "
-                    "commite whatsapp_session.enc e atualize o Secret WHATSAPP_KEY."
-                )
+                if IS_GITHUB:
+                    log("Elemento de QR Code visível, aguardando restauração e sincronização da sessão...")
+                else:
+                    log("📱 QR Code visível no WhatsApp. Se necessário, escaneie com seu celular...")
+            elif time.time() - qr_detectado_desde > (180 if IS_GITHUB else 300):
+                if IS_GITHUB:
+                    raise RuntimeError(
+                        "Sessão WhatsApp expirada — QR Code persistiu por mais de 180s. "
+                        "No PC, rode: python 00z_gerar_sessao_zap.py, escaneie o QR, "
+                        "commite whatsapp_session.enc e atualize o Secret WHATSAPP_KEY."
+                    )
+                else:
+                    raise RuntimeError(
+                        "Tempo limite para leitura do QR Code esgotado (300s)."
+                    )
         else:
             qr_detectado_desde = None
 
@@ -709,13 +726,14 @@ def confirmar_envio_midia(page):
 def enviar_whatsapp(prints):
     log("\n=== ENVIANDO PARA WHATSAPP ===")
 
+    payload_zap = None
     if IS_GITHUB:
-        ok = restaurar_sessao_zap()
-        if not ok:
+        payload_zap = carregar_sessao_zap_portavel()
+        if not payload_zap:
             log("❌ Sem sessão WhatsApp — envio cancelado.")
             log("   → No PC: python 00z_gerar_sessao_zap.py")
             log("   → Commite whatsapp_session.enc no repositório")
-            log("   → Adicione whatsapp_key.txt como Secret WHATSAPP_KEY no GitHub")
+            log("   → Secret WHATSAPP_KEY = conteúdo de whatsapp_key.txt (só se a chave for nova)")
             return
 
     regras = [
@@ -740,36 +758,48 @@ def enviar_whatsapp(prints):
             "--window-size=1920,1080",
         ]
 
-        # Determina o User-Agent dinâmico real da versão instalada do Chromium (sem marcação headless)
-        b_temp = p.chromium.launch(args=["--no-sandbox"])
-        raw_ua = b_temp.new_page().evaluate("navigator.userAgent")
-        b_temp.close()
-        ua_clean = re.sub(r"HeadlessChrome/(\d+[\.\d]*)", r"Chrome/\1", raw_ua)
-        ua_clean = re.sub(r"\(.*?\)", "(Windows NT 10.0; Win64; x64)", ua_clean, count=1)
-        log(f"User-Agent utilizado no WhatsApp: {ua_clean}")
+        browser = None
+        if payload_zap:
+            ua = (payload_zap.get("userAgent") or "").strip()
+            if not ua:
+                b_temp = p.chromium.launch(args=["--no-sandbox"])
+                ua = b_temp.new_page().evaluate("navigator.userAgent")
+                b_temp.close()
+                ua = re.sub(r"HeadlessChrome/(\d+[\.\d]*)", r"Chrome/\1", ua)
+            log(f"User-Agent utilizado no WhatsApp: {ua}")
+            state_path = os.path.join(TEMP_DIR, "whatsapp_state.json")
+            with open(state_path, "w", encoding="utf-8") as fp:
+                json.dump(payload_zap.get("storage_state") or {"cookies": [], "origins": []}, fp)
+            browser = p.chromium.launch(headless=False, args=args_zap)
+            context = browser.new_context(
+                storage_state=state_path,
+                user_agent=ua,
+                viewport={"width": 1920, "height": 1080},
+                locale="pt-BR",
+                timezone_id="America/Sao_Paulo",
+            )
+            context.add_init_script(
+                script_stealth_e_localstorage(
+                    payload_zap.get("localStorage"),
+                    payload_zap.get("platform") or "Win32",
+                )
+            )
+            page = context.new_page()
+        else:
+            ua_clean = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+            log(f"User-Agent utilizado no WhatsApp: {ua_clean}")
+            context = p.chromium.launch_persistent_context(
+                USER_DATA_ZAP,
+                headless=False,
+                args=args_zap,
+                user_agent=ua_clean,
+                viewport={"width": 1920, "height": 1080},
+                slow_mo=500,
+                locale="pt-BR",
+                timezone_id="America/Sao_Paulo",
+            )
+            page = context.pages[0]
 
-        # Diagnóstico dos arquivos restaurados da sessão
-        try:
-            itens_zap = os.listdir(USER_DATA_ZAP) if os.path.exists(USER_DATA_ZAP) else []
-            default_dir = os.path.join(USER_DATA_ZAP, "Default")
-            itens_def = os.listdir(default_dir) if os.path.exists(default_dir) else []
-            idb_dir = os.path.join(default_dir, "IndexedDB")
-            itens_idb = os.listdir(idb_dir) if os.path.exists(idb_dir) else []
-            log(f"Perfil ZAP restaurado: {len(itens_zap)} itens raiz, {len(itens_def)} em Default, {len(itens_idb)} em IndexedDB.")
-        except Exception as e_diag:
-            log(f"Aviso diagnóstico perfil: {e_diag}")
-
-        context = p.chromium.launch_persistent_context(
-            USER_DATA_ZAP,
-            headless=False,
-            args=args_zap,
-            user_agent=ua_clean,
-            viewport={"width": 1920, "height": 1080},
-            slow_mo=500,
-            locale="pt-BR",
-            timezone_id="America/Sao_Paulo",
-        )
-        page = context.pages[0]
         page.set_default_timeout(120000)
 
         # Captura mensagens de erro do console do navegador para diagnóstico
@@ -782,6 +812,15 @@ def enviar_whatsapp(prints):
             page.goto("https://web.whatsapp.com", timeout=60000, wait_until="commit")
             log("Conexão inicial com web.whatsapp.com estabelecida, aguardando carregamento da interface...")
             time.sleep(3)
+            if payload_zap:
+                try:
+                    resultado_idb = restaurar_indexeddb(page, payload_zap.get("indexedDB") or [])
+                    log(f"IndexedDB restaurado: {resultado_idb}")
+                except Exception as e_idb:
+                    log(f"Aviso ao restaurar IndexedDB: {e_idb}")
+                log("Recarregando WhatsApp Web com a sessão injetada...")
+                page.reload(timeout=60000, wait_until="commit")
+                time.sleep(4)
             try:
                 diag = page.evaluate("""() => {
                     const keys = Object.keys(localStorage);
@@ -822,6 +861,8 @@ def enviar_whatsapp(prints):
                         time.sleep(3)
 
             context.close()
+            if browser:
+                browser.close()
         except Exception as e:
             log(f"❌ ERRO WhatsApp: {e}")
             try:
@@ -830,7 +871,15 @@ def enviar_whatsapp(prints):
                 log(f"📸 Screenshot do erro salvo em: {erro_path}")
             except Exception as e_ss:
                 log(f"Aviso: não foi possível salvar print de erro: {e_ss}")
-            context.close()
+            try:
+                context.close()
+            except Exception:
+                pass
+            if browser:
+                try:
+                    browser.close()
+                except Exception:
+                    pass
 
 
 def enviar_para_grupo(page, arquivo, grupo_nome):

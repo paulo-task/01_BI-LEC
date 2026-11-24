@@ -11,12 +11,12 @@ echo   Iniciando Copia de Arquivos (BI_LEC para BI_LEC_SQL)
 echo ============================================================
 echo.
 
-python -u copiar_arquivos_sql.py
+python -u A2_Envio_SQL.py
 
 echo.
 pause
 goto :eof
 
 :run_silent
-python -u copiar_arquivos_sql.py
+python -u A2_Envio_SQL.py
 exit /b %ERRORLEVEL%

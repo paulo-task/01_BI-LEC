@@ -5,6 +5,9 @@ GERADOR DE SESSAO WHATSAPP
 Execute UMA VEZ no seu PC para autenticar o WhatsApp Web e
 gerar o arquivo criptografado whatsapp_session.enc.
 
+O formato e portavel (cookies + localStorage + IndexedDB),
+para funcionar no GitHub Actions (Linux) a partir do Windows.
+
 Passos:
   1. python 00z_gerar_sessao_zap.py
   2. Escaneie o QR Code no navegador
@@ -14,6 +17,7 @@ Passos:
   4. Adicione a CHAVE como Secret no GitHub:
        Nome:  WHATSAPP_KEY
        Valor: conteudo do arquivo whatsapp_key.txt
+     (Se a chave ja existia, nao precisa atualizar o Secret.)
   5. Commit apenas o whatsapp_session.enc:
        git add whatsapp_session.enc
        git commit -m "chore: atualiza sessao whatsapp"
@@ -25,57 +29,26 @@ import os
 import sys
 import time
 import tempfile
-import zipfile
 from playwright.sync_api import (
     TimeoutError as PlaywrightTimeoutError,
     sync_playwright,
 )
-from cryptography.fernet import Fernet
 
-# Perfil novo do Chromium e criado em uma pasta temporaria por execucao.
-_SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
-ENC_SAIDA     = os.path.join(_SCRIPT_DIR, "whatsapp_session.enc")
-KEY_SAIDA     = os.path.join(_SCRIPT_DIR, "whatsapp_key.txt")
-ZIP_TMP       = os.path.join(_SCRIPT_DIR, "dados_zap_tmp.zip")
+from zap_web_sessao import (
+    criptografar_payload,
+    dump_sessao_pagina,
+    obter_ou_criar_chave,
+)
 
-# Pastas do Chromium que NAO precisam ser salvas (cache, etc.)
-EXCLUIR_DIRS = {
-    "Cache", "Code Cache", "GPUCache", "ShaderCache",
-    "DawnGraphiteCache", "DawnWebGPUCache", "GrShaderCache",
-    "blob_storage", "CrashpadMetrics-active.pma",
-    "component_crx_cache", "hyphen-data",
-}
-EXCLUIR_ARQUIVOS = {
-    "SingletonLock", "SingletonSocket", "lockfile",
-    "SingletonCookie", "LOCK", "LOG", "LOG.old",
-}
-
-
-def compactar_sessao(pasta_origem, zip_destino):
-    """Compacta apenas os arquivos essenciais da sessao."""
-    total_bytes = 0
-    contagem = 0
-    with zipfile.ZipFile(zip_destino, "w", zipfile.ZIP_DEFLATED) as zf:
-        for root, dirs, files in os.walk(pasta_origem):
-            # Remove dirs de cache da lista de visita
-            dirs[:] = [d for d in dirs if d not in EXCLUIR_DIRS]
-            for file in files:
-                if file in EXCLUIR_ARQUIVOS:
-                    continue
-                caminho_abs = os.path.join(root, file)
-                caminho_rel = os.path.relpath(caminho_abs, pasta_origem)
-                try:
-                    zf.write(caminho_abs, caminho_rel)
-                    total_bytes += os.path.getsize(caminho_abs)
-                    contagem += 1
-                except (PermissionError, OSError):
-                    pass  # ignora arquivos bloqueados
-    return contagem, total_bytes
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ENC_SAIDA = os.path.join(_SCRIPT_DIR, "whatsapp_session.enc")
+KEY_SAIDA = os.path.join(_SCRIPT_DIR, "whatsapp_key.txt")
 
 
 def _gerar_sessao(user_data_zap):
     print("=" * 60)
     print("  GERADOR DE SESSAO WHATSAPP PARA GITHUB ACTIONS")
+    print("  Formato portavel (Windows -> Linux)")
     print("=" * 60)
     print(f"\nDiretorio de sessao temporario: {user_data_zap}\n")
 
@@ -84,18 +57,6 @@ def _gerar_sessao(user_data_zap):
     print("   O script fecha o navegador automaticamente.\n")
 
     with sync_playwright() as p:
-        # Determina o User-Agent dinâmico da versão instalada do Chromium (sem marcação headless)
-        b_temp = p.chromium.launch(args=["--no-sandbox"])
-        raw_ua = b_temp.new_page().evaluate("navigator.userAgent")
-        b_temp.close()
-        import re
-        ua_clean = re.sub(r"HeadlessChrome/(\d+[\.\d]*)", r"Chrome/\1", raw_ua)
-        ua_clean = re.sub(r"\(.*?\)", "(Windows NT 10.0; Win64; x64)", ua_clean, count=1)
-        match_v = re.search(r"Chrome/(\d+)", ua_clean)
-        if not match_v or int(match_v.group(1)) < 128:
-            ua_clean = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-        print(f"[UA] User-Agent: {ua_clean}\n")
-
         args_zap = [
             "--no-sandbox",
             "--disable-dev-shm-usage",
@@ -107,7 +68,6 @@ def _gerar_sessao(user_data_zap):
             user_data_zap,
             headless=False,
             args=args_zap,
-            user_agent=ua_clean,
             viewport={"width": 1920, "height": 1080},
             slow_mo=300,
             locale="pt-BR",
@@ -142,9 +102,9 @@ def _gerar_sessao(user_data_zap):
                 pass
             time.sleep(30)
 
-            # Verifica se o localStorage do WhatsApp já tem as chaves de sessão
             print("   Verificando persistencia da sessao no localStorage...")
-            for tentativa in range(6):  # até 60s extras de espera
+            tem_sessao = False
+            for tentativa in range(6):
                 try:
                     tem_sessao = page.evaluate("""() => {
                         try {
@@ -155,40 +115,46 @@ def _gerar_sessao(user_data_zap):
                     if tem_sessao:
                         print(f"   [OK] Sessao confirmada no localStorage (tentativa {tentativa+1})")
                         break
-                    else:
-                        print(f"   [...] Aguardando chaves de sessao... ({tentativa+1}/6)")
-                        time.sleep(10)
+                    print(f"   [...] Aguardando chaves de sessao... ({tentativa+1}/6)")
+                    time.sleep(10)
                 except Exception:
                     time.sleep(10)
 
-            # Garante 15s extras para flush do IndexedDB no disco
-            print("   Aguardando flush final do IndexedDB no disco (15s)...")
-            time.sleep(15)
-        except Exception:
-            print("[ERRO] Timeout -- QR Code nao foi escaneado a tempo.")
+            print("   Exportando cookies, localStorage e IndexedDB (formato portavel)...")
+            try:
+                payload = dump_sessao_pagina(page, context)
+            except Exception as dump_err:
+                print(f"   [AVISO] Dump completo falhou ({dump_err}). Exportando cookies/localStorage...")
+                ls = {}
+                try:
+                    ls = page.evaluate("() => Object.fromEntries(Object.keys(localStorage).map(k => [k, localStorage.getItem(k)]))")
+                except Exception:
+                    pass
+                payload = {
+                    "format": "zap-portable-v1",
+                    "storage_state": context.storage_state(),
+                    "localStorage": ls or {},
+                    "indexedDB": [],
+                    "userAgent": page.evaluate("() => navigator.userAgent"),
+                    "platform": page.evaluate("() => navigator.platform"),
+                }
+            n_ls = len(payload.get("localStorage") or {})
+            n_idb = len(payload.get("indexedDB") or [])
+            n_ck = len((payload.get("storage_state") or {}).get("cookies") or [])
+            print(f"   [OK] cookies={n_ck}  localStorage={n_ls}  IndexedDB={n_idb} bancos")
+            if n_ls < 1 and n_idb < 1:
+                print("[ERRO] Nada foi exportado da sessao. Tente de novo.")
+                context.close()
+                sys.exit(1)
+        except Exception as e:
+            print(f"[ERRO] Timeout ou falha ao exportar sessao: {e}")
             context.close()
             sys.exit(1)
 
         context.close()
 
-    # Compacta apenas arquivos essenciais
-    print(f"\n[ZIP] Compactando sessao (sem cache)...")
-    if os.path.exists(ZIP_TMP):
-        os.remove(ZIP_TMP)
-
-    qtd, total = compactar_sessao(user_data_zap, ZIP_TMP)
-    tamanho_mb = os.path.getsize(ZIP_TMP) / (1024 * 1024)
-    print(f"   {qtd} arquivos | {tamanho_mb:.1f} MB compactado")
-
-    # Criptografa com Fernet
-    print("[ENC] Criptografando...")
-    chave = Fernet.generate_key()
-    f = Fernet(chave)
-
-    with open(ZIP_TMP, "rb") as fp:
-        dados_zip = fp.read()
-
-    dados_enc = f.encrypt(dados_zip)
+    chave, chave_nova = obter_ou_criar_chave(KEY_SAIDA)
+    dados_enc = criptografar_payload(payload, chave)
 
     with open(ENC_SAIDA, "wb") as fp:
         fp.write(dados_enc)
@@ -196,31 +162,29 @@ def _gerar_sessao(user_data_zap):
     tamanho_enc_kb = os.path.getsize(ENC_SAIDA) / 1024
     print(f"   Arquivo criptografado: {tamanho_enc_kb:.0f} KB")
 
-    # Salva a chave
-    with open(KEY_SAIDA, "w") as fp:
-        fp.write(chave.decode())
-
-    # Remove zip temporario
-    os.remove(ZIP_TMP)
-
     print("\n" + "=" * 60)
     print("  [OK] CONCLUIDO!")
     print("=" * 60)
+    chave_txt = chave.decode() if isinstance(chave, bytes) else chave
+    if chave_nova:
+        passo_secret = f"""1. Atualize o Secret no GitHub (chave NOVA gerada):
+   Nome:  WHATSAPP_KEY
+   Valor: {chave_txt}
+
+   (ou copie do arquivo: {KEY_SAIDA})
+"""
+    else:
+        passo_secret = f"""1. A chave em {KEY_SAIDA} foi reutilizada.
+   Nao precisa alterar o Secret WHATSAPP_KEY no GitHub,
+   a menos que o valor la esteja diferente deste arquivo.
+"""
     print(f"""
 PROXIMOS PASSOS:
 
-1. Adicione a CHAVE como Secret no GitHub:
-   URL: github.com -> seu repositorio -> Settings
-        -> Secrets and variables -> Actions
-        -> New repository secret
-   Nome:  WHATSAPP_KEY
-   Valor: {chave.decode()}
-
-   (ou copie do arquivo: {KEY_SAIDA})
-
-2. Commite o arquivo criptografado (pode commitar com seguranca):
+{passo_secret}
+2. Commite o arquivo criptografado:
    git add whatsapp_session.enc
-   git commit -m "chore: atualiza sessao whatsapp"
+   git commit -m "chore: atualiza sessao whatsapp (formato portavel)"
    git push
 
 3. NAO commite o whatsapp_key.txt !

@@ -8987,3 +8987,515 @@ Arquivos atualizados (mais recentes): 2
 Arquivos ignorados (sem alteracoes):  146
 ================================================================================
 
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 23/11/2026 16:05:00
+Regra: Novos sempre copiados | Existentes atualizados se origem for mais recente/diferente
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> [SUBSTITUIDO] EFL - 2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 15:54:35 37,729b vs Destino: 23/11 14:54:23 37,660b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 52 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> [SUBSTITUIDO] Instalações Não Visitadas_2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 15:54:42 25,949,664b vs Destino: 23/11 14:54:29 27,242,304b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 16 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   Resumo: 0 novo(s) | 0 atualizado(s) | 4 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.14 segundos
+Novos arquivos copiados:              0
+Arquivos atualizados (mais recentes): 2
+Arquivos ignorados (sem alteracoes):  146
+================================================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 23/11/2026 17:05:00
+Regra: Novos sempre copiados | Existentes atualizados se origem for mais recente/diferente
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> [SUBSTITUIDO] EFL - 2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 16:54:38 37,700b vs Destino: 23/11 15:54:35 37,729b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 52 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   -> [SUBSTITUIDO] Produtividade Diária Leiturista - Analítico_2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 16:48:26 90,317,743b vs Destino: 23/11 10:49:43 38,262,481b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 16 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   -> [SUBSTITUIDO] Inst. Não Liberadas Faturamento.csv (origem mais recente/diferente (Origem: 23/11 16:48:54 2,138,733b vs Destino: 23/11 10:50:27 1,996,510b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 0 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> [SUBSTITUIDO] Instalações Não Visitadas_2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 16:54:45 25,233,332b vs Destino: 23/11 15:54:42 25,949,664b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 16 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   -> [SUBSTITUIDO] Instalações Não Visitadas_2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 16:48:37 3,045,970b vs Destino: 23/11 10:49:52 14,288,847b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 16 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   -> [SUBSTITUIDO] Lista Impedimentos Aplicados_2026_11.csv (origem mais recente/diferente (Origem: 23/11 16:48:45 41,683,233b vs Destino: 23/11 10:50:17 39,463,304b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 10 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   -> [SUBSTITUIDO] Relatório de Efetividade de Entrega de Contas (Prev X Entr)_2026_11.csv (origem mais recente/diferente (Origem: 23/11 16:48:58 1,525,614b vs Destino: 23/11 10:50:31 1,441,215b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 10 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   Resumo: 0 novo(s) | 0 atualizado(s) | 4 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.14 segundos
+Novos arquivos copiados:              0
+Arquivos atualizados (mais recentes): 7
+Arquivos ignorados (sem alteracoes):  141
+================================================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 23/11/2026 18:05:00
+Regra: Novos sempre copiados | Existentes atualizados se origem for mais recente/diferente
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> [SUBSTITUIDO] EFL - 2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 17:54:23 37,801b vs Destino: 23/11 16:54:38 37,700b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 52 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> [SUBSTITUIDO] Instalações Não Visitadas_2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 17:54:29 24,883,598b vs Destino: 23/11 16:54:45 25,233,332b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 16 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   Resumo: 0 novo(s) | 0 atualizado(s) | 4 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.19 segundos
+Novos arquivos copiados:              0
+Arquivos atualizados (mais recentes): 2
+Arquivos ignorados (sem alteracoes):  146
+================================================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 23/11/2026 19:05:00
+Regra: Novos sempre copiados | Existentes atualizados se origem for mais recente/diferente
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> [SUBSTITUIDO] EFL - 2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 18:54:40 37,796b vs Destino: 23/11 17:54:23 37,801b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 52 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   -> [SUBSTITUIDO] Produtividade Diária Leiturista - Analítico_2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 18:48:15 93,121,550b vs Destino: 23/11 16:48:26 90,317,743b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 16 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   -> [SUBSTITUIDO] Inst. Não Liberadas Faturamento.csv (origem mais recente/diferente (Origem: 23/11 18:48:45 1,752,110b vs Destino: 23/11 16:48:54 2,138,733b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 0 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> [SUBSTITUIDO] Instalações Não Visitadas_2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 18:54:47 25,015,165b vs Destino: 23/11 17:54:29 24,883,598b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 16 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   -> [SUBSTITUIDO] Instalações Não Visitadas_2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 18:48:28 2,973,195b vs Destino: 23/11 16:48:37 3,045,970b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 16 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   -> [SUBSTITUIDO] Lista Impedimentos Aplicados_2026_11.csv (origem mais recente/diferente (Origem: 23/11 18:48:37 41,947,062b vs Destino: 23/11 16:48:45 41,683,233b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 10 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   -> [SUBSTITUIDO] Relatório de Efetividade de Entrega de Contas (Prev X Entr)_2026_11.csv (origem mais recente/diferente (Origem: 23/11 18:48:49 1,528,136b vs Destino: 23/11 16:48:58 1,525,614b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 10 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   Resumo: 0 novo(s) | 0 atualizado(s) | 4 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.26 segundos
+Novos arquivos copiados:              0
+Arquivos atualizados (mais recentes): 7
+Arquivos ignorados (sem alteracoes):  141
+================================================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 24/11/2026 09:05:01
+Regra: Novos sempre copiados | Existentes atualizados se origem for mais recente/diferente
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> [SUBSTITUIDO] EFL - 2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 19:54:48 37,796b vs Destino: 23/11 18:54:40 37,796b))
+   -> [NOVO] EFL - 2026_11_24.csv
+   Resumo: 1 novo(s) | 1 atualizado(s) | 52 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> [SUBSTITUIDO] Instalações Não Visitadas_2026_11_23.csv (origem mais recente/diferente (Origem: 23/11 19:54:55 25,006,435b vs Destino: 23/11 18:54:47 25,015,165b))
+   -> [NOVO] Instalações Não Visitadas_2026_11_24.csv
+   Resumo: 1 novo(s) | 1 atualizado(s) | 16 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   Resumo: 0 novo(s) | 0 atualizado(s) | 4 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 3.03 segundos
+Novos arquivos copiados:              2
+Arquivos atualizados (mais recentes): 2
+Arquivos ignorados (sem alteracoes):  146
+================================================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 24/11/2026 11:11:40
+Regra: Novos sempre copiados | Existentes atualizados se origem for mais recente/diferente
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> [SUBSTITUIDO] EFL - 2026_11_24.csv (origem mais recente/diferente (Origem: 24/11 10:54:19 40,220b vs Destino: 24/11 08:54:20 40,128b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 53 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   -> [NOVO] Produtividade Diária Leiturista - Analítico_2026_11_24.csv
+   Resumo: 1 novo(s) | 0 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   -> [SUBSTITUIDO] Inst. Não Liberadas Faturamento.csv (origem mais recente/diferente (Origem: 24/11 10:48:45 1,926,216b vs Destino: 23/11 18:48:45 1,752,110b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 0 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> [SUBSTITUIDO] Instalações Não Visitadas_2026_11_24.csv (origem mais recente/diferente (Origem: 24/11 10:54:27 38,923,519b vs Destino: 24/11 08:54:28 44,459,801b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   -> [NOVO] Instalações Não Visitadas_2026_11_24.csv
+   Resumo: 1 novo(s) | 0 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   -> [SUBSTITUIDO] Lista Impedimentos Aplicados_2026_10.csv (origem mais recente/diferente (Origem: 24/11 09:32:36 49,537,057b vs Destino: 30/10 11:01:28 49,498,848b))
+   -> [SUBSTITUIDO] Lista Impedimentos Aplicados_2026_11.csv (origem mais recente/diferente (Origem: 24/11 10:48:38 42,283,448b vs Destino: 23/11 18:48:37 41,947,062b))
+   Resumo: 0 novo(s) | 2 atualizado(s) | 9 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   -> [SUBSTITUIDO] Relatório de Efetividade de Entrega de Contas (Prev X Entr)_2026_11.csv (origem mais recente/diferente (Origem: 24/11 10:48:49 1,599,095b vs Destino: 23/11 18:48:49 1,528,136b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 10 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   -> [SUBSTITUIDO] Leituras de Correção_2026_11.csv (origem mais recente/diferente (Origem: 24/11 10:48:55 13,652,356b vs Destino: 20/11 18:48:37 12,507,648b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 10 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   -> [SUBSTITUIDO] Malote_2026_11.xlsx (origem mais recente/diferente (Origem: 24/11 08:41:53 106,836,428b vs Destino: 23/11 08:40:39 104,075,325b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   -> [SUBSTITUIDO] Planejamento_Base_2026_11.csv (origem mais recente/diferente (Origem: 24/11 08:38:26 5,228,988b vs Destino: 23/11 08:38:27 4,648,614b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 3 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 123.42 segundos
+Novos arquivos copiados:              2
+Arquivos atualizados (mais recentes): 9
+Arquivos ignorados (sem alteracoes):  141
+================================================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 24/11/2026 13:05:00
+Regra: Novos sempre copiados | Existentes atualizados se origem for mais recente/diferente
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   -> [SUBSTITUIDO] EFL - 2026_11_24.csv (origem mais recente/diferente (Origem: 24/11 12:54:24 40,197b vs Destino: 24/11 10:54:19 40,220b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 53 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 18 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   -> [SUBSTITUIDO] Instalações Não Visitadas_2026_11_24.csv (origem mais recente/diferente (Origem: 24/11 12:54:33 33,146,862b vs Destino: 24/11 10:54:27 38,923,519b))
+   Resumo: 0 novo(s) | 1 atualizado(s) | 17 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 18 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   Resumo: 0 novo(s) | 0 atualizado(s) | 4 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.09 segundos
+Novos arquivos copiados:              0
+Arquivos atualizados (mais recentes): 2
+Arquivos ignorados (sem alteracoes):  150
+================================================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 24/11/2026 14:28:47
+Regra: Novos sempre copiados | Existentes atualizados se origem for mais recente/diferente
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) | 54 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 18 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) | 18 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 18 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   Resumo: 0 novo(s) | 0 atualizado(s) | 4 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.14 segundos
+Novos arquivos copiados:              0
+Arquivos atualizados (mais recentes): 0
+Arquivos ignorados (sem alteracoes):  152
+================================================================================
+
+================================================================================
+INICIANDO SINCRONIZACAO DE ARQUIVOS (BI_LEC -> BI_LEC_SQL)
+Data/Hora de Inicio: 24/11/2026 14:28:59
+Regra: Novos sempre copiados | Existentes atualizados se origem for mais recente/diferente
+================================================================================
+
+Pasta: [01/13] 01_ELF_Diario -> 01_ELF_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) | 54 ignorado(s) | 0 erro(s)
+
+Pasta: [02/13] 02_PDL_Analitico -> 02_PDL_Analitico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 18 ignorado(s) | 0 erro(s)
+
+Pasta: [03/13] 03_N_Lib_Fat_Diario -> 03_N_Lib_Fat_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [04/13] 04_N_Visitado_Diario -> 04_N_Visitado_Diario
+   Resumo: 0 novo(s) | 0 atualizado(s) | 18 ignorado(s) | 0 erro(s)
+
+Pasta: [05/13] 05_N_Visitado_Historico -> 05_N_Visitado_Historico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 18 ignorado(s) | 0 erro(s)
+
+Pasta: [06/13] 06_Impedimentos -> 06_Impedimento
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [07/13] 07_Entregas -> 07_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [08/13] 08_Leituras_Correcao -> 08_Leituras_Correcao
+   Resumo: 0 novo(s) | 0 atualizado(s) | 11 ignorado(s) | 0 erro(s)
+
+Pasta: [09/13] 10_Aviso_Desliga -> 10_Aviso_Desliga
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [10/13] 11_Rastro_Entrega -> 11_Rastro_Entrega
+   Resumo: 0 novo(s) | 0 atualizado(s) | 1 ignorado(s) | 0 erro(s)
+
+Pasta: [11/13] 12_Validacao_Malote -> 12_Validacao_Malote
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+Pasta: [12/13] 15_Planeja_Bases -> 15_Planieja_Bases
+   Resumo: 0 novo(s) | 0 atualizado(s) | 4 ignorado(s) | 0 erro(s)
+
+Pasta: [13/13] 16_Notas_Servico -> 16_Notas_Servico
+   Resumo: 0 novo(s) | 0 atualizado(s) | 2 ignorado(s) | 0 erro(s)
+
+================================================================================
+SINCRONIZACAO CONCLUIDA
+Tempo total: 0.03 segundos
+Novos arquivos copiados:              0
+Arquivos atualizados (mais recentes): 0
+Arquivos ignorados (sem alteracoes):  152
+================================================================================
+
